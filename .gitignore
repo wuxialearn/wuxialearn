@@ -1,5 +1,5 @@
 .git_local_repo_wuxialearn_credentials
-
+**/connection_db_info.dart
 **/android/key.properties
 **/android/local.properties
 
