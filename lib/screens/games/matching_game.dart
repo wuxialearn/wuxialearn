@@ -1,6 +1,7 @@
 import 'dart:async';
 
 //import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,9 +35,18 @@ class _MatchingGameState extends State<MatchingGame> {
   List completed = [];
   bool isFinished = false;
   final player = AudioPlayer();
+  FlutterTts flutterTts = FlutterTts();
+  setLanguage() async{
+    await flutterTts.setLanguage("zh-CN");
+  }
+  Future speak(String text) async{
+    await flutterTts.awaitSpeakCompletion(true);
+    await flutterTts.speak(text);
+  }
   @override
   void initState() {
     super.initState();
+    setLanguage();
     numCords = widget.groupWords.length;
     leftYCords = createYCordList(numCords);
     rightYCords = createYCordList(numCords);
@@ -48,6 +58,9 @@ class _MatchingGameState extends State<MatchingGame> {
   }
 
   pushToTop({required int index, required String side}) {
+    if (side == "left") {
+      speak(widget.groupWords[index]["hanzi"]);
+    }
     if (lastClicked != side && lastClicked != "") {
       int leftIndex = 0; int rightIndex = 0;
       if (side == "left") {leftIndex = index;rightIndex = nextValue;}

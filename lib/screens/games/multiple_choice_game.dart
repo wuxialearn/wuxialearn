@@ -44,11 +44,39 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
       child: Column(
         children: [
           Expanded(
-            child: Center(
-              child: Text(
-                widget.currWord[mapKey],
-                style: const TextStyle(fontSize: 35),
-              )
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Visibility(
+                  maintainState: true,
+                  maintainSize: true,
+                  maintainAnimation: true,
+                  visible: false,
+                  child: IconButton(
+                      onPressed: () {
+                        speak(widget.currWord[mapKey]);
+                      },
+                      icon: const Icon(Icons.volume_up)
+                  ),
+                ),
+                Text(
+                  widget.currWord[mapKey],
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 35),
+                ),
+                Visibility(
+                  maintainState: true,
+                  maintainSize: true,
+                  maintainAnimation: true,
+                  visible: widget.chineseToEnglish!,
+                  child: IconButton(
+                      onPressed: () {
+                        speak(widget.currWord[mapKey]);
+                      },
+                      icon: const Icon(Icons.volume_up)
+                  ),
+                ),
+              ],
             )
           ),
           Padding(
@@ -93,10 +121,7 @@ class _AnswersListState extends State<AnswersList> {
   }
 
   final player = AudioPlayer();
-
-
   FlutterTts flutterTts = FlutterTts();
-
   setLanguage() async{
     await flutterTts.setLanguage("zh-CN");
   }

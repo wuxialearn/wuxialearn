@@ -34,13 +34,24 @@ class _SentenceGameState extends State<SentenceGame> {
 
   @override
   void initState() {
+    setLanguage();
     alreadyBuiltSentence = widget.buildEnglish ? widget.currSentence["characters"] : widget.currSentence["meaning"];
     sentenceToBuild = widget.buildEnglish ? widget.currSentence["meaning"] : widget.currSentence["characters"];
+    speak(widget.currSentence["characters"]);
     //now that we have tokenized we can just do one for both
     //words = widget.buildEnglish ? sentenceToBuild.split(" ") : sentenceToBuild.replaceAll(" ", "").split("");
     words = sentenceToBuild.split(" ");
     super.initState();
   }
+
+  FlutterTts flutterTts = FlutterTts();
+  setLanguage() async{
+    await flutterTts.setLanguage("zh-CN");
+  }
+  Future speak(String text) async{
+    await flutterTts.speak(text);
+  }
+
 
   Widget checkAnswerWidget = const SizedBox(height: 0,);
   @override
@@ -54,12 +65,41 @@ class _SentenceGameState extends State<SentenceGame> {
                 const SizedBox(
                   height: 30,
                 ),
-                Center(
-                  child: Text(
-                    alreadyBuiltSentence,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 20),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Visibility(
+                      maintainState: true,
+                      maintainSize: true,
+                      maintainAnimation: true,
+                      visible: false,
+                      child: IconButton(
+                          onPressed: () {
+                            speak(alreadyBuiltSentence);
+                          },
+                          icon: const Icon(Icons.volume_up)
+                      ),
+                    ),
+                    Center(
+                      child: Text(
+                        alreadyBuiltSentence,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 23),
+                      ),
+                    ),
+                    Visibility(
+                      maintainState: true,
+                      maintainSize: true,
+                      maintainAnimation: true,
+                      visible: widget.buildEnglish,
+                      child: IconButton(
+                          onPressed: () {
+                            speak(alreadyBuiltSentence);
+                          },
+                          icon: const Icon(Icons.volume_up)
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(
                   height: 40,
@@ -75,6 +115,7 @@ class _SentenceGameState extends State<SentenceGame> {
                           buildEnglish: widget.buildEnglish,
                           currSentence: widget.currSentence,
                           constraints: constraints,
+                          tts: flutterTts,
                           setCheckAnswerWidget: (Widget w){
                             setState(() {
                               checkAnswerWidget = w;
@@ -103,7 +144,8 @@ class _SentenceGameMain extends StatefulWidget {
   final bool buildEnglish;
   final Map<String, dynamic> currSentence;
   final Function(Widget) setCheckAnswerWidget;
-  const _SentenceGameMain({Key? key, required this.callback, required this.constraints, required this.words, required this.alreadyBuiltSentence, required this.sentenceToBuild, required this.buildEnglish, required this.currSentence, required this.setCheckAnswerWidget}) : super(key: key);
+  final FlutterTts tts;
+  const _SentenceGameMain({Key? key, required this.callback, required this.constraints, required this.words, required this.alreadyBuiltSentence, required this.sentenceToBuild, required this.buildEnglish, required this.currSentence, required this.setCheckAnswerWidget, required this.tts}) : super(key: key);
 
   @override
   State<_SentenceGameMain> createState() => _SentenceGameMainState();
@@ -131,21 +173,13 @@ class _SentenceGameMainState extends State<_SentenceGameMain> {
   @override
   void initState() {
     super.initState();
-    setLanguage();
-    if(!widget.buildEnglish){
-      speak(widget.sentenceToBuild);
-    }
     bool debug = Preferences.getPreference("debug");
     if (!debug) widget.words.shuffle();
     screenWidth = widget.constraints.maxWidth;
   }
 
-  FlutterTts flutterTts = FlutterTts();
-  setLanguage() async{
-    await flutterTts.setLanguage("zh-CN");
-  }
   Future speak(String text) async{
-    await flutterTts.speak(text);
+    await widget.tts.speak(text);
   }
 
   Function() changeRow(int index,) {

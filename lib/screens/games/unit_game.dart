@@ -63,7 +63,7 @@ class _UnitGameState extends State<UnitGame> {
 
   void callback(bool value, Map<String, dynamic> currWord, bool? chineseToEnglish) async {
     //print(widget.unit);
-    if(widget.unit > 0 /*&& (gameType == EnglishToChineseGame || gameType == ChineseToEnglishGame)*/) {
+    if(widget.unit > 0 && chineseToEnglish != null) {
       SQLHelper.insertStat(value: value?1:0, id: currWord["id"]);
     }
     if(value == false){
