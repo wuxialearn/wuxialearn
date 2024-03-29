@@ -1,20 +1,74 @@
-import 'dart:math';
-
-//import 'package:audioplayers/audioplayers.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'dart:math';
+import 'package:just_audio/just_audio.dart';
 import '../settings/preferences.dart';
 import '../../utils/styles.dart';
+
+class ChineseToEnglishGame extends StatefulWidget {
+  final Map<String, dynamic> currWord;
+  final List<Map<String, dynamic>> groupWords;
+  final Function(bool value, Map<String, dynamic> currWord, bool? chineseToEnglish) callback;
+  final int index;
+  final bool? chineseToEnglish;
+  const ChineseToEnglishGame({Key? key, required  this.currWord, required  this.groupWords, required this.callback, required this.index, required this.chineseToEnglish}) : super(key: key);
+
+  @override
+  State<ChineseToEnglishGame> createState() => _ChineseToEnglishGameState();
+}
+class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
+
+
+  FlutterTts flutterTts = FlutterTts();
+  setLanguage() async{
+    await flutterTts.setLanguage("zh-CN");
+  }
+  Future speak(String text) async{
+    await flutterTts.speak(text);
+  }
+  late String mapKey;
+  @override
+  void initState() {
+    super.initState();
+    mapKey = widget.chineseToEnglish!? "hanzi":"translations0";
+    if(widget.chineseToEnglish!){
+      speak(widget.currWord[mapKey]);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    widget.groupWords.shuffle();
+    return CupertinoPageScaffold(
+      child: Column(
+        children: [
+          Expanded(
+            child: Center(
+              child: Text(
+                widget.currWord[mapKey],
+                style: const TextStyle(fontSize: 35),
+              )
+            )
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+            child: AnswersList(chineseToEnglish: widget.chineseToEnglish!, currWord: widget.currWord, groupWords: widget.groupWords, callback: widget.callback, index: widget.index,),
+          )
+        ],
+      ),
+    );
+  }
+}
+
 
 class AnswersList extends StatefulWidget {
   final Map<String, dynamic> currWord;
   final List<Map<String, dynamic>> groupWords;
-  final String type;
-  final Function(bool value, Map<String, dynamic> currWord, Type gameType) callback;
+  final Function(bool value, Map<String, dynamic> currWord, bool? chineseToEnglish) callback;
   final int index;
-  final Type gameType;
-  const AnswersList({super.key, required this.currWord, required this.groupWords, required this.type, required this.callback, required this.index, required this.gameType});
+  final bool chineseToEnglish;
+  const AnswersList({super.key, required this.currWord, required this.groupWords, required this.callback, required this.index, required this.chineseToEnglish});
 
   @override
   State<AnswersList> createState() => _AnswersListState();
@@ -92,15 +146,17 @@ class _AnswersListState extends State<AnswersList> {
                   //await player.play(AssetSource('wrong.wav'));
                 }
                 Future.delayed(const Duration(milliseconds: 500), () {
-                  widget.callback(isCorrect,  widget.currWord, widget.gameType);
+                  widget.callback(isCorrect,  widget.currWord, widget.chineseToEnglish);
                 });
               }
             },
             child: Text(
-              buttonSelectionWords[i][widget.type],
+              buttonSelectionWords[i][widget.chineseToEnglish? "translations0":"hanzi"],
               style: const TextStyle(fontSize: 18),
             ));
       }),
     );
   }
 }
+
+

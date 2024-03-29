@@ -4,9 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import '../../sql/sql_helper.dart';
-import 'chinese_to_english_game.dart';
-import 'english_to_chinese_game.dart';
 import 'matching_game.dart';
+import 'multiple_choice_game.dart';
 import 'sentence_game.dart';
 
 class UnitGame extends StatefulWidget {
@@ -62,26 +61,15 @@ class _UnitGameState extends State<UnitGame> {
   }
 
 
-  void callback(bool value, Map<String, dynamic> currWord, Type gameType) async {
+  void callback(bool value, Map<String, dynamic> currWord, bool? chineseToEnglish) async {
     //print(widget.unit);
-    if(widget.unit > 0 && (gameType == EnglishToChineseGame || gameType == ChineseToEnglishGame)) {
+    if(widget.unit > 0 /*&& (gameType == EnglishToChineseGame || gameType == ChineseToEnglishGame)*/) {
       SQLHelper.insertStat(value: value?1:0, id: currWord["id"]);
     }
     if(value == false){
-      switch (gameType){
-        case EnglishToChineseGame: {
-          setState(() {
-            gamesList.add(EnglishToChineseGame(currWord: currWord, groupWords: widget.hskList, callback: callback, index: gameIndex));
-          });
-          break;
-        }
-        case ChineseToEnglishGame: {
-          setState(() {
-            gamesList.add(ChineseToEnglishGame(currWord: currWord, groupWords: widget.hskList, callback: callback, index: gameIndex));
-          });
-          break;
-        }
-      }
+      setState(() {
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: chineseToEnglish, currWord: currWord, groupWords: widget.hskList, callback: callback, index: gameIndex,));
+      });
     }
     updatePage();
   }
@@ -112,9 +100,9 @@ class _UnitGameState extends State<UnitGame> {
   void createGamesListForGroup(List<Map<String, dynamic>> hskList, List<Map<String, dynamic>> sentenceList){
     for (int i = 0; i< hskList.length; i++){
       if(i%2==0){
-        gamesList.add(EnglishToChineseGame(currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: false, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
       }else{
-        gamesList.add(ChineseToEnglishGame(currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: true, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
       }
     }
     gamesList.add(MatchingGame(groupWords: hskList, callback: callback,));

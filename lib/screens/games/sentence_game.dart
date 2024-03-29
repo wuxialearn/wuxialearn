@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 import '../settings/preferences.dart';
-import '../../utils/styles.dart';
 import '../../widgets/fixed_align.dart';
 
 class SentenceGame extends StatefulWidget {

@@ -9,7 +9,7 @@ import '../../utils/styles.dart';
 
 class MatchingGame extends StatefulWidget {
   final List<Map<String, dynamic>> groupWords;
-  final Function(bool value, Map<String, dynamic> currWord, Type gameType) callback;
+  final Function(bool value, Map<String, dynamic> currWord, bool? chineseToEnglish) callback;
 
   const MatchingGame({super.key, required this.groupWords, required this.callback});
 
@@ -148,7 +148,7 @@ class _MatchingGameState extends State<MatchingGame> {
                       onPressed: () async {
                         await player.setAsset('assets/correct.wav');
                         player.play();
-                        widget.callback(true, {"":""}, widget.runtimeType);
+                        widget.callback(true, {"":""}, null);
                       },
                       child: const Text("Continue")),
                   ),

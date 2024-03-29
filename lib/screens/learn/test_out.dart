@@ -1,8 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../sql/sql_helper.dart';
-import '../games/chinese_to_english_game.dart';
-import '../games/english_to_chinese_game.dart';
+import '../games/multiple_choice_game.dart';
 
 
 class TestOut extends StatefulWidget {
@@ -56,7 +55,7 @@ class _TestOutControllerState extends State<_TestOutController> {
     _pageController.dispose();
     super.dispose();
   }
-  void callback(bool value, Map<String, dynamic> currWord, Type gameType) async {
+  void callback(bool value, Map<String, dynamic> currWord, bool? empty) async {
 
     if(value == false){
       numIncorrect++;
@@ -94,9 +93,9 @@ class _TestOutControllerState extends State<_TestOutController> {
   void createGamesListForGroup(List<Map<String, dynamic>> hskList){
     for (int i = 0; i< hskList.length; i++){
       if(i%2==0){
-        gamesList.add(EnglishToChineseGame(currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: false, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
       }else{
-        gamesList.add(ChineseToEnglishGame(currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: true, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
       }
     }
   }
