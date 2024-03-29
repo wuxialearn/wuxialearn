@@ -42,7 +42,7 @@ class _LoadAppState extends State<LoadApp> {
       final req = await http.get(Uri.parse(versionUrl));
       final String version = req.body.trim();
       print("version: $version");
-      if(version != lastVersion || 1 ==1){
+      if(version != lastVersion){
         await SQLHelper.updateSqliteFromCsv();
         Preferences.setPreference(name: dbPref, value: version);
         SQLHelper.setPreference(name: dbPref, value: version, type: 'string');
