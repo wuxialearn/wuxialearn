@@ -50,6 +50,7 @@ class _TestOutControllerState extends State<_TestOutController> {
   List<Widget> gamesList = [];
   int gameIndex = 0;
   int numIncorrect = 0;
+  bool showPinyin = true;
   @override
   void dispose() {
     _pageController.dispose();
@@ -90,12 +91,15 @@ class _TestOutControllerState extends State<_TestOutController> {
       gameIndex++;
     }
   }
+  void updateShowPinyin({required bool showPinyin}){
+    this.showPinyin = showPinyin;
+  }
   void createGamesListForGroup(List<Map<String, dynamic>> hskList){
     for (int i = 0; i< hskList.length; i++){
       if(i%2==0){
-        gamesList.add(ChineseToEnglishGame(chineseToEnglish: false, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: false, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex, showPinyin: showPinyin, updateShowPinyin: updateShowPinyin,));
       }else{
-        gamesList.add(ChineseToEnglishGame(chineseToEnglish: true, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: true, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex, showPinyin: showPinyin, updateShowPinyin: updateShowPinyin,));
       }
     }
   }

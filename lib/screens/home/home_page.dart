@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hsk_learner/screens/courses/course_home.dart';
 import 'package:hsk_learner/screens/review/review_home.dart';
 import 'package:hsk_learner/screens/settings/settings.dart';
+import '../games/sentence_game.dart';
 import '../stats/stats_home.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -35,7 +36,7 @@ class MyHomePageState extends State<MyHomePage>{
       const StatsHome(),
       const Settings(),
       //const WordView(wordId: 3)
-      //SentenceGame(callback: sentenceGameCallBack, currSentence: currSentence(), index: 0, buildEnglish: false)
+      SentenceGame(callback: sentenceGameCallBack, currSentence: currSentence(), index: 0, buildEnglish: false)
     ];
   }
   void sentenceGameCallBack(bool value, Map<String, dynamic> currSentence, bool buildEnglish){
@@ -44,7 +45,7 @@ class MyHomePageState extends State<MyHomePage>{
     //return  {"characters": "她叫什么名字", "pinyin": "tā jiào shénme míngzì", "meaning": "what's her name"};
     //return {"characters": "我的弟弟想长高", "pinyin": "Wǒ de dìdi xiǎng zhǎng gāo", "meaning": "my younger brother wants to grow taller",};
     return {
-      "characters": "我爱我的国家，它有很多美丽的河流和公园",
+      "characters": "我 爱 我 的 国家，它 有 很多 美丽 的 河流 和 公园",
       "pinyin": "wǒ ài wǒ de guójiā, tā yǒu hěnduō měilì de héliú hé gōngyuán",
       "meaning": "I love my country, it has many beautiful rivers and parks and more words"
     };
@@ -79,7 +80,7 @@ class MyHomePageState extends State<MyHomePage>{
             BottomNavigationBarItem(icon: Icon(Icons.auto_stories), label: "Review"),
             BottomNavigationBarItem(icon: Icon(Icons.query_stats_sharp), label: "Stats"),
             BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings"),
-            //BottomNavigationBarItem(icon: Icon(Icons.construction), label: "testing"),
+            BottomNavigationBarItem(icon: Icon(Icons.construction), label: "testing"),
           ],
         ),
         tabBuilder: (BuildContext context, int index) { 

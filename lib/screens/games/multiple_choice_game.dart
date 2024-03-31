@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:hsk_learner/screens/games/show_pinyin.dart';
 import 'dart:math';
 import 'package:just_audio/just_audio.dart';
 import '../settings/preferences.dart';
@@ -12,7 +13,9 @@ class ChineseToEnglishGame extends StatefulWidget {
   final Function(bool value, Map<String, dynamic> currWord, bool? chineseToEnglish) callback;
   final int index;
   final bool? chineseToEnglish;
-  const ChineseToEnglishGame({Key? key, required  this.currWord, required  this.groupWords, required this.callback, required this.index, required this.chineseToEnglish}) : super(key: key);
+  final bool showPinyin;
+  final void Function({required bool showPinyin}) updateShowPinyin;
+  const ChineseToEnglishGame({Key? key, required  this.currWord, required  this.groupWords, required this.callback, required this.index, required this.chineseToEnglish, required this.showPinyin, required this.updateShowPinyin}) : super(key: key);
 
   @override
   State<ChineseToEnglishGame> createState() => _ChineseToEnglishGameState();
@@ -27,13 +30,15 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
   Future speak(String text) async{
     await flutterTts.speak(text);
   }
-  late String mapKey;
+  late String wordToTranslateMapKey;
+  late bool showPinyin;
   @override
   void initState() {
     super.initState();
-    mapKey = widget.chineseToEnglish!? "hanzi":"translations0";
+    showPinyin = ShowPinyin.showPinyin;
+    wordToTranslateMapKey = widget.chineseToEnglish!? "hanzi":"translations0";
     if(widget.chineseToEnglish!){
-      speak(widget.currWord[mapKey]);
+      speak(widget.currWord[wordToTranslateMapKey]);
     }
   }
 
@@ -41,49 +46,83 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
   Widget build(BuildContext context) {
     widget.groupWords.shuffle();
     return CupertinoPageScaffold(
-      child: Column(
-        children: [
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+      child: SafeArea(
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Visibility(
-                  maintainState: true,
-                  maintainSize: true,
-                  maintainAnimation: true,
-                  visible: false,
-                  child: IconButton(
-                      onPressed: () {
-                        speak(widget.currWord[mapKey]);
-                      },
-                      icon: const Icon(Icons.volume_up)
-                  ),
-                ),
-                Text(
-                  widget.currWord[mapKey],
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 35),
-                ),
-                Visibility(
-                  maintainState: true,
-                  maintainSize: true,
-                  maintainAnimation: true,
-                  visible: widget.chineseToEnglish!,
-                  child: IconButton(
-                      onPressed: () {
-                        speak(widget.currWord[mapKey]);
-                      },
-                      icon: const Icon(Icons.volume_up)
-                  ),
-                ),
+                TextButton(
+                    onPressed: (){
+                      setState(() {
+                        showPinyin = !showPinyin;
+                        ShowPinyin.showPinyin = showPinyin;
+                      });
+                    },
+                    child: showPinyin
+                        ? const Text("Hide Pinyin")
+                        : const Text("Show Pinyin")
+                )
               ],
+            ),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Visibility(
+                      visible: widget.chineseToEnglish! && showPinyin,
+                      child: Text(
+                        widget.currWord["pinyin"],
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 20),
+                      )
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Visibility(
+                        maintainState: true,
+                        maintainSize: true,
+                        maintainAnimation: true,
+                        visible: false,
+                        child: IconButton(
+                            onPressed: () {
+                              speak(widget.currWord[wordToTranslateMapKey]);
+                            },
+                            icon: const Icon(Icons.volume_up)
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal:  3.0),
+                        child: Text(
+                          widget.currWord[wordToTranslateMapKey],
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 35),
+                        ),
+                      ),
+                      Visibility(
+                        maintainState: true,
+                        maintainSize: true,
+                        maintainAnimation: true,
+                        visible: widget.chineseToEnglish!,
+                        child: IconButton(
+                            onPressed: () {
+                              speak(widget.currWord[wordToTranslateMapKey]);
+                            },
+                            icon: const Icon(Icons.volume_up)
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              )
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+              child: AnswersList(chineseToEnglish: widget.chineseToEnglish!, currWord: widget.currWord, groupWords: widget.groupWords, callback: widget.callback, index: widget.index, showPinyin: showPinyin),
             )
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-            child: AnswersList(chineseToEnglish: widget.chineseToEnglish!, currWord: widget.currWord, groupWords: widget.groupWords, callback: widget.callback, index: widget.index,),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -96,7 +135,8 @@ class AnswersList extends StatefulWidget {
   final Function(bool value, Map<String, dynamic> currWord, bool? chineseToEnglish) callback;
   final int index;
   final bool chineseToEnglish;
-  const AnswersList({super.key, required this.currWord, required this.groupWords, required this.callback, required this.index, required this.chineseToEnglish});
+  final bool showPinyin;
+  const AnswersList({super.key, required this.currWord, required this.groupWords, required this.callback, required this.index, required this.chineseToEnglish, required this.showPinyin});
 
   @override
   State<AnswersList> createState() => _AnswersListState();
@@ -175,9 +215,17 @@ class _AnswersListState extends State<AnswersList> {
                 });
               }
             },
-            child: Text(
-              buttonSelectionWords[i][widget.chineseToEnglish? "translations0":"hanzi"],
-              style: const TextStyle(fontSize: 18),
+            child: Column(
+              children: [
+                Visibility(
+                  visible: widget.showPinyin && !widget.chineseToEnglish,
+                  child: Text(buttonSelectionWords[i]["pinyin"])
+                ),
+                Text(
+                  buttonSelectionWords[i][widget.chineseToEnglish? "translations0":"hanzi"],
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ],
             ));
       }),
     );

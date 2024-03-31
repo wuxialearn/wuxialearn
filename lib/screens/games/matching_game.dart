@@ -1,7 +1,9 @@
 import 'dart:async';
 
 //import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:hsk_learner/screens/games/show_pinyin.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +38,7 @@ class _MatchingGameState extends State<MatchingGame> {
   bool isFinished = false;
   final player = AudioPlayer();
   FlutterTts flutterTts = FlutterTts();
+  late bool showPinyin;
   setLanguage() async{
     await flutterTts.setLanguage("zh-CN");
   }
@@ -47,6 +50,7 @@ class _MatchingGameState extends State<MatchingGame> {
   void initState() {
     super.initState();
     setLanguage();
+    showPinyin = ShowPinyin.showPinyin;
     numCords = widget.groupWords.length;
     leftYCords = createYCordList(numCords);
     rightYCords = createYCordList(numCords);
@@ -127,8 +131,25 @@ class _MatchingGameState extends State<MatchingGame> {
     return CupertinoPageScaffold(
       child: Column(
         children: [
+          SafeArea(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                    onPressed: (){
+                      setState(() {
+                        showPinyin = !showPinyin;
+                        ShowPinyin.showPinyin = showPinyin;
+                      });
+                    },
+                    child:  showPinyin? const Text("Hide Pinyin"):
+                        const Text("Show Pinyin")
+                ),
+              ],
+            ),
+          ),
           const SizedBox(
-            height: 90,
+            height: 50,
           ),
           const Padding(
             padding: EdgeInsets.all(8.0),
@@ -193,7 +214,19 @@ class _MatchingGameState extends State<MatchingGame> {
         onPressed: () {
           pushToTop(index: index, side: side);
         },
-        child: Text(widget.groupWords[index][wordType], style: TextStyle(fontSize: fontSize),),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Visibility(
+              visible: wordType == "hanzi" && showPinyin,
+              child: Text(widget.groupWords[index]["pinyin"])
+            ),
+            Text(
+              widget.groupWords[index][wordType],
+              style: TextStyle(fontSize: fontSize),
+            ),
+          ],
+        ),
       ),
     );
   }

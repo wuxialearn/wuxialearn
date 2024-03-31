@@ -26,6 +26,7 @@ class _UnitGameState extends State<UnitGame> {
   final PageController _pageController = PageController();
   List<Widget> gamesList = [];
   int gameIndex = 0;
+  bool showPinyin = true;
   @override
   void dispose() {
     _pageController.dispose();
@@ -44,9 +45,7 @@ class _UnitGameState extends State<UnitGame> {
     }
     _initPlayers();
   }
-
-
-
+  
   final player = AudioPlayer();
 
   //this is an issue on android where the first play of the player is cut off
@@ -60,15 +59,21 @@ class _UnitGameState extends State<UnitGame> {
     await player.setVolume(volume);
   }
 
+  void updateShowPinyin({required bool showPinyin}){
+    print("we are here");
+    setState(() {
+      this.showPinyin = showPinyin;
+    });
+    print(this.showPinyin);
+  }
 
   void callback(bool value, Map<String, dynamic> currWord, bool? chineseToEnglish) async {
-    //print(widget.unit);
     if(widget.unit > 0 && chineseToEnglish != null) {
       SQLHelper.insertStat(value: value?1:0, id: currWord["id"]);
     }
     if(value == false){
       setState(() {
-        gamesList.add(ChineseToEnglishGame(chineseToEnglish: chineseToEnglish, currWord: currWord, groupWords: widget.hskList, callback: callback, index: gameIndex,));
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: chineseToEnglish, currWord: currWord, groupWords: widget.hskList, callback: callback, index: gameIndex, showPinyin: showPinyin, updateShowPinyin : updateShowPinyin));
       });
     }
     updatePage();
@@ -100,9 +105,9 @@ class _UnitGameState extends State<UnitGame> {
   void createGamesListForGroup(List<Map<String, dynamic>> hskList, List<Map<String, dynamic>> sentenceList){
     for (int i = 0; i< hskList.length; i++){
       if(i%2==0){
-        gamesList.add(ChineseToEnglishGame(chineseToEnglish: false, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: false, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex, showPinyin: showPinyin, updateShowPinyin: updateShowPinyin,));
       }else{
-        gamesList.add(ChineseToEnglishGame(chineseToEnglish: true, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: true, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex, showPinyin: showPinyin, updateShowPinyin: updateShowPinyin));
       }
     }
     gamesList.add(MatchingGame(groupWords: hskList, callback: callback,));
