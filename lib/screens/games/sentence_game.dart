@@ -277,7 +277,8 @@ class _SentenceGameState extends State<SentenceGame> {
                             ShowPinyin.showPinyin = showPinyin;
                             if(!widget.buildEnglish){
                               List<_WordCord> wordCords = showPinyin? pinyinWordCords:plainWordCords;
-                              board = _Board(wordCords: wordCords, maxHeight: cons.maxHeight, screenWidth: screenWidth, textHeight: textHeight);
+                              double textHeight = showPinyin? pinyinFontSize + this.textHeight: this.textHeight;
+                              board = _Board(wordCords: wordCords, textHeight: textHeight, maxHeight: cons.maxHeight, screenWidth: screenWidth);
                             }
                           });
                         },
@@ -334,7 +335,8 @@ class _SentenceGameState extends State<SentenceGame> {
                       buildWordCords(index, stackWidget);
                       if(init == false){
                         List<_WordCord> wordCords = showPinyin && !widget.buildEnglish? pinyinWordCords:plainWordCords;
-                        board = _Board(wordCords: wordCords, maxHeight: cons.maxHeight, screenWidth: screenWidth, textHeight: textHeight);
+                        double textHeight = showPinyin? pinyinFontSize + this.textHeight: this.textHeight;
+                        board = _Board(wordCords: wordCords, textHeight: textHeight, maxHeight: cons.maxHeight, screenWidth: screenWidth);
                       }
                       init = true;
                       return Column(
