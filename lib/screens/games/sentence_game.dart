@@ -6,6 +6,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:lpinyin/lpinyin.dart';
 
 import '../settings/preferences.dart';
 import '../../widgets/fixed_align.dart';
@@ -44,7 +45,11 @@ class _SentenceGameState extends State<SentenceGame> {
     //words = widget.buildEnglish ? sentenceToBuild.split(" ") : sentenceToBuild.replaceAll(" ", "").split("");
     //words = sentenceToBuild.split(" ");
     words = sentenceToBuild.replaceAll('，', '， ').split(" ");
-    pinyin = widget.currSentence["pinyin"].split(" ");
+    pinyin =[];
+    for (int i = 0; i< words.length; i++){
+      pinyin.add(PinyinHelper.getPinyinE(words[i], separator: " ", defPinyin: '#', format: PinyinFormat.WITH_TONE_MARK));
+    }
+    //pinyin = widget.currSentence["pinyin"].split(" ");
     print(pinyin);
     showPinyin = ShowPinyin.showPinyin;
     super.initState();
