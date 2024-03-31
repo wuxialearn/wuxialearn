@@ -92,6 +92,7 @@ class _SentenceGameState extends State<SentenceGame> {
   late _Board board;
   Function() changeRow(int index) {
     return () {
+      print("is on top: ${board.isOnTop(index)}");
       if (board.isOnTop(index)) {
         setState(() {
           board.removeFromTop(index);
@@ -140,6 +141,9 @@ class _SentenceGameState extends State<SentenceGame> {
             .size;
         double sizeWithPadding = size.width + padding;
         wordSizes.add(sizeWithPadding);
+
+        print("size.width ${size.width}");
+        print("pinyinSize.width ${pinyinSize.width}");
         double pinyinSizeWithPadding = max(size.width, pinyinSize.width)+ padding;
         pinyinWordSizes.add(pinyinSizeWithPadding);
         totalLength += sizeWithPadding;
@@ -611,6 +615,7 @@ class _Board{
 
   _Board({required this.maxHeight, required this.screenWidth, required this.wordCords, required this.textHeight});
   bool isOnTop(int index){
+    print("onTop: $onTop");
     return onTop.contains(index);
   }
   void removeFromTop(int index){
@@ -659,10 +664,8 @@ class _Board{
     }
   }
   void addToTop(int index){
-    print(topLength);
     onTop.add(index);
     if(!_wordCanFitOnCurrentTop(index)){
-      print("is hosuldn't be here");
       topLength.add(0);
       final newHeight = topHeights.last + 4 * textHeight / maxHeight;
       topHeights.add(newHeight);
@@ -673,7 +676,6 @@ class _Board{
     print(topLength);
     print(wordCords[index].size);
     topLength.last += wordCords[index].size;
-    print(topLength);
   }
   bool _wordCanFitOnCurrentTop(int index){
     return topLength.last + wordCords[index].size < screenWidth;
