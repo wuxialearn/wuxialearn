@@ -92,7 +92,6 @@ class _SentenceGameState extends State<SentenceGame> {
   late _Board board;
   Function() changeRow(int index) {
     return () {
-      print("is on top: ${board.isOnTop(index)}");
       if (board.isOnTop(index)) {
         setState(() {
           board.removeFromTop(index);
@@ -133,7 +132,7 @@ class _SentenceGameState extends State<SentenceGame> {
         final Size pinyinSize = (TextPainter(
             text: TextSpan(
                 text: pinyin.length > i? pinyin[i] : "missing",
-                style: TextStyle(fontSize: fontSize)),
+                style: TextStyle(fontSize: pinyinFontSize)),
             maxLines: 1,
             textScaleFactor: MediaQuery.of(context).textScaleFactor,
             textDirection: TextDirection.ltr)
@@ -206,7 +205,7 @@ class _SentenceGameState extends State<SentenceGame> {
           double xCord = 0 - pinyinMiddleOffset[i] + pinyinNormalizedWidth;
           double yCord = 1 - pinyinNormalizedHeight;
           pinyinBottomLength[i] += pinyinWordSizes[j];
-          pinyinWordCords.add(_PinyinWordCord(x: xCord, y: yCord, size: wordSizes[j], initialX: xCord, initialY: yCord));
+          pinyinWordCords.add(_PinyinWordCord(x: xCord, y: yCord, size: pinyinWordSizes[j], initialX: xCord, initialY: yCord));
         }
       }
     }
@@ -306,7 +305,10 @@ class _SentenceGameState extends State<SentenceGame> {
                         children: [
                           Visibility(
                             visible: widget.buildEnglish && showPinyin,
-                              child: Text(widget.currSentence["pinyin"])
+                              child: Text(
+                                  widget.currSentence["pinyin"],
+                                style: TextStyle(fontSize: pinyinFontSize),
+                              )
                           ),
                           Text(
                             alreadyBuiltSentence,
@@ -615,7 +617,6 @@ class _Board{
 
   _Board({required this.maxHeight, required this.screenWidth, required this.wordCords, required this.textHeight});
   bool isOnTop(int index){
-    print("onTop: $onTop");
     return onTop.contains(index);
   }
   void removeFromTop(int index){
