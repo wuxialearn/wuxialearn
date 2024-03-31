@@ -1,3 +1,3 @@
 class ShowPinyin{
-  static bool showPinyin = true;
+  static bool showPinyin = false;
 }

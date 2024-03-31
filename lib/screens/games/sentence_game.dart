@@ -50,7 +50,6 @@ class _SentenceGameState extends State<SentenceGame> {
     super.initState();
     bool debug = Preferences.getPreference("debug");
     if (!debug) words.shuffle();
-
   }
 
   FlutterTts flutterTts = FlutterTts();
