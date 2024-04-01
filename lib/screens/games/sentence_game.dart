@@ -53,7 +53,21 @@ class _SentenceGameState extends State<SentenceGame> {
     showPinyin = ShowPinyin.showPinyin;
     super.initState();
     bool debug = Preferences.getPreference("debug");
-    if (!debug) words.shuffle();
+    if (!debug) {
+      Random random = Random();
+      int length = words.length;
+      while (length > 1) {
+        int pos = random.nextInt(length);
+        length -= 1;
+        var tmp = words[length];
+        var pinyinTemp = pinyin[length];
+        words[length] = words[pos];
+        pinyin[length] = pinyin[pos];
+        words[pos] = tmp;
+        pinyin[pos] = pinyinTemp;
+      }
+    }
+    //words.shuffle();
   }
 
   FlutterTts flutterTts = FlutterTts();
