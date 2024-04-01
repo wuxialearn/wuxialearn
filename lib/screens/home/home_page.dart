@@ -20,7 +20,7 @@ class MyHomePageState extends State<MyHomePage>{
     setState(() {tabsIndex = index;});
   }
   int tabsIndex = 4;
-  late List<Widget> tabList = <Widget>[];
+  late List<Widget> tabList = [];
   DateTime lastBackPress = DateTime.utc(1960);
   void stats() async{
   }
@@ -29,7 +29,7 @@ class MyHomePageState extends State<MyHomePage>{
     stats();
     super.initState();
     tabsIndex = widget.tab;
-    tabList = <Widget>[
+    tabList = [
       const CourseHome(),
       const ReviewPage(),
       const StatsHome(),
