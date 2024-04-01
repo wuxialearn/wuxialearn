@@ -84,7 +84,7 @@ class _SentenceGameState extends State<SentenceGame> {
   double fontSize = 20;
   double pinyinFontSize = 13;
   List<_WordCord> plainWordCords = [];
-  List<_PinyinWordCord> pinyinWordCords = [];
+  List<_WordCord> pinyinWordCords = [];
   List<int> rowStartIndex = [0];
   List<int> pinyinRowStartIndex = [0];
   List<double> bottomLength = [];
@@ -215,7 +215,7 @@ class _SentenceGameState extends State<SentenceGame> {
           double xCord = 0 - pinyinMiddleOffset[i] + pinyinNormalizedWidth;
           double yCord = 1 - pinyinNormalizedHeight;
           pinyinBottomLength[i] += pinyinWordSizes[j];
-          pinyinWordCords.add(_PinyinWordCord(x: xCord, y: yCord, size: pinyinWordSizes[j], initialX: xCord, initialY: yCord));
+          pinyinWordCords.add(_WordCord(x: xCord, y: yCord, size: pinyinWordSizes[j], initialX: xCord, initialY: yCord));
         }
       }
     }
@@ -295,6 +295,10 @@ class _SentenceGameState extends State<SentenceGame> {
                             ShowPinyin.showPinyin = showPinyin;
                             if(!widget.buildEnglish){
                               List<_WordCord> wordCords = showPinyin? pinyinWordCords:plainWordCords;
+                              for (_WordCord wordCord in wordCords){
+                                wordCord.x = wordCord.initialX;
+                                wordCord.y = wordCord.initialY;
+                              }
                               double textHeight = showPinyin? pinyinFontSize + this.textHeight: this.textHeight;
                               board = _Board(wordCords: wordCords, textHeight: textHeight, maxHeight: cons.maxHeight, screenWidth: screenWidth);
                             }
@@ -605,15 +609,6 @@ class _WordCord {
   });
 }
 
-class _PinyinWordCord extends _WordCord{
-  _PinyinWordCord({
-    required double x,
-    required double y,
-    required double size,
-    required double initialX,
-    required double initialY,
-  }) : super(x: x, y: y, size: size, initialX: initialX, initialY: initialY);
-}
 
 class _Board{
   List<int> onTop = [];
