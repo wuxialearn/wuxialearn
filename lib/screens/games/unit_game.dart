@@ -59,19 +59,13 @@ class _UnitGameState extends State<UnitGame> {
     await player.setVolume(volume);
   }
 
-  void updateShowPinyin({required bool showPinyin}){
-    setState(() {
-      this.showPinyin = showPinyin;
-    });
-  }
-
   void callback(bool value, Map<String, dynamic> currWord, bool? chineseToEnglish) async {
     if(widget.unit > 0 && chineseToEnglish != null) {
       SQLHelper.insertStat(value: value?1:0, id: currWord["id"]);
     }
     if(value == false){
       setState(() {
-        gamesList.add(ChineseToEnglishGame(chineseToEnglish: chineseToEnglish, currWord: currWord, groupWords: widget.hskList, callback: callback, index: gameIndex, showPinyin: showPinyin, updateShowPinyin : updateShowPinyin));
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: chineseToEnglish, currWord: currWord, groupWords: widget.hskList, callback: callback, index: gameIndex));
       });
     }
     updatePage();
@@ -102,9 +96,9 @@ class _UnitGameState extends State<UnitGame> {
   void createGamesListForGroup(List<Map<String, dynamic>> hskList, List<Map<String, dynamic>> sentenceList){
     for (int i = 0; i< hskList.length; i++){
       if(i%2==0){
-        gamesList.add(ChineseToEnglishGame(chineseToEnglish: false, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex, showPinyin: showPinyin, updateShowPinyin: updateShowPinyin,));
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: false, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
       }else{
-        gamesList.add(ChineseToEnglishGame(chineseToEnglish: true, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex, showPinyin: showPinyin, updateShowPinyin: updateShowPinyin));
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: true, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
       }
     }
     gamesList.add(MatchingGame(groupWords: hskList, callback: callback,));

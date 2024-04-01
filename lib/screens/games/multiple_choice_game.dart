@@ -13,9 +13,7 @@ class ChineseToEnglishGame extends StatefulWidget {
   final Function(bool value, Map<String, dynamic> currWord, bool? chineseToEnglish) callback;
   final int index;
   final bool? chineseToEnglish;
-  final bool showPinyin;
-  final void Function({required bool showPinyin}) updateShowPinyin;
-  const ChineseToEnglishGame({Key? key, required  this.currWord, required  this.groupWords, required this.callback, required this.index, required this.chineseToEnglish, required this.showPinyin, required this.updateShowPinyin}) : super(key: key);
+  const ChineseToEnglishGame({Key? key, required  this.currWord, required  this.groupWords, required this.callback, required this.index, required this.chineseToEnglish}) : super(key: key);
 
   @override
   State<ChineseToEnglishGame> createState() => _ChineseToEnglishGameState();
