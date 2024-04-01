@@ -170,3 +170,7 @@ class ConfirmBackButtonIcon extends StatelessWidget {
     );
   }
 }
+
+class ShowPinyin{
+  static bool showPinyin = false;
+}
