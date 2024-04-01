@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hsk_learner/screens/stats/stats.dart';
 import 'package:hsk_learner/screens/stats/word_view.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';

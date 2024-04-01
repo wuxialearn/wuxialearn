@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/widgets.dart';
 import 'package:hsk_learner/screens/games/unit_game.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,7 +44,7 @@ class _SentenceGameState extends State<SentenceGame> {
     //words = widget.buildEnglish ? sentenceToBuild.split(" ") : sentenceToBuild.replaceAll(" ", "").split("");
     //words = sentenceToBuild.split(" ");
     words = sentenceToBuild.replaceAll('，', '， ').split(" ");
-    pinyin =[];
+    pinyin = [];
     for (int i = 0; i< words.length; i++){
       pinyin.add(PinyinHelper.getPinyinE(words[i], separator: " ", defPinyin: '#', format: PinyinFormat.WITH_TONE_MARK));
     }
@@ -542,7 +541,7 @@ class _CheckAnswerDialogState extends State<_CheckAnswerDialog> {
           widthFactor: 0.75,
           child: Container(
               decoration:  BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
                 color: widget.isCorrect? Colors.blue : Colors.red,
               ),
               clipBehavior: Clip.none,

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:hsk_learner/screens/courses/course_home.dart';
 import 'package:hsk_learner/screens/review/review_home.dart';
 import 'package:hsk_learner/screens/settings/settings.dart';
-import '../games/sentence_game.dart';
 import '../stats/stats_home.dart';
 
 class MyHomePage extends StatefulWidget {

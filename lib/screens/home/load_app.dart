@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:hsk_learner/screens/home/home_page.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
 import '../settings/preferences.dart';

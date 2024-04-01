@@ -2,11 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hsk_learner/screens/stats/word_view.dart';
-import 'package:hsk_learner/utils/dropdown.dart';
 
-import '../../utils/prototype.dart';
 import '../../utils/styles.dart';
-import '../../widgets/hsk_listview/hsk_listview.dart';
 import '../../sql/sql_helper.dart';
 
 class StatsPage extends StatefulWidget {
@@ -147,7 +144,7 @@ class _HskListview extends StatelessWidget {
   final Color color;
   final Axis scrollAxis;
   final bool showPlayButton;
-  const _HskListview({Key? key, required  this.hskList, required this.showTranslation, required this.connectTop, required this.color, required this.scrollAxis, this.showPlayButton = true}) : super(key: key);
+  const _HskListview({Key? key, required  this.hskList, required this.showTranslation, required this.connectTop, required this.color, required this.scrollAxis}) : super(key: key);
 
   get flutterTts => null;
 

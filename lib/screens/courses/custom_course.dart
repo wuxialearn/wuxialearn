@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../sql/sql_helper.dart';
 import '../settings/preferences.dart';
 import 'course_view.dart';
-import 'hsk_course.dart';
 
 class CustomCourse extends StatefulWidget {
   final String courseName;

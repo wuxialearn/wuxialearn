@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:hsk_learner/screens/review/review_flashcards.dart';
 
 class FlashCard extends StatefulWidget {
   final Widget front; final Widget back; final bool showFrontSide;

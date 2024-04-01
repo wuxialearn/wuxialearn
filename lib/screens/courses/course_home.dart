@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:hsk_learner/screens/courses/hsk_course.dart';
-import 'package:hsk_learner/screens/learn/unit_view.dart';
 
 import '../settings/preferences.dart';
 import 'custom_course.dart';

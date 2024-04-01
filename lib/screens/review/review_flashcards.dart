@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
 import '../../utils/styles.dart';
 import 'flashcard.dart';
-import '../home/home_page.dart';
 class ReviewFlashcards extends StatefulWidget {
   final Future<List<Map<String, dynamic>>> hskList;
   const ReviewFlashcards({Key? key, required this.hskList}) : super(key: key);
