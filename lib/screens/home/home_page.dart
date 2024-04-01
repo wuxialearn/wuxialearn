@@ -35,7 +35,7 @@ class MyHomePageState extends State<MyHomePage>{
       const StatsHome(),
       const Settings(),
       //const WordView(wordId: 3)
-      SentenceGame(callback: sentenceGameCallBack, currSentence: currSentence(), index: 0, buildEnglish: false)
+      //SentenceGame(callback: sentenceGameCallBack, currSentence: currSentence(), index: 0, buildEnglish: false)
     ];
   }
   void sentenceGameCallBack(bool value, Map<String, dynamic> currSentence, bool buildEnglish){
@@ -79,7 +79,7 @@ class MyHomePageState extends State<MyHomePage>{
             BottomNavigationBarItem(icon: Icon(Icons.auto_stories), label: "Review"),
             BottomNavigationBarItem(icon: Icon(Icons.query_stats_sharp), label: "Stats"),
             BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings"),
-            BottomNavigationBarItem(icon: Icon(Icons.construction), label: "testing"),
+            //BottomNavigationBarItem(icon: Icon(Icons.construction), label: "testing"),
           ],
         ),
         tabBuilder: (BuildContext context, int index) { 
