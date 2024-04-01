@@ -304,7 +304,7 @@ class _SentenceGameState extends State<SentenceGame> {
                             }
                           });
                         },
-                        child: showPinyin? const Text("Hide Pinyin"): const Text("show Pinyin")
+                        child: showPinyin? const Text("Hide Pinyin"): const Text("Show Pinyin")
                     ),
                   ],
                 ),
