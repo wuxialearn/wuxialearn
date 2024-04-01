@@ -35,13 +35,10 @@ class _LoadAppState extends State<LoadApp> {
   void checkForDbUpdate() async {
       const String dbPref = 'db_version';
       final prefs = Preferences.getAllPreferences();
-      print(prefs);
       final String lastVersion = Preferences.getPreference(dbPref);
-      print(lastVersion);
       const String versionUrl = 'https://cdn.jsdelivr.net/gh/wuxialearn/data@main/version';
       final req = await http.get(Uri.parse(versionUrl));
       final String version = req.body.trim();
-      print("version: $version");
       if(version != lastVersion){
         await SQLHelper.updateSqliteFromCsv();
         Preferences.setPreference(name: dbPref, value: version);

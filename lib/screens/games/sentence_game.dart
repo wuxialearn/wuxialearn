@@ -50,7 +50,6 @@ class _SentenceGameState extends State<SentenceGame> {
       pinyin.add(PinyinHelper.getPinyinE(words[i], separator: " ", defPinyin: '#', format: PinyinFormat.WITH_TONE_MARK));
     }
     //pinyin = widget.currSentence["pinyin"].split(" ");
-    print(pinyin);
     showPinyin = ShowPinyin.showPinyin;
     super.initState();
     bool debug = Preferences.getPreference("debug");
@@ -140,9 +139,6 @@ class _SentenceGameState extends State<SentenceGame> {
             .size;
         double sizeWithPadding = size.width + padding;
         wordSizes.add(sizeWithPadding);
-
-        print("size.width ${size.width}");
-        print("pinyinSize.width ${pinyinSize.width}");
         double pinyinSizeWithPadding = max(size.width, pinyinSize.width)+ padding;
         pinyinWordSizes.add(pinyinSizeWithPadding);
         totalLength += sizeWithPadding;
@@ -674,8 +670,6 @@ class _Board{
     wordCords[index].y = topHeights.last;
     wordCords[index].x = -1 + 2 * topLength.last / screenWidth;
     rows.add(topLength.length - 1);
-    print(topLength);
-    print(wordCords[index].size);
     topLength.last += wordCords[index].size;
   }
   bool _wordCanFitOnCurrentTop(int index){

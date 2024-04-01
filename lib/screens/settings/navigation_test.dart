@@ -13,8 +13,8 @@ class PageOne extends StatelessWidget {
           onPressed: (){
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) =>  const PageTwo())
-            ).then((_){
-              print("returned");
+            ).then((_)
+
             });
           },
           child: const Text("go to page 2"),

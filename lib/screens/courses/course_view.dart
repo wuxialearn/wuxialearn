@@ -186,7 +186,6 @@ class GridItem extends StatelessWidget {
               ),
             ).then((_){
               updateUnits();
-              print("we have retuned to courseview");
             });
           }
         },

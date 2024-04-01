@@ -60,11 +60,9 @@ class _UnitGameState extends State<UnitGame> {
   }
 
   void updateShowPinyin({required bool showPinyin}){
-    print("we are here");
     setState(() {
       this.showPinyin = showPinyin;
     });
-    print(this.showPinyin);
   }
 
   void callback(bool value, Map<String, dynamic> currWord, bool? chineseToEnglish) async {
@@ -93,7 +91,6 @@ class _UnitGameState extends State<UnitGame> {
         SQLHelper.completeUnit(unit:  widget.unit);
       }
       SQLHelper.completeSubUnit(unit: widget.unit, subUnit: widget.subunit);
-      print("we have completed at unit game");
       //here is where we update the values for the other units
       widget.updateUnits();
       Navigator.pop(context);

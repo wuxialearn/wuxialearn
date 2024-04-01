@@ -294,7 +294,6 @@ class _UnitLearnState extends State<UnitLearn> {
                                               updateUnits: widget.updateUnits,
                                             ),
                                           ),).then((_){
-                                            print("we have completed and returned to unit learn");
                                             Navigator.pop(context);
                                           })
                                         }else{

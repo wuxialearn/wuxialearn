@@ -54,7 +54,6 @@ class _HSKCourseViewState extends State<HSKCourseView> {
           hskIsCompletedList.add(hskList[i]["completed"] == 1);
         }
       }
-      print("hskIsCompletedList: $hskIsCompletedList");
       for(int i = 0; i<hskListOffset.length; i++){
         widgets.add(
             SliverPadding(

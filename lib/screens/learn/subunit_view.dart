@@ -46,7 +46,6 @@ class _SubunitViewState extends State<SubunitView> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.completed);
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         middle: Text("Subunit ${widget.unit}"),
@@ -117,7 +116,6 @@ class _SubunitViewState extends State<SubunitView> {
                                 Navigator.push(context, MaterialPageRoute(
                                   builder: (context) => UnitGame(hskList: widget.hskList, unit: widget.unit,  sentenceList: sentenceList, subunit: widget.subunit, lastSubunit: widget.lastSubunit, name: "", updateUnits: widget.updateUnits,),
                                 )).then((_){
-                                  print("we havve completed and returned to unit view");
                                   widget.updateUnits();
                                   Navigator.pop(context);
                                 });

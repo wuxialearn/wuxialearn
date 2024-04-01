@@ -23,7 +23,6 @@ class MyHomePageState extends State<MyHomePage>{
   late List<Widget> tabList = <Widget>[];
   DateTime lastBackPress = DateTime.utc(1960);
   void stats() async{
-    //print(await SQLHelper.getTotalStats());
   }
   @override
   void initState() {

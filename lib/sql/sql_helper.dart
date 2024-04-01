@@ -85,7 +85,6 @@ class SQLHelper {
       and visible = 1
       ORDER BY unit_order
     """);
-    print(await result);
     return result;
   }
 
@@ -327,7 +326,6 @@ class SQLHelper {
       )as t5
     """;
     final result = db.rawQuery(sql);
-    print(await result);
     return result;
   }
 
@@ -564,7 +562,6 @@ class SQLHelper {
     const String unitsUrl = 'https://cdn.jsdelivr.net/gh/wuxialearn/data@main/units.tsv';
     final unitsReq = await http.get(Uri.parse(unitsUrl));
     final unitsResult = tsvParse(unitsReq.body);
-    print(unitsReq.body);
 
     const String subUnitsUrl = 'https://cdn.jsdelivr.net/gh/wuxialearn/data@main/subunits.tsv';
     final subUnitsReq = await http.get(Uri.parse(subUnitsUrl));
@@ -581,7 +578,6 @@ class SQLHelper {
     }
     csvBatch.execute("delete from units");
     for (final row in unitsResult.$1) {
-      print(row);
       csvBatch.insert('units', row);
     }
     csvBatch.execute("delete from subunits");

@@ -84,7 +84,6 @@ class _UnitViewState extends State<UnitView> {
                           builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                             if (snapshot.hasData) {
                               List<Map<String, dynamic>> subunits = snapshot.data!;
-                              print(subunits);
                               return Column(
                                 children: List<Widget>.generate(unitIndex.length, (i) {
                                   return Padding(
