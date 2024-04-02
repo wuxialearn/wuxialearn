@@ -87,7 +87,7 @@ class _StatsPageState extends State<StatsPage> {
                 ),
               ],
             ),
-            _HskListview(hskList: hskList, showTranslation: true, connectTop: true, color: Colors.transparent, scrollAxis: Axis.vertical,)
+            _HskListview(hskList: hskList, showTranslation: true, connectTop: true, color: Colors.transparent, scrollAxis: Axis.vertical, showPlayButton: false,)
           ],
         ),
       ),
@@ -144,7 +144,7 @@ class _HskListview extends StatelessWidget {
   final Color color;
   final Axis scrollAxis;
   final bool showPlayButton;
-  const _HskListview({Key? key, required  this.hskList, required this.showTranslation, required this.connectTop, required this.color, required this.scrollAxis}) : super(key: key);
+  const _HskListview({Key? key, required  this.hskList, required this.showTranslation, required this.connectTop, required this.color, required this.scrollAxis, required this.showPlayButton}) : super(key: key);
 
   get flutterTts => null;
 
