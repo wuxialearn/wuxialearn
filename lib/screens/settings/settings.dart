@@ -17,7 +17,7 @@ class _SettingsState extends State<Settings> {
   bool showExampleSentences = Preferences.getPreference("show_sentences");
   List<String> courses = Preferences.getPreference("courses");
   String defaultCourse = Preferences.getPreference("default_course");
-  String version = '1.0.11';
+  String version = '1.0.13';
   int clicks = 0;
   bool showDebugOptions = false;
   @override
