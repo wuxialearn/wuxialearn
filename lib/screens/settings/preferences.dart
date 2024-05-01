@@ -4,10 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
 
 class Preferences{
-  static late final dynamic data;
+  static late dynamic data;
   static Map<String, dynamic>  preferences =  {};
   static getPreference(String preference) {
     if (!preferences.containsKey(preference)){
+      print("$preference not found");
       setPreferenceFromJson(preference);
     }
     return preferences[preference];

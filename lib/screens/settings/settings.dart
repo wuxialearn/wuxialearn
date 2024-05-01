@@ -12,6 +12,7 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   bool translation = Preferences.getPreference("showTranslations");
+  bool checkVersionOnStart = Preferences.getPreference("check_for_new_version_on_start");
   bool debug  = Preferences.getPreference("debug");
   bool allowSkipUnits = Preferences.getPreference("allow_skip_units");
   bool showExampleSentences = Preferences.getPreference("show_sentences");
@@ -157,6 +158,21 @@ class _SettingsState extends State<Settings> {
                           onChanged: (bool value) {
                             setSettingBool(name: "allow_skip_units", type: "bool", value: value);
                             setState(()=> allowSkipUnits = value);
+                          },
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("check for new version on start"),
+                        CupertinoSwitch(
+                          // This bool value toggles the switch.
+                          value: checkVersionOnStart,
+                          activeColor: CupertinoColors.activeBlue,
+                          onChanged: (bool value) {
+                            setSettingBool(name: "check_for_new_version_on_start", type: "bool", value: value);
+                            setState(() => checkVersionOnStart = value);
                           },
                         ),
                       ],

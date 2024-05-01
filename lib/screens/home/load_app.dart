@@ -22,7 +22,10 @@ class _LoadAppState extends State<LoadApp> {
     final data = await SQLHelper.getPreferences();
     await Preferences.loadDefaultPreferences();
     Preferences.setPreferences(data);
-    checkForDbUpdate();
+    final bool check = Preferences.getPreference("check_for_new_version_on_start");
+    if(check) {
+      checkForDbUpdate();
+    }
     setState(() {
       isLoading = false;
     });
@@ -35,6 +38,7 @@ class _LoadAppState extends State<LoadApp> {
   void checkForDbUpdate() async {
       const String dbPref = 'db_version';
       final prefs = Preferences.getAllPreferences();
+      print("checking for update");
       print(prefs);
       final test = Preferences.getPreference("check_for_new_version_on_start");
       print(test);
