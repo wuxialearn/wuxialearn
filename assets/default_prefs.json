@@ -1,0 +1,38 @@
+{
+  "showTranslations": {
+    "value": "1",
+    "type": "bool"
+  },
+  "debug": {
+    "value": "0",
+    "type": "bool"
+  },
+  "allow_skip_units": {
+    "value": "0",
+    "type": "bool"
+  },
+  "isFirstRun": {
+    "value": "1",
+    "type": "bool"
+  },
+  "show_sentences": {
+    "value": "1",
+    "type": "bool"
+  },
+  "courses": {
+    "value": "[\"hsk\",\"wuxia\"]",
+    "type": "json"
+  },
+  "default_course": {
+    "value": "hsk",
+    "type": "string"
+  },
+  "db_version": {
+    "value": "0.0.1",
+    "type": "string"
+  },
+  "check_for_new_version_on_start": {
+    "value": "1",
+    "type": "bool"
+  }
+}
