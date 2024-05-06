@@ -18,6 +18,7 @@ class _UnitViewState extends State<UnitView> {
   late Future<List<Map<String, dynamic>>> sentencesFuture;
   late Future<List<Map<String, dynamic>>> subunitFuture;
   final bool debug = Preferences.getPreference("debug");
+  final bool allowAutoComplete =  Preferences.getPreference("allow_auto_complete_unit");
   @override
   initState() {
     super.initState();
@@ -67,17 +68,38 @@ class _UnitViewState extends State<UnitView> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                            padding: const EdgeInsets.fromLTRB(13, 20, 20, 13),
-                            child: RichText(
-                              text: TextSpan(
-                                style: DefaultTextStyle.of(context).style,
-                                children: <TextSpan>[
-                                  TextSpan(text: hskLength.toString(), style: const TextStyle(color: Colors.blue)),
-                                  const TextSpan(text: ' words'),
-                                ],
-                              ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                                padding: const EdgeInsets.fromLTRB(13, 20, 20, 13),
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: DefaultTextStyle.of(context).style,
+                                    children: <TextSpan>[
+                                      TextSpan(text: hskLength.toString(), style: const TextStyle(color: Colors.blue)),
+                                      const TextSpan(text: ' words'),
+                                    ],
+                                  ),
+                                )
+                            ),
+                            Visibility(
+                              visible: allowAutoComplete,
+                              child: TextButton(
+                                onPressed: (){
+                                  //should use transaction here and elsewhere
+                                  for (final hsk in hskList){
+                                    SQLHelper.insertStat(value: 1, id: hsk["id"]);
+                                  }
+                                  for (int i = 0; i< unitLength.length; i++){
+                                    SQLHelper.completeSubUnit(unit: widget.unit, subUnit: i+1);
+                                  }
+                                  SQLHelper.completeUnit(unit: widget.unit);
+                                },
+                                child: const Text("Complete Unit"),
+                              )
                             )
+                          ],
                         ),
                         FutureBuilder<List<Map<String, dynamic>>>(
                           future: subunitFuture,

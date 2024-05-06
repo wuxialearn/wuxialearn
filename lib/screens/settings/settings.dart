@@ -16,6 +16,7 @@ class _SettingsState extends State<Settings> {
   bool debug  = Preferences.getPreference("debug");
   bool allowSkipUnits = Preferences.getPreference("allow_skip_units");
   bool showExampleSentences = Preferences.getPreference("show_sentences");
+  bool allowAutoComplete =  Preferences.getPreference("allow_auto_complete_unit");
   List<String> courses = Preferences.getPreference("courses");
   String defaultCourse = Preferences.getPreference("default_course");
   String version = '1.0.13';
@@ -173,6 +174,21 @@ class _SettingsState extends State<Settings> {
                           onChanged: (bool value) {
                             setSettingBool(name: "check_for_new_version_on_start", type: "bool", value: value);
                             setState(() => checkVersionOnStart = value);
+                          },
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("allow auto complete unit"),
+                        CupertinoSwitch(
+                          // This bool value toggles the switch.
+                          value: allowAutoComplete,
+                          activeColor: CupertinoColors.activeBlue,
+                          onChanged: (bool value) {
+                            setSettingBool(name: "allow_auto_complete_unit", type: "bool", value: value);
+                            setState(() => allowAutoComplete = value);
                           },
                         ),
                       ],
