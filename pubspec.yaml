@@ -46,6 +46,7 @@ dependencies:
   d4_dsv:
   pubspec_parse:
   lpinyin: ^2.0.2
+  sqflite_common_ffi_web: '>=0.1.0-dev.1'
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -5,12 +5,15 @@ import 'package:flutter/services.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:hsk_learner/screens/home/load_app.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() {
-  if (Platform.isWindows || Platform.isLinux) {
-    // Initialize FFI
-    sqfliteFfiInit();
-    databaseFactory = databaseFactoryFfi;
+  if (!kIsWeb) {
+    if (Platform.isWindows || Platform.isLinux){
+      // Initialize FFI
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+    }
   }
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(

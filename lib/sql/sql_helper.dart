@@ -7,48 +7,50 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:d4_dsv/d4_dsv.dart';
 import 'package:http/http.dart' as http;
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'connection_db_info.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class SQLHelper {
   static Future<sql.Database> db() async {
+    if (kIsWeb){
+      var factory = databaseFactoryFfiWeb;
+      var exists = await factory.databaseExists("demo_asset_example.db");
+      if(!exists){
+        final data = await rootBundle.load(url.join('assets', 'example.db'));
+        final bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+        await factory.writeDatabaseBytes("demo_asset_example.db", bytes);
+      }
+      return factory.openDatabase('demo_asset_example.db');
+    }
+    late String databasesPath;
+    late String path;
+    late bool exists;
     if (Platform.isWindows || Platform.isLinux) {
       //var databaseFactory = databaseFactoryFfi;
-      var databasesPath = await path_provider.getApplicationSupportDirectory();
-      var path = join(databasesPath.path, "demo_asset_example.db");
+      databasesPath = (await path_provider.getApplicationSupportDirectory()).path;
+      path = join(databasesPath, "demo_asset_example.db");
       // Check if the database exists
-      var exists = await File(path).exists();
-      if (!exists) {
-        try {
-          await Directory(dirname(path)).create(recursive: true);
-        } catch (_) {}
-        // Copy from asset
-        String assetPath = ["assets", "example.db"].join('/');
-        ByteData data = await rootBundle.load(assetPath);
-        List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-        // Write and flush the bytes written
-        await File(path).writeAsBytes(bytes, flush: true);
-      } else {
-      }
-      return sql.openDatabase(path);
-    }else {
-      var databasesPath = await sql.getDatabasesPath();
-      var path = join(databasesPath, "demo_asset_example.db");
+      exists = await File(path).exists();
+    }else{
+      databasesPath = await sql.getDatabasesPath();
+      path = join(databasesPath, "demo_asset_example.db");
       // Check if the database exists
-      var exists = await sql.databaseExists(path);
-      if (!exists) {
-        try {
-          await Directory(dirname(path)).create(recursive: true);
-        } catch (_) {}
-        // Copy from asset
-        ByteData data = await rootBundle.load(join("assets", "example.db"));
-        List<int> bytes = data.buffer.asUint8List(
-            data.offsetInBytes, data.lengthInBytes);
-        // Write and flush the bytes written
-        await File(path).writeAsBytes(bytes, flush: true);
-      } else {
-      }
-      return sql.openDatabase(path);
+      exists = await sql.databaseExists(path);
     }
+    if (!exists) {
+      try {
+        await Directory(dirname(path)).create(recursive: true);
+      } catch (_) {}
+      // Copy from asset
+      ByteData data = await rootBundle.load(join("assets", "example.db"));
+      List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      // Write and flush the bytes written
+      await File(path).writeAsBytes(bytes, flush: true);
+    } else {
+    }
+    return sql.openDatabase(path);
+
   }
 
 
