@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hsk_learner/screens/home/home_page.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
 import '../settings/preferences.dart';
@@ -63,7 +64,17 @@ class Loading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const CupertinoPageScaffold(
-      child: SizedBox(height: 10,),
+      child: !kIsWeb?
+      SizedBox(height: 10,):
+      Visibility(
+        visible: false,
+          maintainState: true,
+          maintainSize: true,
+          maintainAnimation: true,
+          maintainInteractivity: true,
+          maintainSemantics: true,
+          child: Text("Load zh 中文")
+      ),
     );
   }
 }
