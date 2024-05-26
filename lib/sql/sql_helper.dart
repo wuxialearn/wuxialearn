@@ -43,7 +43,7 @@ class SQLHelper {
         await Directory(dirname(path)).create(recursive: true);
       } catch (_) {}
       // Copy from asset
-      ByteData data = await rootBundle.load(join("assets", "example.db"));
+      ByteData data = await rootBundle.load("assets/example.db");
       List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
       // Write and flush the bytes written
       await File(path).writeAsBytes(bytes, flush: true);

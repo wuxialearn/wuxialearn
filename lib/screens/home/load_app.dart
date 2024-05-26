@@ -24,7 +24,9 @@ class _LoadAppState extends State<LoadApp> {
     await Preferences.loadDefaultPreferences();
     Preferences.setPreferences(data);
     final bool check = Preferences.getPreference("check_for_new_version_on_start");
-    if(check) {
+    final bool isFirstRun =  Preferences.getPreference("isFirstRun");
+    if(check && !isFirstRun) {
+      print("we are updating");
       checkForDbUpdate();
     }
     setState(() {
@@ -33,7 +35,55 @@ class _LoadAppState extends State<LoadApp> {
   }
   @override
   Widget build(BuildContext context) {
-    return isLoading? const Loading(): const MyHomePage(tab: 0);
+    if(isLoading){
+      return const Loading();
+    }else{
+      final bool isFirstRun =  Preferences.getPreference("isFirstRun");
+      if(isFirstRun){
+        Future.delayed(const Duration(seconds: 0)).then((_) {
+          _showActionSheet(context);
+        });
+        return const MyHomePage(tab: 0);
+      }else{
+        return const MyHomePage(tab: 0);
+      }
+    }
+  }
+
+  void  _showActionSheet<bool>(BuildContext context) {
+    showCupertinoModalPopup<bool>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: const Text('Check for update on app start? (default is yes)'),
+        actions:
+        [
+          CupertinoActionSheetAction(
+            isDefaultAction: true,
+            onPressed: () {
+              SQLHelper.setPreference(name: "isFirstRun", value: "0", type: "bool");
+              Preferences.setPreference(name: "isFirstRun", value: false);
+              SQLHelper.setPreference(name: "check_for_new_version_on_start", value: "1", type: "bool");
+              Preferences.setPreference(name: "check_for_new_version_on_start", value: true);
+              Navigator.pop(context, true);
+              checkForDbUpdate();
+            },
+            child: const Text("Yes"),
+          ),
+          CupertinoActionSheetAction(
+            isDefaultAction: true,
+            onPressed: () {
+              SQLHelper.setPreference(name: "isFirstRun", value: "0", type: "bool");
+              Preferences.setPreference(name: "isFirstRun", value: false);
+              SQLHelper.setPreference(name: "check_for_new_version_on_start", value: "0", type: "bool");
+              Preferences.setPreference(name: "check_for_new_version_on_start", value: false);
+              Navigator.pop(context, true);
+              checkForDbUpdate();
+            },
+            child: const Text("No"),
+          ),
+        ]
+      ),
+    );
   }
 
   void checkForDbUpdate() async {
