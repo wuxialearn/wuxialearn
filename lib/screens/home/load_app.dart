@@ -54,7 +54,7 @@ class _LoadAppState extends State<LoadApp> {
     showCupertinoModalPopup<bool>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text('Check for update on app start? (default is yes)'),
+        title: const Text('Check for update on app start? (recommended)'),
         actions:
         [
           CupertinoActionSheetAction(

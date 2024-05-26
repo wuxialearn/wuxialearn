@@ -32,7 +32,7 @@
     "type": "string"
   },
   "check_for_new_version_on_start": {
-    "value": "1",
+    "value": "0",
     "type": "bool"
   },
   "allow_auto_complete_unit": {
