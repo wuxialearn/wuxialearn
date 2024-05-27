@@ -77,7 +77,6 @@ class _LoadAppState extends State<LoadApp> {
               SQLHelper.setPreference(name: "check_for_new_version_on_start", value: "0", type: "bool");
               Preferences.setPreference(name: "check_for_new_version_on_start", value: false);
               Navigator.pop(context, true);
-              checkForDbUpdate();
             },
             child: const Text("No"),
           ),
