@@ -30,8 +30,6 @@ void test() async{
   print(data[0]);
   var unitId = data[0]["unit_id"];
   print (unitId.runtimeType);
-
-
 }
 
 class MyApp extends StatelessWidget {
@@ -62,7 +60,7 @@ class MyApp extends StatelessWidget {
         ),
         scrollBehavior: CupertinoScrollBehavior(),
         title: 'Flutter Demo',
-        home: LoadApp(),
+        home: LoadApp(fdroid: true),
         //home: const MyStatefulWidget(),
       ),
     );
@@ -78,7 +76,7 @@ class MyApp2 extends StatelessWidget {
       scrollBehavior: const CupertinoScrollBehavior(),
       theme: ThemeData.light(useMaterial3: false),
       title: 'Flutter Demo',
-      home: const LoadApp(),
+      home: const LoadApp(fdroid: true),
       //home: const MyStatefulWidget(),
     );
   }
