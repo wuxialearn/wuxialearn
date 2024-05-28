@@ -6,7 +6,8 @@ import '../settings/preferences.dart';
 import 'package:http/http.dart' as http;
 
 class LoadApp extends StatefulWidget {
-  const LoadApp({Key? key}) : super(key: key);
+  final bool fdroid;
+  const LoadApp({Key? key, this.fdroid = false}) : super(key: key);
 
   @override
   State<LoadApp> createState() => _LoadAppState();
@@ -26,7 +27,6 @@ class _LoadAppState extends State<LoadApp> {
     final bool check = Preferences.getPreference("check_for_new_version_on_start");
     final bool isFirstRun =  Preferences.getPreference("isFirstRun");
     if(check && !isFirstRun) {
-      print("we are updating");
       checkForDbUpdate();
     }
     setState(() {
@@ -40,9 +40,15 @@ class _LoadAppState extends State<LoadApp> {
     }else{
       final bool isFirstRun =  Preferences.getPreference("isFirstRun");
       if(isFirstRun){
-        Future.delayed(const Duration(seconds: 0)).then((_) {
-          _showActionSheet(context);
-        });
+        if(widget.fdroid){
+          Future.delayed(const Duration(seconds: 0)).then((_) {
+            _showActionSheet(context);
+          });
+        }else{
+          setFirstRun();
+          enableCheckForUpdate();
+          checkForDbUpdate();
+        }
         return const MyHomePage(tab: 0);
       }else{
         return const MyHomePage(tab: 0);
@@ -60,10 +66,8 @@ class _LoadAppState extends State<LoadApp> {
           CupertinoActionSheetAction(
             isDefaultAction: true,
             onPressed: () {
-              SQLHelper.setPreference(name: "isFirstRun", value: "0", type: "bool");
-              Preferences.setPreference(name: "isFirstRun", value: false);
-              SQLHelper.setPreference(name: "check_for_new_version_on_start", value: "1", type: "bool");
-              Preferences.setPreference(name: "check_for_new_version_on_start", value: true);
+              setFirstRun();
+              enableCheckForUpdate();
               Navigator.pop(context, true);
               checkForDbUpdate();
             },
@@ -72,10 +76,8 @@ class _LoadAppState extends State<LoadApp> {
           CupertinoActionSheetAction(
             isDefaultAction: true,
             onPressed: () {
-              SQLHelper.setPreference(name: "isFirstRun", value: "0", type: "bool");
-              Preferences.setPreference(name: "isFirstRun", value: false);
-              SQLHelper.setPreference(name: "check_for_new_version_on_start", value: "0", type: "bool");
-              Preferences.setPreference(name: "check_for_new_version_on_start", value: false);
+              setFirstRun();
+              disableCheckForUpdate();
               Navigator.pop(context, true);
             },
             child: const Text("No"),
@@ -83,6 +85,21 @@ class _LoadAppState extends State<LoadApp> {
         ]
       ),
     );
+  }
+
+  void setFirstRun(){
+    SQLHelper.setPreference(name: "isFirstRun", value: "0", type: "bool");
+    Preferences.setPreference(name: "isFirstRun", value: false);
+  }
+
+  void enableCheckForUpdate(){
+    SQLHelper.setPreference(name: "check_for_new_version_on_start", value: "1", type: "bool");
+    Preferences.setPreference(name: "check_for_new_version_on_start", value: true);
+  }
+
+  void disableCheckForUpdate(){
+    SQLHelper.setPreference(name: "check_for_new_version_on_start", value: "0", type: "bool");
+    Preferences.setPreference(name: "check_for_new_version_on_start", value: false);
   }
 
   void checkForDbUpdate() async {
