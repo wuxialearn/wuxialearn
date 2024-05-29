@@ -2,13 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/screens/games/unit_game.dart';
 import 'package:hsk_learner/screens/settings/preferences.dart';
 import '../../sql/sql_helper.dart';
 
 class UnitLearn extends StatefulWidget {
-  const UnitLearn({Key? key, required this.hskList, required this.unit, required this.subunit, required this.lastSubunit, required this.name, required this.updateUnits}) : super(key: key);
-  final List<Map<String, dynamic>> hskList;
+  const UnitLearn({Key? key, required this.wordList, required this.unit, required this.subunit, required this.lastSubunit, required this.name, required this.updateUnits}) : super(key: key);
+  final List<WordItem> wordList;
   final int unit;
   final int subunit;
   final bool lastSubunit;
@@ -41,7 +42,7 @@ class _UnitLearnState extends State<UnitLearn> {
   late List<Map<String, dynamic>> sentenceList = [];
 
   Future<List<Map<String, dynamic>>> getUnits(int index) async {
-    final data = await SQLHelper.getExamples(widget.hskList[index]["hanzi"]);
+    final data = await SQLHelper.getExamples(widget.wordList[index].hanzi);
     return data;
   }
   getSentenceList() async {
@@ -57,12 +58,12 @@ class _UnitLearnState extends State<UnitLearn> {
   initState() {
     super.initState();
     exampleFuture = getUnits(0);
-    futureList = List.generate(widget.hskList.length, (i) => getUnits(i));
+    futureList = List.generate(widget.wordList.length, (i) => getUnits(i));
     getSentenceList();
     setLanguage();
     showLiteralPref = Preferences.getPreference("show_literal_meaning_in_unit_learn");
     showExampleSentences = Preferences.getPreference("show_sentences");
-    speak(widget.hskList[0]["hanzi"]);
+    speak(widget.wordList[0].hanzi);
   }
 
   @override
@@ -99,26 +100,16 @@ class _UnitLearnState extends State<UnitLearn> {
               child: PageView.builder(
                 //pageSnapping: true,
                 controller: _pageController,
-                itemCount: widget.hskList.length,
+                itemCount: widget.wordList.length,
                 onPageChanged: (index) {
-                  speak(widget.hskList[index]["hanzi"]);
-                  if (index + 1 == widget.hskList.length) {
+                  speak(widget.wordList[index].hanzi);
+                  if (index + 1 == widget.wordList.length) {
                     lastPage = true;
                   }
                 },
                 itemBuilder: (context, pageIndex) {
-                  final hskItem = widget.hskList[pageIndex];
-                  String? literal;
-                  print(hskItem);
-                  if(hskItem["char_two"] != null){
-                    literal = "${hskItem["char_one"]} + ${hskItem["char_two"]}";
-                    if(hskItem["char_three"] != null){
-                      literal += " + ${hskItem["char_three"]}}";
-                      if(hskItem["char_four"] != null){
-                        literal = " + ${hskItem["char_four"]}";
-                      }
-                    }
-                  }
+                  final wordItem = widget.wordList[pageIndex];
+                  String literal = wordItem.literal.join(" + ");
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -133,7 +124,7 @@ class _UnitLearnState extends State<UnitLearn> {
                               maintainAnimation: true,
                               visible: showPinyin,
                               child: Text(
-                                widget.hskList[pageIndex]["pinyin"],
+                                widget.wordList[pageIndex].pinyin,
                                 style: const TextStyle(fontSize: 16),
                               ),
                             ),
@@ -147,17 +138,17 @@ class _UnitLearnState extends State<UnitLearn> {
                                   visible: false,
                                   child: IconButton(
                                       onPressed: () {
-                                        speak(widget.hskList[pageIndex]["hanzi"]);
+                                        speak(widget.wordList[pageIndex].hanzi);
                                       },
                                       icon: const Icon(Icons.volume_up)
                                   ),
                                 ),
-                                Text(widget.hskList[pageIndex]["hanzi"],
+                                Text(widget.wordList[pageIndex].hanzi,
                                   style: const TextStyle(fontSize: 30),
                                 ),
                                 IconButton(
                                     onPressed: () {
-                                      speak(widget.hskList[pageIndex]["hanzi"]);
+                                      speak(widget.wordList[pageIndex].hanzi);
                                     },
                                     icon: const Icon(Icons.volume_up)
                                 ),
@@ -172,7 +163,7 @@ class _UnitLearnState extends State<UnitLearn> {
                                 child: Column(
                                   children: [
                                     Text(
-                                        widget.hskList[pageIndex]["translations0"],
+                                        widget.wordList[pageIndex].translation,
                                       style: const TextStyle(fontSize: 18),
                                     ),
                                     literal != null && showLiteralPref ?
@@ -306,7 +297,7 @@ class _UnitLearnState extends State<UnitLearn> {
                                         if (lastPage){
                                           Navigator.pushReplacement(context, MaterialPageRoute(
                                             builder: (context) => UnitGame(
-                                              hskList: widget.hskList,
+                                              wordList: widget.wordList,
                                               sentenceList: sentenceList,
                                               unit: widget.unit,
                                               subunit: widget.subunit,

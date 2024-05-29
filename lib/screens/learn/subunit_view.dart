@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/screens/learn/unit_learn.dart';
 import '../../sql/sql_helper.dart';
 import '../../widgets/hsk_listview/hsk_listview.dart';
@@ -9,8 +10,8 @@ import '../settings/preferences.dart';
 
 
 class SubunitView extends StatefulWidget {
-  const SubunitView({super.key, required this.hskList, required this.unit, required this.subunit, required this.lastSubunit, required this.name, required this.completed, required this.updateUnits});
-  final List<Map<String, dynamic>> hskList;
+  const SubunitView({super.key, required this.wordList, required this.unit, required this.subunit, required this.lastSubunit, required this.name, required this.completed, required this.updateUnits});
+  final List<WordItem> wordList;
   final int unit;
   final int subunit;
   final bool lastSubunit;
@@ -58,10 +59,10 @@ class _SubunitViewState extends State<SubunitView> {
                 physics: const ScrollPhysics(),
                 padding: EdgeInsets.zero,
                 scrollDirection: Axis.vertical,
-                itemCount: widget.hskList.length,
+                itemCount: widget.wordList.length,
                 itemBuilder: (context, index) {
                   return HskListviewItem(
-                    hskList: widget.hskList[index],
+                    wordItem: widget.wordList[index],
                     showTranslation: true,
                     separator: true,
                     callback: (String s){
@@ -87,7 +88,7 @@ class _SubunitViewState extends State<SubunitView> {
                               onPressed: () {
                                 Navigator.pushReplacement(context, MaterialPageRoute(
                                   builder: (context) => UnitLearn(
-                                    hskList: widget.hskList,
+                                    wordList: widget.wordList,
                                     unit: widget.unit,
                                     subunit: widget.subunit,
                                     lastSubunit: widget.lastSubunit,
@@ -113,7 +114,7 @@ class _SubunitViewState extends State<SubunitView> {
                             child: TextButton(
                               onPressed: () {
                                 Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => UnitGame(hskList: widget.hskList, unit: widget.unit,  sentenceList: sentenceList, subunit: widget.subunit, lastSubunit: widget.lastSubunit, name: "", updateUnits: widget.updateUnits,),
+                                  builder: (context) => UnitGame(wordList: widget.wordList, unit: widget.unit,  sentenceList: sentenceList, subunit: widget.subunit, lastSubunit: widget.lastSubunit, name: "", updateUnits: widget.updateUnits,),
                                 )).then((_){
                                   widget.updateUnits();
                                   Navigator.pop(context);

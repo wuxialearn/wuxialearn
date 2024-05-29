@@ -104,9 +104,10 @@ class SQLHelper {
 
   static Future<List<Map<String, dynamic>>> getUnit(int unit) async {
     final db = await SQLHelper.db();
+    print("getUnit");
     return db.rawQuery("""
       SELECT
-        id, hanzi, pinyin, translations0, subunit
+        id, hanzi, pinyin, translations0, subunit, unit
       FROM courses
       WHERE unit = $unit
       ORDER BY subunit ASC
@@ -121,7 +122,7 @@ class SQLHelper {
         a_tl.translation as char_one, b_tl.translation as char_two, c_tl.translation as char_three, d_tl.translation as char_four
             from(
               SELECT
-                id, hanzi, pinyin, translations0, subunit,
+                id, hanzi, pinyin, translations0, subunit, unit,
                 SUBSTR(hanzi, 1, 1) a, SUBSTR(hanzi, 2, 1) b,
                 SUBSTR(hanzi, 3, 1) c, SUBSTR(hanzi, 4, 1) d
               FROM courses

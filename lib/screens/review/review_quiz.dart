@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/screens/games/unit_game.dart';
 
 import '../../sql/sql_helper.dart';
@@ -28,18 +29,18 @@ class _ReviewQuizState extends State<ReviewQuiz> {
         builder: (BuildContext context, AsyncSnapshot<List<Map<String, List<Map<String, dynamic>>>>> snapshot) {
           if (snapshot.hasData) {
             List<Map<String, List<Map<String, dynamic>>>>? hskMap = snapshot.data;
-            List<Map<String, dynamic>> hskList = [];
+            List<WordItem> wordList = [];
             List<Map<String, dynamic>> sentenceList = [];
             if(hskMap != null){
               for (var i = 0; i< hskMap.length; i++) {
-                hskList.add(hskMap[i]["hskList"]![0]);
+                wordList.add(WordItem(hskMap[i]["hskList"]![0]));
                 if (hskMap[i]["sentenceList"] != null ){
                   if(hskMap[i]["sentenceList"]!.isNotEmpty){
                     sentenceList.add(hskMap[i]["sentenceList"]![0]);
                   }
                 }
               }
-              return UnitGame(hskList: hskList, sentenceList: sentenceList, unit: 0, subunit: 0, lastSubunit: false, name: "review", updateUnits: (){},);
+              return UnitGame(wordList: wordList, sentenceList: sentenceList, unit: 0, subunit: 0, lastSubunit: false, name: "review", updateUnits: (){},);
             }else{
               return Container();
             }

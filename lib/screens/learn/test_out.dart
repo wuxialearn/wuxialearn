@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:hsk_learner/data_model/word_item.dart';
 import '../../sql/sql_helper.dart';
 import '../games/multiple_choice_game.dart';
 
@@ -26,8 +27,8 @@ class _TestOutState extends State<TestOut> {
         future: hskList,
         builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
           if (snapshot.hasData) {
-            List<Map<String, dynamic>> hskList = snapshot.data!;
-            return _TestOutController(hskList: hskList, hsk: widget.hsk,);
+            List<WordItem> wordList = createWordList(snapshot.data!);
+            return _TestOutController(wordList: wordList, hsk: widget.hsk,);
           }
           else{return const Center(child: CircularProgressIndicator());}
         }
@@ -37,9 +38,9 @@ class _TestOutState extends State<TestOut> {
 
 
 class _TestOutController extends StatefulWidget {
-  final List<Map<String, dynamic>> hskList;
+  final List<WordItem> wordList;
   final int hsk;
-  const _TestOutController({Key? key, required this.hskList, required this.hsk,}) : super(key: key);
+  const _TestOutController({Key? key, required this.wordList, required this.hsk,}) : super(key: key);
 
   @override
   State<_TestOutController> createState() => _TestOutControllerState();
@@ -56,7 +57,7 @@ class _TestOutControllerState extends State<_TestOutController> {
     _pageController.dispose();
     super.dispose();
   }
-  void callback(bool value, Map<String, dynamic> currWord, bool? empty) async {
+  void callback(bool value, WordItem currWord, bool? empty) async {
 
     if(value == false){
       numIncorrect++;
@@ -91,22 +92,22 @@ class _TestOutControllerState extends State<_TestOutController> {
       gameIndex++;
     }
   }
-  void createGamesListForGroup(List<Map<String, dynamic>> hskList){
-    for (int i = 0; i< hskList.length; i++){
+  void createGamesListForGroup(List<WordItem> wordList){
+    for (int i = 0; i< wordList.length; i++){
       if(i%2==0){
-        gamesList.add(ChineseToEnglishGame(chineseToEnglish: false, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: false, currWord: wordList[i], wordList: wordList, callback: callback, index: gameIndex,));
       }else{
-        gamesList.add(ChineseToEnglishGame(chineseToEnglish: true, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: true, currWord: wordList[i], wordList: wordList, callback: callback, index: gameIndex,));
       }
     }
   }
   @override
   void initState() {
     super.initState();
-    final groupNum = min(widget.hskList.length, 5);
-    for(int i = 0; i <(widget.hskList.length ~/ groupNum); i++){
+    final groupNum = min(widget.wordList.length, 5);
+    for(int i = 0; i <(widget.wordList.length ~/ groupNum); i++){
       createGamesListForGroup(
-          widget.hskList.sublist(i*groupNum, min((i*groupNum)+groupNum, widget.hskList.length)),
+          widget.wordList.sublist(i*groupNum, min((i*groupNum)+groupNum, widget.wordList.length)),
       );
     }
   }

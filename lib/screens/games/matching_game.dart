@@ -2,7 +2,9 @@ import 'dart:async';
 
 //import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/screens/games/unit_game.dart';
+import 'package:hsk_learner/utils/larg_text.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +12,10 @@ import '../settings/preferences.dart';
 import '../../utils/styles.dart';
 
 class MatchingGame extends StatefulWidget {
-  final List<Map<String, dynamic>> groupWords;
-  final Function(bool value, Map<String, dynamic> currWord, bool? chineseToEnglish) callback;
+  final List<WordItem> wordList;
+  final Function(bool value, WordItem currWord, bool? chineseToEnglish) callback;
 
-  const MatchingGame({super.key, required this.groupWords, required this.callback});
+  const MatchingGame({super.key, required this.wordList, required this.callback});
 
   @override
   State<MatchingGame> createState() => _MatchingGameState();
@@ -50,7 +52,7 @@ class _MatchingGameState extends State<MatchingGame> {
     super.initState();
     setLanguage();
     showPinyin = ShowPinyin.showPinyin;
-    numCords = widget.groupWords.length;
+    numCords = widget.wordList.length;
     leftYCords = createYCordList(numCords);
     rightYCords = createYCordList(numCords);
     bool debug = Preferences.getPreference("debug");
@@ -62,7 +64,7 @@ class _MatchingGameState extends State<MatchingGame> {
 
   pushToTop({required int index, required String side}) {
     if (side == "left") {
-      speak(widget.groupWords[index]["hanzi"]);
+      speak(widget.wordList[index].hanzi);
     }
     if (lastClicked != side && lastClicked != "") {
       int leftIndex = 0; int rightIndex = 0;
@@ -119,8 +121,8 @@ class _MatchingGameState extends State<MatchingGame> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> stackLayers = List<Widget>.generate(widget.groupWords.length * 2, (index) {
-      if(index < widget.groupWords.length){
+    List<Widget> stackLayers = List<Widget>.generate(widget.wordList.length * 2, (index) {
+      if(index < widget.wordList.length){
         return createAnimatedAlign(index: index, yCords: leftYCords, side: "left", wordType: "hanzi", xCord: (-1.0 + offset), fontSize: 20, isWrong: isWrongLeft);
       }else{
         var newIndex = index % numCords;
@@ -181,7 +183,7 @@ class _MatchingGameState extends State<MatchingGame> {
                       onPressed: () async {
                         await player.setAsset('assets/correct.wav');
                         player.play();
-                        widget.callback(true, {"":""}, null);
+                        widget.callback(true, WordItem(LargeText.hskMap), null);
                       },
                       child: const Text("Continue")),
                   ),
@@ -218,10 +220,12 @@ class _MatchingGameState extends State<MatchingGame> {
           children: [
             Visibility(
               visible: wordType == "hanzi" && showPinyin,
-              child: Text(widget.groupWords[index]["pinyin"])
+              child: Text(widget.wordList[index].pinyin)
             ),
             Text(
-              widget.groupWords[index][wordType],
+              wordType == "hanzi" ?
+              widget.wordList[index].hanzi:
+                  widget.wordList[index].translation,
               style: TextStyle(fontSize: fontSize),
             ),
           ],

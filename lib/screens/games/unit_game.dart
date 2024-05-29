@@ -3,20 +3,21 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import '../../data_model/word_item.dart';
 import '../../sql/sql_helper.dart';
 import 'matching_game.dart';
 import 'multiple_choice_game.dart';
 import 'sentence_game.dart';
 
 class UnitGame extends StatefulWidget {
-  final List<Map<String, dynamic>> hskList;
+  final List<WordItem> wordList;
   final List<Map<String, dynamic>> sentenceList;
   final int unit;
   final int subunit;
   final bool lastSubunit;
   final String name;
   final Function updateUnits;
-  const UnitGame({Key? key, required this.hskList, required  this.sentenceList, required this.unit, required this.subunit, required this.lastSubunit, required this.name, required this.updateUnits}) : super(key: key);
+  const UnitGame({Key? key, required this.wordList, required  this.sentenceList, required this.unit, required this.subunit, required this.lastSubunit, required this.name, required this.updateUnits}) : super(key: key);
 
   @override
   State<UnitGame> createState() => _UnitGameState();
@@ -36,10 +37,10 @@ class _UnitGameState extends State<UnitGame> {
   @override
   void initState() {
     super.initState();
-    final groupNum = min(widget.hskList.length, 5);
-    for(int i = 0; i <(widget.hskList.length ~/ groupNum); i++){
+    final groupNum = min(widget.wordList.length, 5);
+    for(int i = 0; i <(widget.wordList.length ~/ groupNum); i++){
       createGamesListForGroup(
-          widget.hskList.sublist(i*groupNum, min((i*groupNum)+groupNum, widget.hskList.length)),
+          widget.wordList.sublist(i*groupNum, min((i*groupNum)+groupNum, widget.wordList.length)),
           widget.sentenceList.sublist(i*groupNum, min((i*groupNum)+groupNum, widget.sentenceList.length))
       );
     }
@@ -59,13 +60,13 @@ class _UnitGameState extends State<UnitGame> {
     await player.setVolume(volume);
   }
 
-  void callback(bool value, Map<String, dynamic> currWord, bool? chineseToEnglish) async {
+  void callback(bool value, WordItem currWord, bool? chineseToEnglish) async {
     if(widget.unit > 0 && chineseToEnglish != null) {
-      SQLHelper.insertStat(value: value?1:0, id: currWord["id"]);
+      SQLHelper.insertStat(value: value?1:0, id: currWord.id);
     }
     if(value == false){
       setState(() {
-        gamesList.add(ChineseToEnglishGame(chineseToEnglish: chineseToEnglish, currWord: currWord, groupWords: widget.hskList, callback: callback, index: gameIndex));
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: chineseToEnglish, currWord: currWord, wordList: widget.wordList, callback: callback, index: gameIndex));
       });
     }
     updatePage();
@@ -93,15 +94,15 @@ class _UnitGameState extends State<UnitGame> {
       gameIndex++;
     }
   }
-  void createGamesListForGroup(List<Map<String, dynamic>> hskList, List<Map<String, dynamic>> sentenceList){
-    for (int i = 0; i< hskList.length; i++){
+  void createGamesListForGroup(List<WordItem> wordList, List<Map<String, dynamic>> sentenceList){
+    for (int i = 0; i< wordList.length; i++){
       if(i%2==0){
-        gamesList.add(ChineseToEnglishGame(chineseToEnglish: false, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: false, currWord: wordList[i], wordList: wordList, callback: callback, index: gameIndex,));
       }else{
-        gamesList.add(ChineseToEnglishGame(chineseToEnglish: true, currWord: hskList[i], groupWords: hskList, callback: callback, index: gameIndex,));
+        gamesList.add(ChineseToEnglishGame(chineseToEnglish: true, currWord: wordList[i], wordList: wordList, callback: callback, index: gameIndex,));
       }
     }
-    gamesList.add(MatchingGame(groupWords: hskList, callback: callback,));
+    gamesList.add(MatchingGame(wordList: wordList, callback: callback,));
     for(int i =0; i < sentenceList.length; i++){
       if(i%2==0){
         gamesList.add(SentenceGame(callback: sentenceGameCallBack, currSentence: sentenceList[i], index: gameIndex, buildEnglish: true));

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/screens/games/unit_game.dart';
 import 'dart:math';
 import 'package:just_audio/just_audio.dart';
@@ -8,12 +9,12 @@ import '../settings/preferences.dart';
 import '../../utils/styles.dart';
 
 class ChineseToEnglishGame extends StatefulWidget {
-  final Map<String, dynamic> currWord;
-  final List<Map<String, dynamic>> groupWords;
-  final Function(bool value, Map<String, dynamic> currWord, bool? chineseToEnglish) callback;
+  final WordItem currWord;
+  final List<WordItem> wordList;
+  final Function(bool value, WordItem currWord, bool? chineseToEnglish) callback;
   final int index;
   final bool? chineseToEnglish;
-  const ChineseToEnglishGame({Key? key, required  this.currWord, required  this.groupWords, required this.callback, required this.index, required this.chineseToEnglish}) : super(key: key);
+  const ChineseToEnglishGame({Key? key, required  this.currWord, required  this.wordList, required this.callback, required this.index, required this.chineseToEnglish}) : super(key: key);
 
   @override
   State<ChineseToEnglishGame> createState() => _ChineseToEnglishGameState();
@@ -28,21 +29,22 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
   Future speak(String text) async{
     await flutterTts.speak(text);
   }
-  late String wordToTranslateMapKey;
+  late final String wordToTranslate;
   late bool showPinyin;
   @override
   void initState() {
     super.initState();
     showPinyin = ShowPinyin.showPinyin;
-    wordToTranslateMapKey = widget.chineseToEnglish!? "hanzi":"translations0";
+    wordToTranslate = widget.chineseToEnglish!?
+    widget.currWord.hanzi: widget.currWord.translation;
     if(widget.chineseToEnglish!){
-      speak(widget.currWord[wordToTranslateMapKey]);
+      speak(wordToTranslate);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    widget.groupWords.shuffle();
+    widget.wordList.shuffle();
     return CupertinoPageScaffold(
       child: SafeArea(
         child: Column(
@@ -70,7 +72,7 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
                   Visibility(
                       visible: widget.chineseToEnglish! && showPinyin,
                       child: Text(
-                        widget.currWord["pinyin"],
+                        widget.currWord.pinyin,
                         textAlign: TextAlign.center,
                         style: const TextStyle(fontSize: 20),
                       )
@@ -85,7 +87,7 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
                         visible: false,
                         child: IconButton(
                             onPressed: () {
-                              speak(widget.currWord[wordToTranslateMapKey]);
+                              speak(wordToTranslate);
                             },
                             icon: const Icon(Icons.volume_up)
                         ),
@@ -93,7 +95,7 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal:  3.0),
                         child: Text(
-                          widget.currWord[wordToTranslateMapKey],
+                          wordToTranslate,
                           textAlign: TextAlign.center,
                           style: const TextStyle(fontSize: 35),
                         ),
@@ -105,7 +107,7 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
                         visible: widget.chineseToEnglish!,
                         child: IconButton(
                             onPressed: () {
-                              speak(widget.currWord[wordToTranslateMapKey]);
+                              speak(wordToTranslate);
                             },
                             icon: const Icon(Icons.volume_up)
                         ),
@@ -117,7 +119,7 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-              child: AnswersList(chineseToEnglish: widget.chineseToEnglish!, currWord: widget.currWord, groupWords: widget.groupWords, callback: widget.callback, index: widget.index, showPinyin: showPinyin),
+              child: AnswersList(chineseToEnglish: widget.chineseToEnglish!, currWord: widget.currWord, wordList: widget.wordList, callback: widget.callback, index: widget.index, showPinyin: showPinyin),
             )
           ],
         ),
@@ -128,13 +130,13 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
 
 
 class AnswersList extends StatefulWidget {
-  final Map<String, dynamic> currWord;
-  final List<Map<String, dynamic>> groupWords;
-  final Function(bool value, Map<String, dynamic> currWord, bool? chineseToEnglish) callback;
+  final WordItem currWord;
+  final List<WordItem> wordList;
+  final Function(bool value, WordItem currWord, bool? chineseToEnglish) callback;
   final int index;
   final bool chineseToEnglish;
   final bool showPinyin;
-  const AnswersList({super.key, required this.currWord, required this.groupWords, required this.callback, required this.index, required this.chineseToEnglish, required this.showPinyin});
+  const AnswersList({super.key, required this.currWord, required this.wordList, required this.callback, required this.index, required this.chineseToEnglish, required this.showPinyin});
 
   @override
   State<AnswersList> createState() => _AnswersListState();
@@ -142,15 +144,15 @@ class AnswersList extends StatefulWidget {
 
 class _AnswersListState extends State<AnswersList> {
 
-  late List<Map<String, dynamic>> buttonSelectionWords;
+  late List<WordItem> buttonSelectionWords;
   bool clicked = false;
   @override
   void initState() {
     super.initState();
     setLanguage();
     bool debug = Preferences.getPreference("debug");
-    final groupWordsCopy = List.generate(widget.groupWords.length, (index) => widget.groupWords[index]);
-    groupWordsCopy.removeWhere((element) => element["id"] == widget.currWord["id"]);
+    final groupWordsCopy = List.generate(widget.wordList.length, (index) => widget.wordList[index]);
+    groupWordsCopy.removeWhere((element) => element.id == widget.currWord.id);
     groupWordsCopy.shuffle();
     buttonSelectionWords = List.generate(min(groupWordsCopy.length, 4), (index) => groupWordsCopy[index]);
     buttonSelectionWords.insert(0, widget.currWord);
@@ -174,7 +176,7 @@ class _AnswersListState extends State<AnswersList> {
     return Column(
       children: List<Widget>.generate(buttonSelectionWords.length, (int i) {
         bool isCorrect;
-        if(buttonSelectionWords[i]["id"] == widget.currWord["id"]){
+        if(buttonSelectionWords[i].id == widget.currWord.id){
           isCorrect = true;
         }else{
           isCorrect = false;
@@ -198,7 +200,7 @@ class _AnswersListState extends State<AnswersList> {
                   }catch(e){
                     print(e);
                   }
-                  speak(buttonSelectionWords[i]["hanzi"]);
+                  speak(buttonSelectionWords[i].hanzi);
                 }else{
                   setState(() {
                     colorsList[i] = const Color(0xFFFF0000);
@@ -217,10 +219,12 @@ class _AnswersListState extends State<AnswersList> {
               children: [
                 Visibility(
                   visible: widget.showPinyin && !widget.chineseToEnglish,
-                  child: Text(buttonSelectionWords[i]["pinyin"])
+                  child: Text(buttonSelectionWords[i].pinyin)
                 ),
                 Text(
-                  buttonSelectionWords[i][widget.chineseToEnglish? "translations0":"hanzi"],
+                  widget.chineseToEnglish?
+                      buttonSelectionWords[i].translation
+                    : buttonSelectionWords[i].hanzi,
                   style: const TextStyle(fontSize: 18),
                 ),
               ],

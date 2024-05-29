@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/screens/learn/subunit_view.dart';
 import '../settings/preferences.dart';
 import '../../sql/sql_helper.dart';
@@ -30,7 +31,7 @@ class _UnitViewState extends State<UnitView> {
   updateUnits(){
     setState(() {
       widget.updateUnits();
-      hskFuture = SQLHelper.getUnit(widget.unit);
+      hskFuture = SQLHelper.getUnitWithLiteralMeaning(widget.unit);
       subunitFuture = SQLHelper.getSubunitInfo(unit: widget.unit);
     });
   }
@@ -48,20 +49,21 @@ class _UnitViewState extends State<UnitView> {
                 future: hskFuture,
                 builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                   if (snapshot.hasData) {
-                    List<Map<String, dynamic>>? hskList = snapshot.data;
-                    int? hskLength = hskList?.length;
+                    List<Map<String, dynamic>> hskList = snapshot.data!;
+                    final wordList = createWordListWithSubunit(hskList);
+                    int hskLength = hskList.length;
                     List<int> unitIndex = [0];
                     List<int> unitLength = [];
                     int lastIndex = 1;
                     int length = 0;
-                    for (int i = 0; i < hskList!.length; i++){
-                      if(hskList[i]["subunit"] != lastIndex){
+                    for (int i = 0; i < wordList.length; i++){
+                      if(wordList[i].subunit != lastIndex){
                         unitIndex.add(i);
                         lastIndex++;
                         unitLength.add(i - length);
                         length += i - length;
                       }
-                      if (i == hskList.length -1){
+                      if (i == wordList.length -1){
                         unitLength.add(i - length +1);
                       }
                     }
@@ -88,8 +90,8 @@ class _UnitViewState extends State<UnitView> {
                               child: TextButton(
                                 onPressed: (){
                                   //should use transaction here and elsewhere
-                                  for (final hsk in hskList){
-                                    SQLHelper.insertStat(value: 1, id: hsk["id"]);
+                                  for (final word in wordList){
+                                    SQLHelper.insertStat(value: 1, id: word.id);
                                   }
                                   for (int i = 0; i< unitLength.length; i++){
                                     SQLHelper.completeSubUnit(unit: widget.unit, subUnit: i+1);
@@ -133,7 +135,7 @@ class _UnitViewState extends State<UnitView> {
                                                     child: Text("Lesson ${i+1}", style: const TextStyle(fontSize: 15),),
                                                   ),
                                                   Text(
-                                                    hskList.sublist(unitIndex[i], unitIndex[i]+unitLength[i]).map((e) => e["hanzi"]).toList().join(', '),
+                                                    wordList.sublist(unitIndex[i], unitIndex[i]+unitLength[i]).map((e) => e.hanzi).toList().join(', '),
                                                     overflow: TextOverflow.ellipsis,
                                                     style: const TextStyle(fontSize: 23),
                                                   ),
@@ -145,7 +147,7 @@ class _UnitViewState extends State<UnitView> {
                                                 onPressed: (){
                                                   Navigator.push(context, MaterialPageRoute(
                                                       builder: (context) => SubunitView(
-                                                        hskList: hskList.sublist(unitIndex[i], unitIndex[i]+unitLength[i]),
+                                                        wordList: wordList.sublist(unitIndex[i], unitIndex[i]+unitLength[i]),
                                                         unit: widget.unit,
                                                         subunit: i+1,
                                                         lastSubunit: i+1 == unitIndex.length,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/utils/larg_text.dart';
 import 'package:hsk_learner/utils/prototype.dart';
 
@@ -35,7 +36,8 @@ class HskListview extends StatelessWidget {
             future: hskList,
             builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
               if (snapshot.hasData) {
-                List<Map<String, dynamic>>? hskList = snapshot.data;
+                List<Map<String, dynamic>> hskList = snapshot.data!;
+                final wordList = createWordList(hskList);
                 return Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
@@ -54,9 +56,9 @@ class HskListview extends StatelessWidget {
                               physics: const ScrollPhysics(),
                               padding: EdgeInsets.zero,
                               scrollDirection: scrollAxis,
-                              itemCount: hskList!.length,
+                              itemCount: wordList.length,
                               itemBuilder: (context, index) {
-                                return HskListviewItem(hskList: hskList[index], showTranslation: showTranslation, separator: true, callback: playCallback, showPlayButton: showPlayButton);
+                                return HskListviewItem(wordItem: wordList[index], showTranslation: showTranslation, separator: true, callback: playCallback, showPlayButton: showPlayButton);
                               },
                             ),
                           ),
@@ -70,15 +72,16 @@ class HskListview extends StatelessWidget {
             }
         );
       case Axis.horizontal:
-        Map<String, dynamic> hskMap = LargeText.hskMap;
+        final wordMap = WordItem(LargeText.hskMap);
         return PrototypeHeight(
           backgroundColor: Colors.transparent,
-          prototype: PrototypeHorizontalHskListView(connectTop: connectTop, color: color, hskMap: hskMap, showTranslation: showTranslation, playCallback: playCallback, showPlayButton: showPlayButton,),
+          prototype: PrototypeHorizontalHskListView(connectTop: connectTop, color: color, wordItem: wordMap, showTranslation: showTranslation, playCallback: playCallback, showPlayButton: showPlayButton,),
           child: FutureBuilder<List<Map<String, dynamic>>>(
               future: hskList,
               builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                 if (snapshot.hasData) {
-                  List<Map<String, dynamic>>? hskList = snapshot.data;
+                  List<Map<String, dynamic>> hskList = snapshot.data!;
+                  final wordList  = createWordList(hskList);
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
                     child: Container(
@@ -95,7 +98,7 @@ class HskListview extends StatelessWidget {
                         itemCount: hskList!.length,
                         itemBuilder: (context, index) {
                           return HskListviewItem(
-                              hskList: hskList[index],
+                              wordItem: wordList[index],
                               showTranslation: showTranslation,
                               separator: false,
                               callback: playCallback,
@@ -108,7 +111,7 @@ class HskListview extends StatelessWidget {
                 }
                 else{
                   return PrototypeHeight(
-                    prototype: PrototypeHorizontalHskListView(connectTop: connectTop, color: color, hskMap: hskMap, showTranslation: showTranslation, playCallback: playCallback, showPlayButton: showPlayButton,),
+                    prototype: PrototypeHorizontalHskListView(connectTop: connectTop, color: color, wordItem: wordMap, showTranslation: showTranslation, playCallback: playCallback, showPlayButton: showPlayButton,),
                     child: Container(),
                   );
                 }
@@ -120,10 +123,10 @@ class HskListview extends StatelessWidget {
 }
 
 class PrototypeHorizontalHskListView extends StatelessWidget {
-  const PrototypeHorizontalHskListView({super.key, required this.connectTop, required this.color, required this.hskMap, required this.showTranslation, required this.playCallback, required this.showPlayButton});
+  const PrototypeHorizontalHskListView({super.key, required this.connectTop, required this.color, required this.showTranslation, required this.playCallback, required this.showPlayButton, required this.wordItem});
   final bool connectTop;
   final Color color;
-  final Map<String, dynamic> hskMap;
+  final WordItem wordItem;
   final bool showTranslation;
   final Function(String) playCallback;
   final bool showPlayButton;
@@ -141,7 +144,7 @@ class PrototypeHorizontalHskListView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            HskListviewItem(hskList: hskMap, showTranslation: showTranslation, separator: false, callback: playCallback, showPlayButton: showPlayButton,)
+            HskListviewItem(wordItem: wordItem, showTranslation: showTranslation, separator: false, callback: playCallback, showPlayButton: showPlayButton,)
           ],
         ),
       ),
@@ -151,12 +154,12 @@ class PrototypeHorizontalHskListView extends StatelessWidget {
 
 
 class HskListviewItem extends StatelessWidget {
-  final Map<String, dynamic> hskList;
+  final WordItem wordItem;
   final bool showTranslation;
   final bool separator;
   final Function(String) callback;
   final bool showPlayButton;
-  const HskListviewItem({Key? key, required this.hskList, required this.showTranslation, required this.separator, required this.callback, required this.showPlayButton,}) : super(key: key);
+  const HskListviewItem({Key? key, required this.wordItem, required this.showTranslation, required this.separator, required this.callback, required this.showPlayButton,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -178,12 +181,12 @@ class HskListviewItem extends StatelessWidget {
                 Column(
                   children: [
                     Text(
-                      hskList["pinyin"],
+                      wordItem.pinyin,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontSize: 14),
                     ),
                     Text(
-                      hskList["hanzi"],
+                      wordItem.hanzi,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontSize: 25),
                     ),
@@ -192,7 +195,7 @@ class HskListviewItem extends StatelessWidget {
                 Visibility(
                   visible: showTranslation,
                   child: Text(
-                    hskList["translations0"],
+                    wordItem.translation,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontSize: 14,
@@ -205,7 +208,7 @@ class HskListviewItem extends StatelessWidget {
             showPlayButton
               ? IconButton(
                 onPressed: () {
-                  callback(hskList["hanzi"],);
+                  callback(wordItem.hanzi,);
                 },
                 icon: const Icon(Icons.volume_up))
               : const SizedBox(height: 0,)

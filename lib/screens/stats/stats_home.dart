@@ -6,6 +6,7 @@ import 'package:hsk_learner/sql/sql_helper.dart';
 import 'package:hsk_learner/utils/larg_text.dart';
 import 'package:hsk_learner/utils/prototype.dart';
 import 'package:hsk_learner/utils/styles.dart';
+import '../../data_model/word_item.dart';
 import 'chart.dart';
 import '../../widgets/hsk_listview/hsk_listview.dart';
 
@@ -332,7 +333,7 @@ class _HorizontalHskList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> hskMap = LargeText.hskMap;
+    final wordMap = WordItem(LargeText.hskMap);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Container(
@@ -361,7 +362,7 @@ class _HorizontalHskList extends StatelessWidget {
               ],
             ),
             PrototypeHeight(
-              prototype: PrototypeHorizontalHskListView(connectTop: true, color: Colors.white, hskMap: hskMap, showTranslation: true, playCallback: (String s){}, showPlayButton: showPlayButton,),
+              prototype: PrototypeHorizontalHskListView(connectTop: true, color: Colors.white, wordItem: wordMap, showTranslation: true, playCallback: (String s){}, showPlayButton: showPlayButton,),
               child: FutureBuilder<List<Map<String, dynamic>>>(
                   future: hskList,
                   builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
@@ -396,7 +397,7 @@ class _HorizontalHskList extends StatelessWidget {
                     }
                     else{
                       return PrototypeHeight(
-                        prototype: PrototypeHorizontalHskListView(connectTop: true, color: Colors.white, hskMap: hskMap, showTranslation: true, playCallback: (String s){}, showPlayButton: showPlayButton,),
+                        prototype: PrototypeHorizontalHskListView(connectTop: true, color: Colors.white, wordItem: wordMap, showTranslation: true, playCallback: (String s){}, showPlayButton: showPlayButton,),
                         child: Container(),
                       );
                     }
