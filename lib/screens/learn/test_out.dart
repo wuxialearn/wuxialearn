@@ -14,17 +14,17 @@ class TestOut extends StatefulWidget {
 }
 
 class _TestOutState extends State<TestOut> {
-  late Future<List<Map<String, dynamic>>> hskList;
+  late Future<List<Map<String, dynamic>>> reviewWordsListFuture;
   @override
   void initState() {
-    hskList = SQLHelper.getTestOutWords(hsk: widget.hsk);
+    reviewWordsListFuture = SQLHelper.getTestOutWords(hsk: widget.hsk);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Map<String, dynamic>>>(
-        future: hskList,
+        future: reviewWordsListFuture,
         builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
           if (snapshot.hasData) {
             List<WordItem> wordList = createWordList(snapshot.data!);

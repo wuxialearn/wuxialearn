@@ -36,8 +36,7 @@ class HskListview extends StatelessWidget {
             future: hskList,
             builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
               if (snapshot.hasData) {
-                List<Map<String, dynamic>> hskList = snapshot.data!;
-                final wordList = createWordList(hskList);
+                final wordList = createWordList(snapshot.data!);
                 return Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
@@ -80,8 +79,7 @@ class HskListview extends StatelessWidget {
               future: hskList,
               builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                 if (snapshot.hasData) {
-                  List<Map<String, dynamic>> hskList = snapshot.data!;
-                  final wordList  = createWordList(hskList);
+                  final wordList  = createWordList(snapshot.data!);
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
                     child: Container(
@@ -95,7 +93,7 @@ class HskListview extends StatelessWidget {
                         physics: const ScrollPhysics(),
                         padding: EdgeInsets.zero,
                         scrollDirection: scrollAxis,
-                        itemCount: hskList!.length,
+                        itemCount: wordList.length,
                         itemBuilder: (context, index) {
                           return HskListviewItem(
                               wordItem: wordList[index],

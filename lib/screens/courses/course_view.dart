@@ -31,8 +31,8 @@ class _CourseViewState extends State<CourseView> {
                 future: widget.unitList,
                 builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                   if (snapshot.hasData) {
-                    List<Map<String, dynamic>> hskList = snapshot.data!;
-                    hskLevel = getHskLevel(hskList);
+                    List<Map<String, dynamic>> courseList = snapshot.data!;
+                    hskLevel = getHskLevel(courseList);
                     return CustomScrollView(
                       scrollDirection: Axis.vertical,
                       physics:  const ScrollPhysics(),
@@ -64,7 +64,7 @@ class _CourseViewState extends State<CourseView> {
                             ),
                           ),
                         ),
-                        ...widget.gridItems(hskList),
+                        ...widget.gridItems(courseList),
                       ],
                     );
                   }

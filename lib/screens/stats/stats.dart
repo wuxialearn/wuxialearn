@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/screens/stats/word_view.dart';
 
 import '../../utils/styles.dart';
@@ -15,7 +16,7 @@ class StatsPage extends StatefulWidget {
 
 class _StatsPageState extends State<StatsPage> {
 
-  late Future<List<Map<String, dynamic>>> hskList;
+  late Future<List<Map<String, dynamic>>> statsListFuture;
   String sortValue = "Score";
   String orderValue = "Ascending";
   List<String> sortOptions = ["Score", "Last Seen", "Unit"];
@@ -43,7 +44,7 @@ class _StatsPageState extends State<StatsPage> {
       case "Last Seen": sortSQl = "last_seen"; break;
     }
     setState(() {
-      hskList = getStats(sortBy: sortSQl, orderBy: orderSQL,);
+      statsListFuture = getStats(sortBy: sortSQl, orderBy: orderSQL,);
     });
   }
 
@@ -87,7 +88,7 @@ class _StatsPageState extends State<StatsPage> {
                 ),
               ],
             ),
-            _HskListview(hskList: hskList, showTranslation: true, connectTop: true, color: Colors.transparent, scrollAxis: Axis.vertical, showPlayButton: false,)
+            _HskListview(statsListFuture: statsListFuture, showTranslation: true, connectTop: true, color: Colors.transparent, scrollAxis: Axis.vertical, showPlayButton: false,)
           ],
         ),
       ),
@@ -138,13 +139,13 @@ class _StatsPageState extends State<StatsPage> {
 
 
 class _HskListview extends StatelessWidget {
-  final Future<List<Map<String, dynamic>>> hskList;
+  final Future<List<Map<String, dynamic>>> statsListFuture;
   final bool showTranslation;
   final bool connectTop;
   final Color color;
   final Axis scrollAxis;
   final bool showPlayButton;
-  const _HskListview({Key? key, required  this.hskList, required this.showTranslation, required this.connectTop, required this.color, required this.scrollAxis, required this.showPlayButton}) : super(key: key);
+  const _HskListview({Key? key, required  this.statsListFuture, required this.showTranslation, required this.connectTop, required this.color, required this.scrollAxis, required this.showPlayButton}) : super(key: key);
 
   get flutterTts => null;
 
@@ -164,10 +165,10 @@ class _HskListview extends StatelessWidget {
       speak(str);
     }
     return FutureBuilder<List<Map<String, dynamic>>>(
-            future: hskList,
+            future: statsListFuture,
             builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
               if (snapshot.hasData) {
-                List<Map<String, dynamic>>? hskList = snapshot.data;
+                List<WordItem> wordList = createWordList(snapshot.data!);
                 return Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
@@ -188,9 +189,9 @@ class _HskListview extends StatelessWidget {
                                 physics: const ScrollPhysics(),
                                 padding: EdgeInsets.zero,
                                 scrollDirection: scrollAxis,
-                                itemCount: hskList!.length,
+                                itemCount: wordList.length,
                                 itemBuilder: (context, index) {
-                                  return _HskListviewItem(hskList: hskList[index], showTranslation: showTranslation, separator: true, callback: playCallback, showPlayButton: showPlayButton);
+                                  return _HskListviewItem(wordItem: wordList[index], showTranslation: showTranslation, separator: true, callback: playCallback, showPlayButton: showPlayButton);
                                 },
                               ),
                             ),
@@ -208,12 +209,12 @@ class _HskListview extends StatelessWidget {
 }
 
 class _HskListviewItem extends StatelessWidget {
-  final Map<String, dynamic> hskList;
+  final WordItem wordItem;
   final bool showTranslation;
   final bool separator;
   final Function(String) callback;
   final bool showPlayButton;
-  const _HskListviewItem({Key? key, required this.hskList, required this.showTranslation, required this.separator, required this.callback, required this.showPlayButton,}) : super(key: key);
+  const _HskListviewItem({Key? key, required this.wordItem, required this.showTranslation, required this.separator, required this.callback, required this.showPlayButton,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -235,7 +236,7 @@ class _HskListviewItem extends StatelessWidget {
                 Column(
                     children: [
                       Text(
-                        hskList["pinyin"],
+                        wordItem.pinyin,
                         style: const TextStyle(fontSize: 14),
                       ),
                       TextButton(
@@ -244,12 +245,12 @@ class _HskListviewItem extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => WordView(wordId: hskList["id"]),
+                              builder: (context) => WordView(wordId: wordItem.id),
                             ),
                           );
                         },
                         child: Text(
-                          hskList["hanzi"],
+                          wordItem.hanzi,
                           style: const TextStyle(fontSize: 25),
                         ),
                       ),
@@ -258,7 +259,7 @@ class _HskListviewItem extends StatelessWidget {
                 Visibility(
                   visible: showTranslation,
                   child: Text(
-                    hskList["translations0"],
+                    wordItem.translation,
                     style: const TextStyle(
                       fontSize: 14,
                       color: Color(0xFF999EA3),
@@ -269,7 +270,7 @@ class _HskListviewItem extends StatelessWidget {
             ),
             showPlayButton? IconButton(
                 onPressed: () {
-                  callback(hskList["hanzi"],);
+                  callback(wordItem.hanzi);
                 },
                 icon: const Icon(Icons.volume_up))
                 : const SizedBox(height: 0,)
