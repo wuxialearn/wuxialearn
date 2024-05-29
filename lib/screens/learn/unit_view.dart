@@ -23,7 +23,7 @@ class _UnitViewState extends State<UnitView> {
   initState() {
     super.initState();
     sentencesFuture = SQLHelper.getSentences(widget.unit);
-    hskFuture = SQLHelper.getUnit(widget.unit);
+    hskFuture = SQLHelper.getUnitWithLiteralMeaning(widget.unit);
     subunitFuture = SQLHelper.getSubunitInfo(unit: widget.unit);
   }
 

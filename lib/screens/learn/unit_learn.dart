@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hsk_learner/screens/games/unit_game.dart';
 import 'package:hsk_learner/screens/settings/preferences.dart';
@@ -47,6 +48,7 @@ class _UnitLearnState extends State<UnitLearn> {
     sentenceList = await SQLHelper.getSentencesForSubunit(widget.unit, widget.subunit);
   }
   late bool showExampleSentences;
+  late bool showLiteralPref;
   bool wasClicked = false;
   bool lastPage = false;
   bool showPinyin = true;
@@ -58,6 +60,7 @@ class _UnitLearnState extends State<UnitLearn> {
     futureList = List.generate(widget.hskList.length, (i) => getUnits(i));
     getSentenceList();
     setLanguage();
+    showLiteralPref = Preferences.getPreference("show_literal_meaning_in_unit_learn");
     showExampleSentences = Preferences.getPreference("show_sentences");
     speak(widget.hskList[0]["hanzi"]);
   }
@@ -104,67 +107,90 @@ class _UnitLearnState extends State<UnitLearn> {
                   }
                 },
                 itemBuilder: (context, pageIndex) {
+                  final hskItem = widget.hskList[pageIndex];
+                  String? literal;
+                  print(hskItem);
+                  if(hskItem["char_two"] != null){
+                    literal = "${hskItem["char_one"]} + ${hskItem["char_two"]}";
+                    if(hskItem["char_three"] != null){
+                      literal += " + ${hskItem["char_three"]}}";
+                      if(hskItem["char_four"] != null){
+                        literal = " + ${hskItem["char_four"]}";
+                      }
+                    }
+                  }
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(height: 50,),
                       Flexible(
-                        flex: showExampleSentences? 0:1,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        flex: 1,//showExampleSentences?1:0,
+                        child: Column(
                           children: [
-                            Visibility(
-                              maintainState: true,
-                              maintainSize: true,
-                              maintainAnimation: true,
-                              visible: false,
-                              child: IconButton(
-                                  onPressed: () {
-                                    speak(widget.hskList[pageIndex]["hanzi"]);
-                                    },
-                                  icon: const Icon(Icons.volume_up)
-                              ),
-                            ),
-                            Column(
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Visibility(
                                   maintainState: true,
                                   maintainSize: true,
                                   maintainAnimation: true,
-                                  visible: showPinyin,
-                                  child: Text(
-                                      widget.hskList[pageIndex]["pinyin"],
-                                    style: const TextStyle(fontSize: 16),
+                                  visible: false,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        speak(widget.hskList[pageIndex]["hanzi"]);
+                                      },
+                                      icon: const Icon(Icons.volume_up)
                                   ),
                                 ),
-                                Text(widget.hskList[pageIndex]["hanzi"],
-                                  style: const TextStyle(fontSize: 30),
+                                Column(
+                                  children: [
+                                    Visibility(
+                                      maintainState: true,
+                                      maintainSize: true,
+                                      maintainAnimation: true,
+                                      visible: showPinyin,
+                                      child: Text(
+                                          widget.hskList[pageIndex]["pinyin"],
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                    Text(widget.hskList[pageIndex]["hanzi"],
+                                      style: const TextStyle(fontSize: 30),
+                                    ),
+                                  ],
                                 ),
-                                Visibility(
-                                  maintainSize: true,
-                                  maintainAnimation: true,
-                                  maintainState: true,
-                                  visible: wasClicked,
-                                  child: Text(
-                                      widget.hskList[pageIndex]["translations0"],
-                                    style: const TextStyle(fontSize: 18),
-                                  ),
+                                IconButton(
+                                    onPressed: () {
+                                      speak(widget.hskList[pageIndex]["hanzi"]);
+                                    },
+                                    icon: const Icon(Icons.volume_up)
                                 ),
                               ],
                             ),
-                            IconButton(
-                                onPressed: () {
-                                  speak(widget.hskList[pageIndex]["hanzi"]);
-                                },
-                                icon: const Icon(Icons.volume_up)
+                            Expanded(
+                              child: Visibility(
+                                maintainSize: true,
+                                maintainAnimation: true,
+                                maintainState: true,
+                                visible: wasClicked,
+                                child: Column(
+                                  children: [
+                                    Text(
+                                        widget.hskList[pageIndex]["translations0"],
+                                      style: const TextStyle(fontSize: 18),
+                                    ),
+                                    literal != null && showLiteralPref ?
+                                      Expanded(child: Text(literal))
+                                    : const SizedBox(height: 0,),
+                                  ],
+                                ),
+                              ),
                             ),
                           ],
                         ),
                       ),
                       const SizedBox(
-                        height: 35,
+                        height: 25,
                       ),
 
                       Visibility(

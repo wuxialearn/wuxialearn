@@ -17,6 +17,7 @@ class _SettingsState extends State<Settings> {
   bool allowSkipUnits = Preferences.getPreference("allow_skip_units");
   bool showExampleSentences = Preferences.getPreference("show_sentences");
   bool allowAutoComplete =  Preferences.getPreference("allow_auto_complete_unit");
+  bool showLiteralInUnitLearn = Preferences.getPreference("show_literal_meaning_in_unit_learn");
   List<String> courses = Preferences.getPreference("courses");
   String defaultCourse = Preferences.getPreference("default_course");
   String version = '1.0.13';
@@ -98,6 +99,21 @@ class _SettingsState extends State<Settings> {
                     onChanged: (bool value) {
                       setSettingBool(name: "show_sentences", type: "bool", value: value);
                       setState(() => showExampleSentences = value);
+                    },
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Show literal meaning in unit learn"),
+                  CupertinoSwitch(
+                    // This bool value toggles the switch.
+                    value: showLiteralInUnitLearn,
+                    activeColor: CupertinoColors.activeBlue,
+                    onChanged: (bool value) {
+                      setSettingBool(name: "show_literal_meaning_in_unit_learn", type: "bool", value: value);
+                      setState(() => showLiteralInUnitLearn = value);
                     },
                   ),
                 ],

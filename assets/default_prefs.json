@@ -38,5 +38,9 @@
   "allow_auto_complete_unit": {
     "value": "0",
     "type": "bool"
+  },
+  "show_literal_meaning_in_unit_learn": {
+    "value": "1",
+    "type": "bool"
   }
 }

@@ -114,6 +114,28 @@ class SQLHelper {
   }
 
 
+  static Future<List<Map<String, dynamic>>> getUnitWithLiteralMeaning(int unit) async {
+    final db = await SQLHelper.db();
+    return db.rawQuery("""
+        SELECT t1.id, t1.hanzi, t1.pinyin, translations0, subunit,
+	a_tl.translation as char_one, b_tl.translation as char_two, c_tl.translation as char_three, d_tl.translation as char_four
+    from(
+      SELECT
+        id, hanzi, pinyin, translations0, subunit,
+        SUBSTR(hanzi, 1, 1) a, SUBSTR(hanzi, 2, 1) b,
+        SUBSTR(hanzi, 3, 1) c, SUBSTR(hanzi, 4, 1) d
+      FROM courses
+      WHERE unit = $unit
+    ) as t1
+    left join unihan a_tl on t1.a = a_tl.hanzi
+          left join unihan b_tl on t1.b = b_tl.hanzi  
+          left join unihan c_tl on t1.c = c_tl.hanzi
+          left join unihan d_tl on t1.d = d_tl.hanzi 
+      ORDER BY subunit ASC
+    """);
+  }
+
+
 
   static Future<List<Map<String, dynamic>>> getExamples(String word) async {
     final db = await SQLHelper.db();
