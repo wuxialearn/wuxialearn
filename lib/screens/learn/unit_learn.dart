@@ -127,6 +127,16 @@ class _UnitLearnState extends State<UnitLearn> {
                         flex: 1,//showExampleSentences?1:0,
                         child: Column(
                           children: [
+                            Visibility(
+                              maintainState: true,
+                              maintainSize: true,
+                              maintainAnimation: true,
+                              visible: showPinyin,
+                              child: Text(
+                                widget.hskList[pageIndex]["pinyin"],
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -142,22 +152,8 @@ class _UnitLearnState extends State<UnitLearn> {
                                       icon: const Icon(Icons.volume_up)
                                   ),
                                 ),
-                                Column(
-                                  children: [
-                                    Visibility(
-                                      maintainState: true,
-                                      maintainSize: true,
-                                      maintainAnimation: true,
-                                      visible: showPinyin,
-                                      child: Text(
-                                          widget.hskList[pageIndex]["pinyin"],
-                                        style: const TextStyle(fontSize: 16),
-                                      ),
-                                    ),
-                                    Text(widget.hskList[pageIndex]["hanzi"],
-                                      style: const TextStyle(fontSize: 30),
-                                    ),
-                                  ],
+                                Text(widget.hskList[pageIndex]["hanzi"],
+                                  style: const TextStyle(fontSize: 30),
                                 ),
                                 IconButton(
                                     onPressed: () {
