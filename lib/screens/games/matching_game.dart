@@ -172,6 +172,9 @@ class _MatchingGameState extends State<MatchingGame> {
             ),
           ),
           Visibility(
+            maintainState: true,
+            maintainAnimation: true,
+            maintainSize: true,
             visible: isFinished,
             child: Padding(
               padding: const EdgeInsets.all(8.0),

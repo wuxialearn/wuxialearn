@@ -93,7 +93,6 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
                 children: [
                   Visibility(
                       maintainSize: true,
-                      maintainSemantics: true,
                       maintainInteractivity: false,
                       maintainAnimation: true,
                       maintainState: true,
