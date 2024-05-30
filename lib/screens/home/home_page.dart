@@ -30,7 +30,7 @@ class MyHomePageState extends State<MyHomePage>{
     tabsIndex = widget.tab;
     tabList = [
       const CourseHome(),
-      const ReviewPage(),
+      const ReviewHome(),
       const StatsHome(),
       const Settings(),
       //const WordView(wordId: 3)
@@ -81,8 +81,12 @@ class MyHomePageState extends State<MyHomePage>{
             //BottomNavigationBarItem(icon: Icon(Icons.construction), label: "testing"),
           ],
         ),
-        tabBuilder: (BuildContext context, int index) { 
-          return tabList[tabsIndex];
+        tabBuilder: (BuildContext context, int index) {
+          return CupertinoTabView(
+            builder: (context){
+              return tabList[tabsIndex];
+            },
+          );
         },
       ),
     );

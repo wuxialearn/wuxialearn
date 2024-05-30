@@ -254,6 +254,34 @@ class SQLHelper {
     """);
   }
 
+
+  static Future<List<Map<String, dynamic>>> getManageReview({required int deckSize, required String sortBy, required String orderBy, required String deck}) async {
+    final db = await SQLHelper.db();
+    return db.rawQuery("""
+    SELECT courses.id, right_occurrence, wrong_occurrence, 
+    courses.hanzi, courses.hsk, courses.pinyin, courses.translations0,
+    last_seen,
+    (right_occurrence - wrong_occurrence) as score,
+    ROUND(right_occurrence * 100.0 / (right_occurrence + wrong_occurrence), 1) AS percent_correct
+    FROM(
+      SELECT
+        wordid,
+        SUM(CASE stats.value WHEN 1 THEN 1 ELSE 0 END) right_occurrence,
+        SUM(CASE stats.value WHEN 0 THEN 1 ELSE 0 END) wrong_occurrence,
+        MAX(stats.date) last_seen
+      FROM stats
+      WHERE date > 0
+      GROUP BY 
+        wordid
+    )
+    INNER JOIN courses on courses.id = wordid
+    join review on review.id = wordid
+    where deck = '$deck'
+    ORDER BY $sortBy $orderBy
+    LIMIT $deckSize;
+    """);
+  }
+
   static Future<List<Map<String, dynamic>>> getKnownWords() async {
     final db = await SQLHelper.db();
     return db.rawQuery("""
@@ -410,7 +438,10 @@ class SQLHelper {
     """);
   }
 
-  static Future<List<Map<String, dynamic>>> getReview({required int deckSize, required String sortBy, required String orderBy}) async {
+  static Future<List<Map<String, dynamic>>> getReview({
+    required int deckSize, required String sortBy, required String orderBy,
+    required String deckName,
+  }) async {
     final db = await SQLHelper.db();
     final a =  db.rawQuery("""
         SELECT t1.id, t1.score, t1.percent_correct, t1.hanzi,
@@ -446,6 +477,8 @@ class SQLHelper {
     left join unihan b_tl on t1.b = b_tl.hanzi  
     left join unihan c_tl on t1.c = c_tl.hanzi
     left join unihan d_tl on t1.d = d_tl.hanzi 
+    join review on review.id = t1.id
+    where deck = '$deckName'
     GROUP BY t1.id
     ORDER BY $sortBy $orderBy
     LIMIT $deckSize;

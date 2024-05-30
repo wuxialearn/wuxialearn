@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hsk_learner/data_model/word_item.dart';
+import 'package:hsk_learner/utils/delayed_progress_indecator.dart';
 import 'package:hsk_learner/utils/larg_text.dart';
 import 'package:hsk_learner/utils/prototype.dart';
 
@@ -67,7 +68,7 @@ class HskListview extends StatelessWidget {
                   ),
                 );
               }
-              else{return const Center(child: CircularProgressIndicator());}
+              else{return const Center(child: DelayedProgressIndicator());}
             }
         );
       case Axis.horizontal:

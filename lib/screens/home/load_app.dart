@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hsk_learner/screens/home/home_page.dart';
+import 'package:hsk_learner/sql/schema_migration.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
 import '../settings/preferences.dart';
 import 'package:http/http.dart' as http;
@@ -17,6 +18,7 @@ class _LoadAppState extends State<LoadApp> {
   bool isLoading = true;
   @override
   void initState() {
+    SchemaMigration.run();
     getPreferences();
     super.initState();
   }
