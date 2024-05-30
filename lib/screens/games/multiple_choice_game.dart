@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/screens/games/unit_game.dart';
@@ -21,7 +22,7 @@ class ChineseToEnglishGame extends StatefulWidget {
 }
 class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
 
-
+  bool clicked = false;
   FlutterTts flutterTts = FlutterTts();
   setLanguage() async{
     await flutterTts.setLanguage("zh-CN");
@@ -31,6 +32,7 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
   }
   late final String wordToTranslate;
   late bool showPinyin;
+  bool showHint = false;
   @override
   void initState() {
     super.initState();
@@ -40,6 +42,13 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
     if(widget.chineseToEnglish!){
       speak(wordToTranslate);
     }
+  }
+
+  void onClick(){
+    print("we have been called");
+    setState(() {
+      clicked = true;
+    });
   }
 
   @override
@@ -52,6 +61,20 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                Visibility(
+                  visible: widget.currWord.wordLength > 1,
+                  child: TextButton(
+                      onPressed: (){
+                        setState(() {
+                          showHint ?
+                          showHint = false: showHint = true;
+                        });
+                      },
+                      child:  showHint?
+                        const Text("Hide Hint")
+                      : const Text("Show Hint")
+                  ),
+                ),
                 TextButton(
                     onPressed: (){
                       setState(() {
@@ -70,7 +93,12 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Visibility(
-                      visible: widget.chineseToEnglish! && showPinyin,
+                      maintainSize: true,
+                      maintainSemantics: true,
+                      maintainInteractivity: false,
+                      maintainAnimation: true,
+                      maintainState: true,
+                      visible: clicked || widget.chineseToEnglish! && showPinyin,
                       child: Text(
                         widget.currWord.pinyin,
                         textAlign: TextAlign.center,
@@ -114,12 +142,20 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
                       ),
                     ],
                   ),
+                  Visibility(
+                      visible: (showHint || clicked) && widget.currWord.wordLength > 1,
+                      child: Text(
+                        widget.currWord.literal.join(" + "),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 20),
+                      )
+                  ),
                 ],
               )
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-              child: AnswersList(chineseToEnglish: widget.chineseToEnglish!, currWord: widget.currWord, wordList: widget.wordList, callback: widget.callback, index: widget.index, showPinyin: showPinyin),
+              child: AnswersList(chineseToEnglish: widget.chineseToEnglish!, currWord: widget.currWord, wordList: widget.wordList, callback: widget.callback, index: widget.index, showPinyin: showPinyin, onClick: onClick,),
             )
           ],
         ),
@@ -136,7 +172,8 @@ class AnswersList extends StatefulWidget {
   final int index;
   final bool chineseToEnglish;
   final bool showPinyin;
-  const AnswersList({super.key, required this.currWord, required this.wordList, required this.callback, required this.index, required this.chineseToEnglish, required this.showPinyin});
+  final Function onClick;
+  const AnswersList({super.key, required this.currWord, required this.wordList, required this.callback, required this.index, required this.chineseToEnglish, required this.showPinyin, required this.onClick});
 
   @override
   State<AnswersList> createState() => _AnswersListState();
@@ -184,6 +221,7 @@ class _AnswersListState extends State<AnswersList> {
         return TextButton(
             style: Styles.createButton(colorsList[i]),
             onPressed: () async {
+              widget.onClick();
               if(!clicked){
                 setState(() {
                   clicked = true;

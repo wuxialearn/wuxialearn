@@ -60,7 +60,6 @@ class _ReviewPageState extends State<ReviewPage> {
     if(oldWords && !isAll){
       oldWordsList = await SQLHelper.getReview(deckSize: numCards, sortBy: "last_seen", orderBy: "ASC");
     }
-    var totalStats = await SQLHelper.getStats(sortBy: 'score', orderBy: "ASC", deckSize: -1);
     List<Map<String, dynamic>> reviewList = hardWordsList;
     List<int> idList = [];
     for (var element in reviewList) {

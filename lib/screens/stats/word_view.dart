@@ -18,7 +18,7 @@ class _WordViewState extends State<WordView> {
   @override
   initState(){
     super.initState();
-    literalMeaning = SQLHelper.getLiteralMeaning(widget.wordId);
+    literalMeaning = SQLHelper.getWordInfo(widget.wordId);
     sentencesFuture = SQLHelper.getSentenceFromId(widget.wordId);
   }
 
