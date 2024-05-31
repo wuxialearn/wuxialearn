@@ -81,6 +81,7 @@ class _ReviewPageState extends State<ReviewPage> {
   bool lastPage = false;
   bool hardWords = true;
   bool oldWords = false;
+  bool randomWords = false;
   bool previewDeck = Preferences.getPreference("showTranslations");
   bool isCollapsed = true;
   bool deckExists = true;
@@ -100,13 +101,13 @@ class _ReviewPageState extends State<ReviewPage> {
   @override
   void initState() {
     super.initState();
-    hskList = getReview(hardWords: hardWords, oldWords: oldWords, deckSize: deckSizeValue, deckName: deckName);
+    hskList = getReview();
   }
 
-  Future<List<Map<String, dynamic>>> getReview({required bool hardWords, required bool oldWords, required String deckSize, required String deckName})  async {
+  Future<List<Map<String, dynamic>>> getReview()  async {
     int numCards = -1;
     bool isAll = false;
-    switch(deckSize){
+    switch(deckSizeValue){
       case "Small": numCards = 10; break;
       case "Medium": numCards = 20; break;
       case "Large": numCards = 35; break;
@@ -119,6 +120,9 @@ class _ReviewPageState extends State<ReviewPage> {
     }
     if(oldWords && !isAll){
       oldWordsList = await SQLHelper.getReview(deckSize: numCards, sortBy: "last_seen", orderBy: "ASC", deckName: deckName);
+    }
+    if(randomWords && !isAll){
+      oldWordsList = await SQLHelper.getReview(deckSize: numCards, sortBy: "RANDOM()", orderBy: "ASC", deckName: deckName);
     }
     List<Map<String, dynamic>> reviewList = hardWordsList;
     List<int> idList = [];
@@ -226,6 +230,23 @@ class _ReviewPageState extends State<ReviewPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          const Text("Include random words"),
+                          CupertinoSwitch(
+                            // This bool value toggles the switch.
+                            value: randomWords,
+                            activeColor: CupertinoColors.activeBlue,
+                            onChanged: (bool? value) {
+                              // This is called when the user toggles the switch.
+                              setState(() {
+                                randomWords = value ?? false;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
                           const Text("Review type:"),
                           CupertinoButton(onPressed: (){ _showReviewTypeActionSheet(context);}, child: Text(reviewTypeValue), ),
                         ],
@@ -249,7 +270,7 @@ class _ReviewPageState extends State<ReviewPage> {
                       CupertinoButton(
                           onPressed: (){
                             setState(() {
-                              hskList = getReview(hardWords: hardWords, oldWords: oldWords, deckSize: deckSizeValue, deckName: deckName);
+                              hskList = getReview();
                               isCollapsed = true;
                               deckExists = true;
                             });
