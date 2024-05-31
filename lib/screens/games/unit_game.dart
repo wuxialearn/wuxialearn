@@ -17,7 +17,8 @@ class UnitGame extends StatefulWidget {
   final bool lastSubunit;
   final String name;
   final Function updateUnits;
-  const UnitGame({Key? key, required this.wordList, required  this.sentenceList, required this.unit, required this.subunit, required this.lastSubunit, required this.name, required this.updateUnits}) : super(key: key);
+  final String courseName;
+  const UnitGame({Key? key, required this.wordList, required  this.sentenceList, required this.unit, required this.subunit, required this.lastSubunit, required this.name, required this.updateUnits, required this.courseName}) : super(key: key);
 
   @override
   State<UnitGame> createState() => _UnitGameState();
@@ -63,6 +64,7 @@ class _UnitGameState extends State<UnitGame> {
   void callback(bool value, WordItem currWord, bool? chineseToEnglish) async {
     if(widget.unit > 0 && chineseToEnglish != null) {
       SQLHelper.insertStat(value: value?1:0, id: currWord.id);
+      SQLHelper.addToReviewDeck(id: currWord.id, deck: widget.courseName);
     }
     if(value == false){
       setState(() {

@@ -38,7 +38,6 @@ class _ReviewHomeState extends State<ReviewHome> {
                 child: CupertinoSlidingSegmentedControl(
                   onValueChanged: (int? value) {
                     setState(() {
-                      print(value!);
                       pageController.animateToPage(
                           value!-1,
                           duration: const Duration(milliseconds: 400),

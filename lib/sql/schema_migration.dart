@@ -18,12 +18,18 @@ class SchemaMigration{
             "id"	INTEGER NOT NULL,
             "deck"	TEXT,
             "show_next"	INTEGER,
-            PRIMARY KEY("id")
+            UNIQUE(id,deck) ON CONFLICT IGNORE
           )
         """);
         txn.execute("""
           insert into review (id, deck)
           SELECT id, course FROM courses
+          JOIN stats on stats.wordid = courses.id
+          GROUP BY courses.id
+        """);
+        txn.execute("""
+          insert into review (id, deck)
+          SELECT id, 'any' FROM courses
           JOIN stats on stats.wordid = courses.id
           GROUP BY courses.id
         """);

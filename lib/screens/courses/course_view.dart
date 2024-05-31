@@ -182,7 +182,12 @@ class GridItem extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => UnitView(unit: unitList[index]["unit_id"], name:unitList[index]["unit_name"], updateUnits: updateUnits),
+                builder: (context) => UnitView(
+                  unit: unitList[index]["unit_id"],
+                  name:unitList[index]["unit_name"],
+                  updateUnits: updateUnits,
+                  courseName: courseName,
+                ),
               ),
             ).then((_){
               updateUnits();

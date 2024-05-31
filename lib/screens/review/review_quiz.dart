@@ -14,7 +14,6 @@ class ReviewQuiz extends StatefulWidget {
 
 class _ReviewQuizState extends State<ReviewQuiz> {
 
-  //late List<Future<List<Map<String, dynamic>>>> sentenceList;
   late Future<List<Map<String, List<Map<String, dynamic>>>>> hskMap;
   @override
   void initState() {
@@ -40,7 +39,7 @@ class _ReviewQuizState extends State<ReviewQuiz> {
                   }
                 }
               }
-              return UnitGame(wordList: wordList, sentenceList: sentenceList, unit: 0, subunit: 0, lastSubunit: false, name: "review", updateUnits: (){},);
+              return UnitGame(courseName: "", wordList: wordList, sentenceList: sentenceList, unit: 0, subunit: 0, lastSubunit: false, name: "review", updateUnits: (){},);
             }else{
               return Container();
             }

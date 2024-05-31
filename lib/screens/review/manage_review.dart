@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hsk_learner/utils/delayed_progress_indecator.dart';
 
@@ -23,7 +24,7 @@ class _ManageReviewState extends State<ManageReview> {
   String orderValue = "Ascending";
   List<String> sortOptions = ["Score", "Last Seen", "Unit"];
   List<String> orderOption = ["Ascending", "Descending"];
-  List<String> deckNames = ["hsk", "wuxia"];
+  List<String> deckNames = ["Any", "hsk", "wuxia"];
   String deckName = 'hsk';
   @override
   initState() {
@@ -31,14 +32,15 @@ class _ManageReviewState extends State<ManageReview> {
     refresh();
   }
 
-  Future<List<Map<String, dynamic>>> getManageReview({required String sortBy, required String orderBy})  async {
-    final data = await SQLHelper.getManageReview(sortBy: sortBy, orderBy: orderBy, deckSize: -1, deck: deckName);
+  Future<List<Map<String, dynamic>>> getManageReview({required String sortBy, required String orderBy, required String deck})  async {
+    final data = await SQLHelper.getManageReview(sortBy: sortBy, orderBy: orderBy, deckSize: -1, deck: deck);
     return data;
   }
 
   void refresh(){
     String orderSQL = "ASC";
     String sortSQl = "unit";
+    String deck = "where deck = '$deckName'";
     switch(orderValue){
       case "Ascending" : orderSQL = "ASC"; break;
       case "Descending": orderSQL = "DESC"; break;
@@ -48,11 +50,71 @@ class _ManageReviewState extends State<ManageReview> {
       case "Score": sortSQl = "score"; break;
       case "Last Seen": sortSQl = "last_seen"; break;
     }
+    switch(deckName){
+      case "Any": deck = "where deck = 'any'"; break;
+    }
     setState(() {
-      statsListFuture = getManageReview(sortBy: sortSQl, orderBy: orderSQL,);
+      statsListFuture = getManageReview(sortBy: sortSQl, orderBy: orderSQL, deck: deck);
     });
   }
-
+  bool showRemove(){
+    return deckName != "Any";
+  }
+  onClick(int id){
+    List<String> options = [...deckNames];
+    options.remove(deckName);
+    if(showRemove()){
+      SQLHelper.removeFromDeck(id: id, deck: deckName);
+    }else{
+      showCupertinoDialog(
+          barrierDismissible: true,
+          context: context,
+          builder: (context) {
+            return Dialog(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
+              backgroundColor: Colors.white,
+              shadowColor: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Column(
+                      children: List.generate(options.length, (index) {
+                        return TextButton(
+                            onPressed: (){
+                              SQLHelper.addToReviewDeck(id: id, deck: options[index]);
+                              Navigator.pop(context);
+                            },
+                            child: Text(options[index])
+                        );
+                      }),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text("Cancel"),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            );
+          }
+      );
+      SQLHelper.addToReviewDeck(id: id, deck: "wuxia");
+    }
+    print(id);
+    refresh();
+  }
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -61,10 +123,20 @@ class _ManageReviewState extends State<ManageReview> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+              child: Wrap(
                 children: [
                   Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text("Deck:"),
+                      TextButton(
+                          onPressed: (){_showReviewDeckActionSheet(context);},
+                          child: Text(deckName)
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       const Text("Sort by:"),
                       TextButton(
@@ -74,6 +146,7 @@ class _ManageReviewState extends State<ManageReview> {
                     ],
                   ),
                   Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       const Text("Order By:"),
                       TextButton(
@@ -82,21 +155,12 @@ class _ManageReviewState extends State<ManageReview> {
                       )
                     ],
                   ),
-                  Row(
-                    children: [
-                      const Text("Deck:"),
-                      TextButton(
-                          onPressed: (){_showReviewDeckActionSheet(context);},
-                          child: Text(deckName)
-                      )
-                    ],
-                  ),
                 ],
               ),
             ),
           ],
         ),
-        _HskListview(statsListFuture: statsListFuture, showTranslation: true, connectTop: true, color: Colors.transparent, scrollAxis: Axis.vertical, showPlayButton: false,)
+        _HskListview(statsListFuture: statsListFuture, showTranslation: true, connectTop: true, color: Colors.transparent, scrollAxis: Axis.vertical, onClick: onClick, showRemove: showRemove(),)
       ],
     );
   }
@@ -114,6 +178,7 @@ class _ManageReviewState extends State<ManageReview> {
               setState(() {
                 sortValue = sortOptions[index];
               });
+              refresh();
             },
             child: Text(sortOptions[index]),
           );
@@ -134,6 +199,7 @@ class _ManageReviewState extends State<ManageReview> {
               setState(() {
                 orderValue = orderOption[index];
               });
+              refresh();
             },
             child: Text(orderOption[index]),
           );
@@ -155,6 +221,7 @@ class _ManageReviewState extends State<ManageReview> {
               setState(() {
                 deckName = deckNames[index];
               });
+              refresh();
             },
             child: Text(deckNames[index]),
           );
@@ -171,26 +238,17 @@ class _HskListview extends StatelessWidget {
   final bool connectTop;
   final Color color;
   final Axis scrollAxis;
-  final bool showPlayButton;
-  const _HskListview({Key? key, required  this.statsListFuture, required this.showTranslation, required this.connectTop, required this.color, required this.scrollAxis, required this.showPlayButton}) : super(key: key);
+  final Function onClick;
+  final bool showRemove;
 
-  get flutterTts => null;
+  const _HskListview({Key? key, required  this.statsListFuture, required this.showTranslation, required this.connectTop, required this.color, required this.scrollAxis, required this.onClick, required this.showRemove}) : super(key: key);
+
+  playCallback(int i){
+    onClick(i);
+  }
 
   @override
   Widget build(BuildContext context) {
-    FlutterTts flutterTts = FlutterTts();
-    setLanguage() async{
-      await flutterTts.setLanguage("zh-CN");
-    }
-    setLanguage();
-    Future speak(String text) async{
-      //await flutterTts.setLanguage("zh-CN");
-      var result = await flutterTts.speak(text);
-      //if (result == 1) setState(() => ttsState = TtsState.playing);
-    }
-    playCallback(String str){
-      speak(str);
-    }
     return FutureBuilder<List<Map<String, dynamic>>>(
         future: statsListFuture,
         builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
@@ -218,7 +276,7 @@ class _HskListview extends StatelessWidget {
                             scrollDirection: scrollAxis,
                             itemCount: wordList.length,
                             itemBuilder: (context, index) {
-                              return _HskListviewItem(wordItem: wordList[index], showTranslation: showTranslation, separator: true, callback: playCallback, showPlayButton: showPlayButton);
+                              return _HskListviewItem(wordItem: wordList[index], showTranslation: showTranslation, separator: true, callback: playCallback, showRemove: showRemove,);
                             },
                           ),
                         ),
@@ -239,9 +297,9 @@ class _HskListviewItem extends StatelessWidget {
   final WordItem wordItem;
   final bool showTranslation;
   final bool separator;
-  final Function(String) callback;
-  final bool showPlayButton;
-  const _HskListviewItem({Key? key, required this.wordItem, required this.showTranslation, required this.separator, required this.callback, required this.showPlayButton,}) : super(key: key);
+  final Function(int) callback;
+  final bool showRemove;
+  const _HskListviewItem({Key? key, required this.wordItem, required this.showTranslation, required this.separator, required this.callback, required this.showRemove,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -250,7 +308,6 @@ class _HskListviewItem extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          //color: Colors.transparent,
           border: separator? const Border(bottom: BorderSide(width: 1.5, color: Color(0xFFECECEC)),)
               :const Border(),
         ),
@@ -295,12 +352,28 @@ class _HskListviewItem extends StatelessWidget {
                 )
               ],
             ),
-            showPlayButton? IconButton(
-                onPressed: () {
-                  callback(wordItem.hanzi);
-                },
-                icon: const Icon(Icons.volume_up))
-                : const SizedBox(height: 0,)
+            Row(
+              children: [
+                Visibility(
+                  visible: showRemove,
+                  child: IconButton(
+                      onPressed: (){
+                          callback(wordItem.id);
+                      },
+                      icon: const Icon(CupertinoIcons.minus_circle)
+                  ),
+                ),
+                Visibility(
+                  visible: !showRemove,
+                  child: IconButton(
+                      onPressed: (){
+                        callback(wordItem.id);
+                      },
+                      icon: const Icon(CupertinoIcons.add)
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),

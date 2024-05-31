@@ -82,11 +82,7 @@ class MyHomePageState extends State<MyHomePage>{
           ],
         ),
         tabBuilder: (BuildContext context, int index) {
-          return CupertinoTabView(
-            builder: (context){
-              return tabList[tabsIndex];
-            },
-          );
+          return tabList[tabsIndex];
         },
       ),
     );

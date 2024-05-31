@@ -216,11 +216,21 @@ class SQLHelper {
     await db.rawInsert("UPDATE preferences SET name = '$name', value = '$value', type  = '$type' WHERE name = '$name' ");
   }
 
-
   static void insertStat ({required int value, required int id}) async {
     final db = await SQLHelper.db();
-    int id1 = await db.rawInsert(
-        "INSERT INTO stats(date, wordid, value) VALUES(strftime('%s', 'now'), $id, $value)");
+    await db.rawInsert(
+        "INSERT INTO stats(date, wordid, value) VALUES(strftime('%s', 'now'), $id, $value)"
+    );
+  }
+
+  static void addToReviewDeck ({required int id, required String deck}) async {
+    final db = await SQLHelper.db();
+    await db.rawInsert(
+        "INSERT INTO review(id, deck) VALUES($id, '$deck')"
+    );
+    await db.rawInsert(
+        "INSERT INTO review(id, deck) VALUES($id, 'any')"
+    );
   }
 
   static void deleteStats() async{
@@ -276,11 +286,19 @@ class SQLHelper {
     )
     INNER JOIN courses on courses.id = wordid
     join review on review.id = wordid
-    where deck = '$deck'
+    $deck
     ORDER BY $sortBy $orderBy
     LIMIT $deckSize;
     """);
   }
+
+  static Future<void> removeFromDeck({required int id, required String deck}) async {
+    final db = await SQLHelper.db();
+    db.rawDelete("""
+      delete from review where deck = '$deck' and id = $id
+    """);
+  }
+
 
   static Future<List<Map<String, dynamic>>> getKnownWords() async {
     final db = await SQLHelper.db();
@@ -520,6 +538,10 @@ class SQLHelper {
         join units on units.unit_id = courses.unit
 		    where units.hsk <= $hsk
     """);
+    testOutBatch.rawInsert("""
+      INSERT INTO review(id, deck) select id, course 
+      from courses where hsk <= $hsk
+    """);
     testOutBatch.commit();
   }
 
@@ -665,4 +687,6 @@ class SQLHelper {
     print("update from tsv completed");
     return true;
   }
+
+
 }

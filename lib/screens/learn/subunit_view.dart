@@ -10,7 +10,7 @@ import '../settings/preferences.dart';
 
 
 class SubunitView extends StatefulWidget {
-  const SubunitView({super.key, required this.wordList, required this.unit, required this.subunit, required this.lastSubunit, required this.name, required this.completed, required this.updateUnits});
+  const SubunitView({super.key, required this.wordList, required this.unit, required this.subunit, required this.lastSubunit, required this.name, required this.completed, required this.updateUnits, required this.courseName});
   final List<WordItem> wordList;
   final int unit;
   final int subunit;
@@ -18,6 +18,7 @@ class SubunitView extends StatefulWidget {
   final String name;
   final bool completed;
   final Function updateUnits;
+  final String courseName;
 
   @override
   State<SubunitView> createState() => _SubunitViewState();
@@ -88,6 +89,7 @@ class _SubunitViewState extends State<SubunitView> {
                               onPressed: () {
                                 Navigator.pushReplacement(context, MaterialPageRoute(
                                   builder: (context) => UnitLearn(
+                                    courseName: widget.courseName,
                                     wordList: widget.wordList,
                                     unit: widget.unit,
                                     subunit: widget.subunit,
@@ -114,7 +116,16 @@ class _SubunitViewState extends State<SubunitView> {
                             child: TextButton(
                               onPressed: () {
                                 Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => UnitGame(wordList: widget.wordList, unit: widget.unit,  sentenceList: sentenceList, subunit: widget.subunit, lastSubunit: widget.lastSubunit, name: "", updateUnits: widget.updateUnits,),
+                                  builder: (context) => UnitGame(
+                                    wordList: widget.wordList,
+                                    unit: widget.unit,
+                                    sentenceList: sentenceList,
+                                    subunit: widget.subunit,
+                                    lastSubunit: widget.lastSubunit,
+                                    name: "",
+                                    updateUnits: widget.updateUnits,
+                                    courseName: widget.courseName,
+                                  ),
                                 )).then((_){
                                   widget.updateUnits();
                                   Navigator.pop(context);

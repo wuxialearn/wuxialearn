@@ -8,7 +8,8 @@ import '../../sql/sql_helper.dart';
 class UnitView extends StatefulWidget {
   final int unit; final String name;
   final Function updateUnits;
-  const UnitView({Key? key, required this.unit, required this.name, required this.updateUnits}) : super(key: key);
+  final String courseName;
+  const UnitView({Key? key, required this.unit, required this.name, required this.updateUnits, required this.courseName}) : super(key: key);
 
   @override
   State<UnitView> createState() => _UnitViewState();
@@ -20,6 +21,7 @@ class _UnitViewState extends State<UnitView> {
   late Future<List<Map<String, dynamic>>> subunitFuture;
   final bool debug = Preferences.getPreference("debug");
   final bool allowAutoComplete =  Preferences.getPreference("allow_auto_complete_unit");
+
   @override
   initState() {
     super.initState();
@@ -92,6 +94,7 @@ class _UnitViewState extends State<UnitView> {
                                   //should use transaction here and elsewhere
                                   for (final word in wordList){
                                     SQLHelper.insertStat(value: 1, id: word.id);
+                                    SQLHelper.addToReviewDeck(id: word.id, deck: widget.courseName);
                                   }
                                   for (int i = 0; i< unitLength.length; i++){
                                     SQLHelper.completeSubUnit(unit: widget.unit, subUnit: i+1);
@@ -147,6 +150,7 @@ class _UnitViewState extends State<UnitView> {
                                                 onPressed: (){
                                                   Navigator.push(context, MaterialPageRoute(
                                                       builder: (context) => SubunitView(
+                                                        courseName: widget.courseName,
                                                         wordList: wordList.sublist(unitIndex[i], unitIndex[i]+unitLength[i]),
                                                         unit: widget.unit,
                                                         subunit: i+1,

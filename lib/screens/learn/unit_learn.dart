@@ -8,13 +8,14 @@ import 'package:hsk_learner/screens/settings/preferences.dart';
 import '../../sql/sql_helper.dart';
 
 class UnitLearn extends StatefulWidget {
-  const UnitLearn({Key? key, required this.wordList, required this.unit, required this.subunit, required this.lastSubunit, required this.name, required this.updateUnits}) : super(key: key);
+  const UnitLearn({Key? key, required this.wordList, required this.unit, required this.subunit, required this.lastSubunit, required this.name, required this.updateUnits, required this.courseName}) : super(key: key);
   final List<WordItem> wordList;
   final int unit;
   final int subunit;
   final bool lastSubunit;
   final String name;
   final Function updateUnits;
+  final String courseName;
 
   @override
   State<UnitLearn> createState() => _UnitLearnState();
@@ -297,6 +298,7 @@ class _UnitLearnState extends State<UnitLearn> {
                                         if (lastPage){
                                           Navigator.pushReplacement(context, MaterialPageRoute(
                                             builder: (context) => UnitGame(
+                                              courseName: widget.courseName,
                                               wordList: widget.wordList,
                                               sentenceList: sentenceList,
                                               unit: widget.unit,
