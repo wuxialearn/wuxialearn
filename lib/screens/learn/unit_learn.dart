@@ -167,7 +167,7 @@ class _UnitLearnState extends State<UnitLearn> {
                                         widget.wordList[pageIndex].translation,
                                       style: const TextStyle(fontSize: 18),
                                     ),
-                                    literal != null && showLiteralPref ?
+                                    showLiteralPref && wordItem.hanzi.length > 1?
                                       Expanded(child: Text(literal))
                                     : const SizedBox(height: 0,),
                                   ],

@@ -3,14 +3,12 @@ class WordItem{
   late final String hanzi;
   late final String pinyin;
   late final String translation;
-  late final int wordLength;
   final List<String> literal = [];
   WordItem(Map<String, dynamic> wordMap){
     id = wordMap["id"];
     hanzi = wordMap["hanzi"];
     pinyin = wordMap["pinyin"];
     translation = wordMap["translations0"];
-    wordLength = hanzi.length;
     if(wordMap["char_one"] != null){
       literal.add(wordMap["char_one"]);
       if(wordMap["char_two"] != null){

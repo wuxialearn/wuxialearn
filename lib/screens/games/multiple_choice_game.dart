@@ -61,7 +61,7 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Visibility(
-                  visible: widget.currWord.wordLength > 1,
+                  visible: widget.currWord.hanzi.length > 1,
                   child: TextButton(
                       onPressed: (){
                         setState(() {
@@ -141,7 +141,7 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
                     ],
                   ),
                   Visibility(
-                      visible: (showHint || clicked) && widget.currWord.wordLength > 1,
+                      visible: (showHint || clicked) && widget.currWord.hanzi.length > 1,
                       child: Text(
                         widget.currWord.literal.join(" + "),
                         textAlign: TextAlign.center,
