@@ -12,7 +12,17 @@ class HskListview extends StatelessWidget {
   final Color color;
   final Axis scrollAxis;
   final bool showPlayButton;
-  const HskListview({Key? key, required  this.hskList, required this.showTranslation, required this.connectTop, required this.color, required this.scrollAxis, this.showPlayButton = true}) : super(key: key);
+  final Widget emptyListMessage;
+  const HskListview({
+    Key? key,
+    required  this.hskList,
+    required this.showTranslation,
+    required this.connectTop,
+    required this.color,
+    required this.scrollAxis,
+    this.showPlayButton = true,
+    this.emptyListMessage = const Text("")
+  }) : super(key: key);
 
   get flutterTts => null;
   
@@ -48,7 +58,9 @@ class HskListview extends StatelessWidget {
                             :BorderRadius.circular(10),
                         color:color,
                       ),
-                      child: Column(
+                      child:
+                          wordList.isEmpty? emptyListMessage:
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
@@ -90,7 +102,9 @@ class HskListview extends StatelessWidget {
                             :BorderRadius.circular(10),
                         color:color,
                       ),
-                      child: ListView.builder(
+                      child:
+                      wordList.isEmpty? emptyListMessage:
+                      ListView.builder(
                         physics: const ScrollPhysics(),
                         padding: EdgeInsets.zero,
                         scrollDirection: scrollAxis,

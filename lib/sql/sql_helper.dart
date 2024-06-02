@@ -223,16 +223,32 @@ class SQLHelper {
     );
   }
 
-  static void addToReviewDeck ({required int id, required String deck}) async {
+  static void addToReviewDeck ({required int id, required String deck, required bool value}) async {
     final db = await SQLHelper.db();
-    await db.rawInsert(
-        "INSERT INTO review(id, deck) VALUES($id, '$deck')"
-    );
-    await db.rawInsert(
-        "INSERT INTO review(id, deck) VALUES($id, 'any')"
-    );
-  }
+    await db.transaction((txn) async {
+      await txn.rawInsert(
+          "INSERT INTO review(id, deck) VALUES($id, '$deck')"
+      );
+      await txn.rawInsert(
+          "INSERT INTO review(id, deck) VALUES($id, 'any')"
+      );
+      DateTime duration = switch(value){
+        true => DateTime.now().add(const Duration(days: 4)),
+        false =>  DateTime.now().add(const Duration(minutes: 1))
+      };
+      int timeStamp = duration.toUtc().millisecondsSinceEpoch ~/ 1000;
+      txn.rawUpdate("""
+        UPDATE review SET show_next = $timeStamp WHERE id = $id
+      """);
+    });
 
+  }
+  static void updateReview({required int id, required int time}) async {
+    final db = await SQLHelper.db();
+    db.rawUpdate("""
+      UPDATE review set show_next = $time where id = $id 
+    """);
+  }
   static void deleteStats() async{
     final db = await SQLHelper.db();
     await db.rawDelete("delete from stats");
@@ -456,53 +472,6 @@ class SQLHelper {
     """);
   }
 
-  static Future<List<Map<String, dynamic>>> getReview({
-    required int deckSize, required String sortBy, required String orderBy,
-    required String deckName,
-  }) async {
-    final db = await SQLHelper.db();
-    final a =  db.rawQuery("""
-        SELECT t1.id, t1.score, t1.percent_correct, t1.hanzi,
-        t1.translations0, t1.hsk, t1.pinyin,
-        a_tl.translation as char_one, b_tl.translation as char_two, 
-        c_tl.translation as char_three, d_tl.translation as char_four
-        FROM (
-          SELECT courses.id, right_occurrence, wrong_occurrence, 
-            courses.hanzi, courses.hsk, courses.pinyin, courses.translations0,
-            last_seen, (right_occurrence - wrong_occurrence) as score,
-            ROUND(right_occurrence * 100.0 / (right_occurrence + wrong_occurrence), 1) AS percent_correct,
-            SUBSTR(hanzi, 1, 1) a, SUBSTR(hanzi, 2, 1) b,
-            SUBSTR(hanzi, 3, 1) c, SUBSTR(hanzi, 4, 1) d
-            FROM(
-              SELECT
-              wordid,
-              SUM(CASE recent_stats.value WHEN 1 THEN 1 ELSE 0 END) right_occurrence,
-              SUM(CASE recent_stats.value WHEN 0 THEN 1 ELSE 0 END) wrong_occurrence,
-              MAX(recent_stats.date) last_seen
-              FROM(
-              SELECT *
-                ,ROW_NUMBER() OVER (
-                PARTITION BY wordid ORDER BY date DESC
-              )AS group_size
-              FROM stats
-              )AS recent_stats
-              WHERE group_size <= 5
-              GROUP BY wordid
-            )
-          INNER JOIN courses on courses.id = wordid
-        )as t1
-    left join unihan a_tl on t1.a = a_tl.hanzi
-    left join unihan b_tl on t1.b = b_tl.hanzi  
-    left join unihan c_tl on t1.c = c_tl.hanzi
-    left join unihan d_tl on t1.d = d_tl.hanzi 
-    join review on review.id = t1.id
-    where deck = '$deckName'
-    GROUP BY t1.id
-    ORDER BY $sortBy $orderBy
-    LIMIT $deckSize;
-    """);
-    return a;
-  }
 
   static Future<List<Map<String, dynamic>>> getTestOutWords({required int hsk}) async {
     final db = await SQLHelper.db();
@@ -539,7 +508,7 @@ class SQLHelper {
 		    where units.hsk <= $hsk
     """);
     testOutBatch.rawInsert("""
-      INSERT INTO review(id, deck) select id, course 
+      INSERT INTO review(id, deck, show_next) select id, course, strftime('%s', 'now') + (1 * 24 * 60 * 60)
       from courses where hsk <= $hsk
     """);
     testOutBatch.commit();
@@ -687,6 +656,4 @@ class SQLHelper {
     print("update from tsv completed");
     return true;
   }
-
-
 }

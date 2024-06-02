@@ -7,7 +7,8 @@ import '../../utils/styles.dart';
 import 'flashcard.dart';
 class ReviewFlashcards extends StatefulWidget {
   final Future<List<Map<String, dynamic>>> hskList;
-  const ReviewFlashcards({Key? key, required this.hskList}) : super(key: key);
+  final Function update;
+  const ReviewFlashcards({Key? key, required this.hskList, required this.update}) : super(key: key);
 
   @override
   State<ReviewFlashcards> createState() => _ReviewFlashcardsState();
@@ -28,9 +29,19 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
   }
 
   answerButtonCallBack(int id) {
-    return(bool value){
-      int stat = value? 1:0;
+    return(int value){
+      int stat = value == 0? 0:1;
       SQLHelper.insertStat(value: stat, id: id);
+      DateTime dateTime = switch(value){
+        0 => DateTime.now().add(const Duration(minutes: 1)),
+        1 => DateTime.now().add(const Duration(minutes: 6)),
+        2 => DateTime.now().add(const Duration(minutes: 10)),
+        3 => DateTime.now().add(const Duration(days: 4)),
+        _ => DateTime.now(),
+      } ;
+      final int time  = dateTime.toUtc().millisecondsSinceEpoch ~/ 1000;
+      SQLHelper.updateReview(id: id, time: time);
+      widget.update();
       if (_pageController.hasClients) {
         if (lastPage) {
           Navigator.pop(context);
@@ -220,23 +231,49 @@ class _ShowNextCardButton extends StatelessWidget {
 }
 
 class _AnswerButton extends StatelessWidget {
-  final Function(bool value) callback;
+  final Function(int value) callback;
   const _AnswerButton({Key? key, required this.callback,}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        IconButton(
-          onPressed: (){callback(false);},
-          icon: const Icon(Icons.not_interested),
-          iconSize: 30,
+        TextButton(
+          onPressed: (){callback(0);},
+          child: const Column(
+            children: [
+              Text("< 1 min"),
+              Text("Again")
+            ],
+          )
         ),
-        IconButton(
-          onPressed: (){callback(true);},
-          icon: const Icon(Icons.check),
-          iconSize: 30,
-        )
+        TextButton(
+            onPressed: (){callback(0);},
+            child: const Column(
+              children: [
+                Text("< 6 min"),
+                Text("Hard")
+              ],
+            )
+        ),
+        TextButton(
+            onPressed: (){callback(0);},
+            child: const Column(
+              children: [
+                Text("< 10 min"),
+                Text("Good")
+              ],
+            )
+        ),
+        TextButton(
+            onPressed: (){callback(0);},
+            child: const Column(
+              children: [
+                Text("4 days"),
+                Text("Easy")
+              ],
+            )
+        ),
       ],
     );
   }

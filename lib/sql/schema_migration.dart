@@ -22,8 +22,8 @@ class SchemaMigration{
           )
         """);
         txn.execute("""
-          insert into review (id, deck)
-          SELECT id, course FROM courses
+          insert into review (id, deck, show_next)
+          SELECT id, course, strftime('%s', 'now') + (1 * 24 * 60 * 60) FROM courses
           JOIN stats on stats.wordid = courses.id
           GROUP BY courses.id
         """);

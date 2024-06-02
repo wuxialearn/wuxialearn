@@ -63,8 +63,9 @@ class _UnitGameState extends State<UnitGame> {
 
   void callback(bool value, WordItem currWord, bool? chineseToEnglish) async {
     if(widget.unit > 0 && chineseToEnglish != null) {
-      SQLHelper.insertStat(value: value?1:0, id: currWord.id);
-      SQLHelper.addToReviewDeck(id: currWord.id, deck: widget.courseName);
+      final int result = value?1:0;
+      SQLHelper.insertStat(value: result, id: currWord.id);
+      SQLHelper.addToReviewDeck(id: currWord.id, deck: widget.courseName, value: value);
     }
     if(value == false){
       setState(() {

@@ -94,7 +94,7 @@ class _UnitViewState extends State<UnitView> {
                                   //should use transaction here and elsewhere
                                   for (final word in wordList){
                                     SQLHelper.insertStat(value: 1, id: word.id);
-                                    SQLHelper.addToReviewDeck(id: word.id, deck: widget.courseName);
+                                    SQLHelper.addToReviewDeck(id: word.id, deck: widget.courseName, value: true);
                                   }
                                   for (int i = 0; i< unitLength.length; i++){
                                     SQLHelper.completeSubUnit(unit: widget.unit, subUnit: i+1);

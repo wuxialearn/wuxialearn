@@ -4,8 +4,8 @@ import 'package:hsk_learner/screens/review/review_flashcards.dart';
 import 'package:hsk_learner/screens/review/review_quiz.dart';
 import 'package:hsk_learner/utils/collapsible.dart';
 import 'package:hsk_learner/widgets/hsk_listview/hsk_listview.dart';
+import '../../sql/review_sql.dart';
 import '../../utils/size_transition.dart';
-import '../../sql/sql_helper.dart';
 import '../../utils/styles.dart';
 import '../settings/preferences.dart';
 import 'manage_review.dart';
@@ -79,17 +79,16 @@ class _ReviewPageState extends State<ReviewPage> {
   late Future<List<Map<String, dynamic>>> hskList;
   late List<Future<List<Map<String, dynamic>>>> sentenceList;
   bool lastPage = false;
-  bool hardWords = true;
-  bool oldWords = false;
-  bool randomWords = false;
   bool previewDeck = Preferences.getPreference("showTranslations");
   bool isCollapsed = true;
   bool deckExists = true;
+  List<String> reviewWordsOptions = ["SRS", "random words","difficult words", "old words",];
   List<String> reviewTypeOptions = ["Flashcards","Quiz",];
   List<String> deckSizeOptions = ["Small", "Medium", "Large", "All"];
   List<String> deckNames = ["hsk", "wuxia"];
   String deckName = 'hsk';
   String reviewTypeValue = "Flashcards";
+  String reviewWordsValue = "SRS";
   String deckSizeValue = "Small";
   final PageController _pageController = PageController(initialPage: 0);
   @override
@@ -104,36 +103,37 @@ class _ReviewPageState extends State<ReviewPage> {
     hskList = getReview();
   }
 
+  void update(){
+    if(reviewWordsValue == "SRS"){
+      setState(() {
+        hskList = getReview();
+      });
+    }
+  }
+
   Future<List<Map<String, dynamic>>> getReview()  async {
     int numCards = -1;
-    bool isAll = false;
     switch(deckSizeValue){
       case "Small": numCards = 10; break;
       case "Medium": numCards = 20; break;
       case "Large": numCards = 35; break;
-      case "ALL": isAll = true; break;
+      case "ALL": break;
     }
-    late List<Map<String, dynamic>> hardWordsList =[];
-    late List<Map<String, dynamic>> oldWordsList = [];
-    if(hardWords || isAll) {
-      hardWordsList = await SQLHelper.getReview(deckSize: numCards, sortBy: "score", orderBy: "ASC", deckName: deckName);
+    List<Map<String, dynamic>> reviewList = [];
+    switch(reviewWordsValue){
+      case "SRS":
+        reviewList = await ReviewSql.getSrsReview(deckSize: numCards);
+        break;
+      case "random words":
+        reviewList = await ReviewSql.getReview(deckSize: numCards, sortBy: "RANDOM()", orderBy: "ASC", deckName: deckName);
+        break;
+      case "difficult words":
+        reviewList = await ReviewSql.getReview(deckSize: numCards, sortBy: "score", orderBy: "ASC", deckName: deckName);
+        break;
+      case "old words":
+        reviewList = await ReviewSql.getReview(deckSize: numCards, sortBy: "last_seen", orderBy: "ASC", deckName: deckName);
     }
-    if(oldWords && !isAll){
-      oldWordsList = await SQLHelper.getReview(deckSize: numCards, sortBy: "last_seen", orderBy: "ASC", deckName: deckName);
-    }
-    if(randomWords && !isAll){
-      oldWordsList = await SQLHelper.getReview(deckSize: numCards, sortBy: "RANDOM()", orderBy: "ASC", deckName: deckName);
-    }
-    List<Map<String, dynamic>> reviewList = hardWordsList;
-    List<int> idList = [];
-    for (var element in reviewList) {
-      idList.add(element["id"]);
-    }
-    for (var element in oldWordsList) {
-      if(!idList.contains(element["id"])){
-        reviewList.add(element);
-      }
-    }
+    print(reviewList);
     return reviewList;
   }
 
@@ -196,52 +196,8 @@ class _ReviewPageState extends State<ReviewPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text("Include difficult words"),
-                          CupertinoSwitch(
-                            // This bool value toggles the switch.
-                            value: hardWords,
-                            activeColor: CupertinoColors.activeBlue,
-                            onChanged: (bool? value) {
-                              // This is called when the user toggles the switch.
-                              setState(() {
-                                hardWords = value ?? false;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("Include old words"),
-                          CupertinoSwitch(
-                            // This bool value toggles the switch.
-                            value: oldWords,
-                            activeColor: CupertinoColors.activeBlue,
-                            onChanged: (bool? value) {
-                              // This is called when the user toggles the switch.
-                              setState(() {
-                                oldWords = value ?? false;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("Include random words"),
-                          CupertinoSwitch(
-                            // This bool value toggles the switch.
-                            value: randomWords,
-                            activeColor: CupertinoColors.activeBlue,
-                            onChanged: (bool? value) {
-                              // This is called when the user toggles the switch.
-                              setState(() {
-                                randomWords = value ?? false;
-                              });
-                            },
-                          ),
+                          const Text("Review words:"),
+                          CupertinoButton(onPressed: (){ _showReviewWordsActionSheet(context);}, child: Text(reviewWordsValue), ),
                         ],
                       ),
                       Row(
@@ -283,7 +239,15 @@ class _ReviewPageState extends State<ReviewPage> {
                 ],
               ),
             ),
-            deckExists? HskListview(hskList: hskList, showTranslation: previewDeck, connectTop: true, color: Colors.white, scrollAxis: Axis.vertical,): const SizedBox(height: 0,),
+            deckExists?
+            HskListview(
+              hskList: hskList,
+              showTranslation: previewDeck,
+              connectTop: true, color: Colors.white,
+              scrollAxis: Axis.vertical,
+              emptyListMessage: const Text("Nothing to review")
+            )
+            : const SizedBox(height: 0,),
             ShrinkWidget(
               //visible: isCollapsed,
               isCollapsed: isCollapsed,
@@ -299,7 +263,7 @@ class _ReviewPageState extends State<ReviewPage> {
                         ),);
                       }else{
                         Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => ReviewFlashcards(hskList: hskList),
+                          builder: (context) => ReviewFlashcards(hskList: hskList, update: update),
                         ),);
                       }
                     },
@@ -310,6 +274,28 @@ class _ReviewPageState extends State<ReviewPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  _showReviewWordsActionSheet<bool>(BuildContext context) {
+    showCupertinoModalPopup<bool>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: const Text('Select word selection type'),
+        actions:
+        List<CupertinoActionSheetAction>.generate(reviewWordsOptions.length,(index){
+          return CupertinoActionSheetAction(
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.pop(context, true);
+              setState(() {
+                reviewWordsValue = reviewWordsOptions[index];
+              });
+            },
+            child: Text(reviewWordsOptions[index]),
+          );
+        }),
       ),
     );
   }

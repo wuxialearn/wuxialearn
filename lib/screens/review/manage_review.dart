@@ -88,7 +88,7 @@ class _ManageReviewState extends State<ManageReview> {
                       children: List.generate(options.length, (index) {
                         return TextButton(
                             onPressed: (){
-                              SQLHelper.addToReviewDeck(id: id, deck: options[index]);
+                              SQLHelper.addToReviewDeck(id: id, deck: options[index], value: true);
                               Navigator.pop(context);
                             },
                             child: Text(options[index])
@@ -110,7 +110,6 @@ class _ManageReviewState extends State<ManageReview> {
             );
           }
       );
-      SQLHelper.addToReviewDeck(id: id, deck: "wuxia");
     }
     print(id);
     refresh();
