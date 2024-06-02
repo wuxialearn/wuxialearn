@@ -65,6 +65,7 @@ class _SubunitViewState extends State<SubunitView> {
                   return HskListviewItem(
                     wordItem: widget.wordList[index],
                     showTranslation: true,
+                    showPinyin: true,
                     separator: true,
                     callback: (String s){
                       speak(s);

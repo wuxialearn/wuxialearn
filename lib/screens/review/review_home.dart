@@ -80,6 +80,7 @@ class _ReviewPageState extends State<ReviewPage> {
   late List<Future<List<Map<String, dynamic>>>> sentenceList;
   bool lastPage = false;
   bool previewDeck = Preferences.getPreference("showTranslations");
+  bool showPinyin = Preferences.getPreference("show_pinyin_by_default_in_review");
   bool isCollapsed = true;
   bool deckExists = true;
   List<String> reviewWordsOptions = ["SRS", "random words","difficult words", "old words",];
@@ -179,23 +180,6 @@ class _ReviewPageState extends State<ReviewPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text("Show translations in preview"),
-                          CupertinoSwitch(
-                            // This bool value toggles the switch.
-                            value: previewDeck,
-                            activeColor: CupertinoColors.activeBlue,
-                            onChanged: (bool? value) {
-                              // This is called when the user toggles the switch.
-                              setState(() {
-                                previewDeck = value ?? false;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
                           const Text("Review words:"),
                           CupertinoButton(onPressed: (){ _showReviewWordsActionSheet(context);}, child: Text(reviewWordsValue), ),
                         ],
@@ -243,6 +227,7 @@ class _ReviewPageState extends State<ReviewPage> {
             HskListview(
               hskList: hskList,
               showTranslation: previewDeck,
+              showPinyin: showPinyin,
               connectTop: true, color: Colors.white,
               scrollAxis: Axis.vertical,
               emptyListMessage: const Text("Nothing to review")

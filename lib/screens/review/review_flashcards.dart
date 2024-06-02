@@ -248,7 +248,7 @@ class _AnswerButton extends StatelessWidget {
           )
         ),
         TextButton(
-            onPressed: (){callback(0);},
+            onPressed: (){callback(1);},
             child: const Column(
               children: [
                 Text("< 6 min"),
@@ -257,7 +257,7 @@ class _AnswerButton extends StatelessWidget {
             )
         ),
         TextButton(
-            onPressed: (){callback(0);},
+            onPressed: (){callback(2);},
             child: const Column(
               children: [
                 Text("< 10 min"),
@@ -266,7 +266,7 @@ class _AnswerButton extends StatelessWidget {
             )
         ),
         TextButton(
-            onPressed: (){callback(0);},
+            onPressed: (){callback(3);},
             child: const Column(
               children: [
                 Text("4 days"),

@@ -362,7 +362,7 @@ class _HorizontalHskList extends StatelessWidget {
               ],
             ),
             PrototypeHeight(
-              prototype: PrototypeHorizontalHskListView(connectTop: true, color: Colors.white, wordItem: wordMap, showTranslation: true, playCallback: (String s){}, showPlayButton: showPlayButton,),
+              prototype: PrototypeHorizontalHskListView(connectTop: true, color: Colors.white, wordItem: wordMap, showTranslation: true, playCallback: (String s){}, showPlayButton: showPlayButton, showPinyin: true,),
               child: FutureBuilder<List<Map<String, dynamic>>>(
                   future: hskList,
                   builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
@@ -397,7 +397,7 @@ class _HorizontalHskList extends StatelessWidget {
                     }
                     else{
                       return PrototypeHeight(
-                        prototype: PrototypeHorizontalHskListView(connectTop: true, color: Colors.white, wordItem: wordMap, showTranslation: true, playCallback: (String s){}, showPlayButton: showPlayButton,),
+                        prototype: PrototypeHorizontalHskListView(connectTop: true, color: Colors.white, wordItem: wordMap, showTranslation: true, playCallback: (String s){}, showPlayButton: showPlayButton, showPinyin: true,),
                         child: Container(),
                       );
                     }

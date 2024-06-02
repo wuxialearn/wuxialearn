@@ -12,6 +12,7 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   bool translation = Preferences.getPreference("showTranslations");
+  bool reviewPinyin =  Preferences.getPreference("show_pinyin_by_default_in_review");
   bool checkVersionOnStart = Preferences.getPreference("check_for_new_version_on_start");
   bool debug  = Preferences.getPreference("debug");
   bool allowSkipUnits = Preferences.getPreference("allow_skip_units");
@@ -73,6 +74,7 @@ class _SettingsState extends State<Settings> {
           child: Column(
             children: [
               const SizedBox(height: 20,),
+              const Text("Review"),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -88,6 +90,22 @@ class _SettingsState extends State<Settings> {
                   ),
                 ],
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Show pinyin by default"),
+                  CupertinoSwitch(
+                    // This bool value toggles the switch.
+                    value: reviewPinyin,
+                    activeColor: CupertinoColors.activeBlue,
+                    onChanged: (bool value) {
+                      setSettingBool(name: "show_pinyin_by_default_in_review", type: "bool", value: value);
+                      setState(() => reviewPinyin = value);
+                    },
+                  ),
+                ],
+              ),
+              const Text("Learn"),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

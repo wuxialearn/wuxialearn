@@ -42,5 +42,9 @@
   "show_literal_meaning_in_unit_learn": {
     "value": "1",
     "type": "bool"
+  },
+  "show_pinyin_by_default_in_review": {
+    "value": "1",
+    "type": "bool"
   }
 }
