@@ -31,12 +31,12 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
 
   answerButtonCallBack(int id) {
     return(int value){
-      int stat = value == 0? 0:1;
+      int stat = value == 0 || value == 1 ? 0:1;
       SQLHelper.insertStat(value: stat, id: id);
       DateTime dateTime = switch(value){
         0 => DateTime.now().add(const Duration(minutes: 1)),
         1 => DateTime.now().add(const Duration(minutes: 6)),
-        2 => DateTime.now().add(const Duration(minutes: 10)),
+        2 => DateTime.now().add(const Duration(hours: 12)),
         3 => DateTime.now().add(const Duration(days: 4)),
         _ => DateTime.now(),
       } ;
@@ -261,7 +261,7 @@ class _AnswerButton extends StatelessWidget {
             onPressed: (){callback(2);},
             child: const Column(
               children: [
-                Text("< 10 min"),
+                Text("< 12 hrs"),
                 Text("Good")
               ],
             )
