@@ -10,6 +10,11 @@ Wuxia Learn is a free and open source Chinese language learning app.
       alt='Get it on the App Store'
       height="80">](https://apps.apple.com/om/app/wuxia-learn-learn-chinese/id6478085787)
 
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+    alt="Get it on F-Droid"
+    height="80">](https://f-droid.org/packages/com.wuxialearn.wuxialearn/)
+
+
 # Screenshots
 <img src="https://github.com/wuxialearn/assets/blob/main/home%20screen.png?raw=true"
       alt='home screen'
