@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
 import '../../utils/styles.dart';
+import '../settings/preferences.dart';
 import 'flashcard.dart';
 class ReviewFlashcards extends StatefulWidget {
   final Future<List<Map<String, dynamic>>> hskList;
@@ -17,7 +18,7 @@ class ReviewFlashcards extends StatefulWidget {
 class _ReviewFlashcardsState extends State<ReviewFlashcards> {
   bool lastPage = false;
   bool wasClicked = false;
-  bool showPinyin = true;
+  bool showPinyin = Preferences.getPreference("show_pinyin_by_default_in_review");
   bool showHint = false;
   bool showShowHint = false;
   final PageController _pageController = PageController(initialPage: 0);

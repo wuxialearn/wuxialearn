@@ -231,13 +231,10 @@ class _UnitLearnState extends State<UnitLearn> {
                                                       child: Column(
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
-                                                          Visibility(
-                                                            visible: showPinyin,
-                                                            child: Text(
-                                                              exampleList[examplesIndex]["pinyin"],
-                                                              style: const TextStyle(
-                                                                fontSize: 14,
-                                                              ),
+                                                          Text(
+                                                            exampleList[examplesIndex]["pinyin"],
+                                                            style: const TextStyle(
+                                                              fontSize: 14,
                                                             ),
                                                           ),
                                                           Text(
