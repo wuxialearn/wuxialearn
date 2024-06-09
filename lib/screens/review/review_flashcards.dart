@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hsk_learner/data_model/word_item.dart';
+import 'package:hsk_learner/sql/review_sql.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
 import '../../utils/styles.dart';
 import '../settings/preferences.dart';
@@ -9,7 +11,9 @@ import 'flashcard.dart';
 class ReviewFlashcards extends StatefulWidget {
   final Future<List<Map<String, dynamic>>> hskList;
   final Function update;
-  const ReviewFlashcards({Key? key, required this.hskList, required this.update}) : super(key: key);
+  final String type;
+  final int deckSize;
+  const ReviewFlashcards({Key? key, required this.hskList, required this.update, required this.type, required this.deckSize}) : super(key: key);
 
   @override
   State<ReviewFlashcards> createState() => _ReviewFlashcardsState();
@@ -22,6 +26,22 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
   bool showHint = false;
   bool showShowHint = false;
   final PageController _pageController = PageController(initialPage: 0);
+  int offset = 0;
+
+  late Future<List<Map<String, dynamic>>> reviewList;
+
+  @override
+  void initState() {
+    reviewList = widget.hskList;
+    super.initState();
+    setShowHint();
+    setLanguage();
+  }
+
+  setShowHint() async {
+    List<WordItem> wordList = createWordList(await widget.hskList);
+    showShowHint = wordList[0].hanzi.length > 1;
+  }
 
   nextButtonCallback(){
     setState(() {
@@ -29,8 +49,15 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
     });
   }
 
+  Future<List<Map<String, dynamic>>> appendElements(Future<List<Map<String, dynamic>>> listFuture, Future<List<Map<String, dynamic>>> elementsToAdd) async {
+    final list = await listFuture;
+    final list2 = await elementsToAdd;
+    final list3 = [...list, ...list2];
+    return list3;
+  }
+
   answerButtonCallBack(int id) {
-    return(int value){
+    return(int value) async {
       int stat = value == 0 || value == 1 ? 0:1;
       SQLHelper.insertStat(value: stat, id: id);
       DateTime dateTime = switch(value){
@@ -39,10 +66,21 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
         2 => DateTime.now().add(const Duration(hours: 12)),
         3 => DateTime.now().add(const Duration(days: 4)),
         _ => DateTime.now(),
-      } ;
+      };
       final int time  = dateTime.toUtc().millisecondsSinceEpoch ~/ 1000;
       SQLHelper.updateReview(id: id, time: time);
       widget.update();
+      /*
+      still needs some thought on what we should do here
+      if(widget.type == "SRS"){
+        print("we are here");
+        final newList =  ReviewSql.getSrsReview(deckSize: 10);
+        setState(() {
+          reviewList = newList;
+        });}
+       */
+      print((await reviewList).length);
+      print(reviewList);
       if (_pageController.hasClients) {
         if (lastPage) {
           Navigator.pop(context);
@@ -65,6 +103,14 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
     _pageController.dispose();
     super.dispose();
   }
+  FlutterTts flutterTts = FlutterTts();
+  setLanguage() async{
+    await flutterTts.setLanguage("zh-CN");
+  }
+
+  Future speak(String text) async{
+    await flutterTts.speak(text);
+  }
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -75,11 +121,10 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
         child: Column(
           children: [
             FutureBuilder<List<Map<String, dynamic>>>(
-                future: widget.hskList,
+                future: reviewList,
                 builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                   if (snapshot.hasData) {
                     List<WordItem> wordList = createWordList(snapshot.data!);
-                    showShowHint = wordList[0].hanzi.length > 1;
                     return Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,9 +189,38 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                               style: const TextStyle(fontSize: 20, color: Colors.black54),
                                                           )
                                                       ),
-                                                      Text(
-                                                        wordList[pageIndex].hanzi,
-                                                        style: const TextStyle(fontSize: 40, color: Colors.black),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Visibility(
+                                                            maintainState: true,
+                                                            maintainSize: true,
+                                                            maintainAnimation: true,
+                                                            visible: false,
+                                                            child: IconButton(
+                                                                onPressed: () {
+                                                                  speak(wordList[pageIndex].hanzi);
+                                                                },
+                                                                icon: const Icon(Icons.volume_up)
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            wordList[pageIndex].hanzi,
+                                                            style: const TextStyle(fontSize: 40, color: Colors.black),
+                                                          ),
+                                                          Visibility(
+                                                            maintainState: true,
+                                                            maintainSize: true,
+                                                            maintainAnimation: true,
+                                                            visible: showPinyin,
+                                                            child: IconButton(
+                                                                onPressed: () {
+                                                                  speak(wordList[pageIndex].hanzi);
+                                                                },
+                                                                icon: const Icon(Icons.volume_up)
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                       Visibility(
                                                           visible: showHint,
@@ -168,7 +242,39 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
                                                       Text(wordList[pageIndex].pinyin, style: const TextStyle(fontSize: 25, color: Colors.black),),
-                                                      Text(wordList[pageIndex].hanzi, style: const TextStyle(fontSize: 40, color: Colors.black),),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Visibility(
+                                                            maintainState: true,
+                                                            maintainSize: true,
+                                                            maintainAnimation: true,
+                                                            visible: false,
+                                                            child: IconButton(
+                                                                onPressed: () {
+                                                                  speak(wordList[pageIndex].hanzi);
+                                                                },
+                                                                icon: const Icon(Icons.volume_up)
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            wordList[pageIndex].hanzi,
+                                                            style: const TextStyle(fontSize: 40, color: Colors.black),
+                                                          ),
+                                                          Visibility(
+                                                            maintainState: true,
+                                                            maintainSize: true,
+                                                            maintainAnimation: true,
+                                                            visible: true,
+                                                            child: IconButton(
+                                                                onPressed: () {
+                                                                  speak(wordList[pageIndex].hanzi);
+                                                                },
+                                                                icon: const Icon(Icons.volume_up)
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                       Text(wordList[pageIndex].translation, style: const TextStyle(fontSize: 25, color: Colors.black),),
                                                       Visibility(
                                                           visible: showHint,
@@ -182,7 +288,12 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                 ),
                                                 Padding(
                                                   padding: const EdgeInsets.all(15.0),
-                                                  child: _AnswerButton(callback: answerButtonCallBack(wordList[pageIndex].id)),
+                                                  child: SingleChildScrollView(
+                                                    scrollDirection: Axis.horizontal,
+                                                    child: _AnswerButton(
+                                                        callback: answerButtonCallBack(wordList[pageIndex].id)
+                                                    ),
+                                                  ),
                                                 )
                                               ],
                                             )

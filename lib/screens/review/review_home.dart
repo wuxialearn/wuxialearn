@@ -79,6 +79,7 @@ class _ReviewPageState extends State<ReviewPage> {
   late Future<List<Map<String, dynamic>>> hskList;
   late List<Future<List<Map<String, dynamic>>>> sentenceList;
   bool lastPage = false;
+  int numCards = -1;
   bool previewDeck = Preferences.getPreference("showTranslations");
   bool showPinyin = Preferences.getPreference("show_pinyin_by_default_in_review");
   bool isCollapsed = true;
@@ -113,7 +114,6 @@ class _ReviewPageState extends State<ReviewPage> {
   }
 
   Future<List<Map<String, dynamic>>> getReview()  async {
-    int numCards = -1;
     switch(deckSizeValue){
       case "Small": numCards = 10; break;
       case "Medium": numCards = 20; break;
@@ -248,7 +248,7 @@ class _ReviewPageState extends State<ReviewPage> {
                         ),);
                       }else{
                         Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => ReviewFlashcards(hskList: hskList, update: update),
+                          builder: (context) => ReviewFlashcards(hskList: hskList, update: update, type: reviewWordsValue, deckSize: numCards),
                         ),);
                       }
                     },
