@@ -44,6 +44,8 @@ class _SentenceGameState extends State<SentenceGame> {
     //words = widget.buildEnglish ? sentenceToBuild.split(" ") : sentenceToBuild.replaceAll(" ", "").split("");
     //words = sentenceToBuild.split(" ");
     words = sentenceToBuild.replaceAll('，', '， ').split(" ");
+    words.removeWhere((element) => element == " ");
+    words.removeWhere((element) => element == "");
     pinyin = [];
     for (int i = 0; i< words.length; i++){
       pinyin.add(PinyinHelper.getPinyinE(words[i], separator: " ", defPinyin: '#', format: PinyinFormat.WITH_TONE_MARK));
