@@ -118,7 +118,7 @@ class _ReviewPageState extends State<ReviewPage> {
       case "Small": numCards = 10; break;
       case "Medium": numCards = 20; break;
       case "Large": numCards = 35; break;
-      case "ALL": break;
+      case "All": numCards = -1; break;
     }
     List<Map<String, dynamic>> reviewList = [];
     switch(reviewWordsValue){
