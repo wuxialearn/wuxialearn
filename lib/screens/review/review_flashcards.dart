@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -56,6 +58,14 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
     return list3;
   }
 
+  Duration getRandomDuration(Duration min, Duration max) {
+    int minMilliseconds = min.inMilliseconds;
+    int maxMilliseconds = max.inMilliseconds;
+    Random rnd = Random();
+    var range = (maxMilliseconds - minMilliseconds);
+    return Duration(milliseconds:minMilliseconds + rnd.nextInt(range));
+  }
+
   answerButtonCallBack(int id) {
     return(int value) async {
       int stat = value == 0 || value == 1 ? 0:1;
@@ -65,6 +75,7 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
         1 => DateTime.now().add(const Duration(minutes: 6)),
         2 => DateTime.now().add(const Duration(hours: 12)),
         3 => DateTime.now().add(const Duration(days: 4)),
+        4 => DateTime.now().add(getRandomDuration(const Duration(days: 10), const Duration(days: 30))),
         _ => DateTime.now(),
       };
       final int time  = dateTime.toUtc().millisecondsSinceEpoch ~/ 1000;
@@ -383,6 +394,15 @@ class _AnswerButton extends StatelessWidget {
               children: [
                 Text("4 days"),
                 Text("Easy")
+              ],
+            )
+        ),
+        TextButton(
+            onPressed: (){callback(4);},
+            child: const Column(
+              children: [
+                Text("10-30 days"),
+                Text("Perfect")
               ],
             )
         ),
