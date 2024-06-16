@@ -35,6 +35,7 @@ class _WordViewState extends State<WordView> {
               builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                if(snapshot.hasData){
                  final List<Map<String, dynamic>> stats = snapshot.data!;
+                 print(stats);
                  String? literal;
                  if(stats[0]["char_two"] != null){
                    literal = "${stats[0]["char_one"]} + ${stats[0]["char_two"]}";
@@ -89,7 +90,12 @@ class _WordViewState extends State<WordView> {
                               )}
                           """),
                           Text("seen ${stats[0]["total_seen"]} time${stats[0]["total_seen"]!=1?"s":""}"),
-                          Text("correct percentage: ${stats[0]["total_correct"]}%")
+                          Text("correct percentage: ${stats[0]["total_correct"]}%"),
+                          Text("""next review: ${
+                              DateFormat.yMd().format(
+                                  DateTime.fromMillisecondsSinceEpoch(stats[0]["show_next"]*1000)
+                              )}
+                          """),
                         ],
                       ),
                       const SizedBox(height: 3,),
