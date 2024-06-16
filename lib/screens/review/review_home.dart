@@ -160,7 +160,7 @@ class _ReviewPageState extends State<ReviewPage> {
                   ShrinkWidget(
                     isCollapsed: isCollapsed,
                     child: CupertinoButton(
-                      //style: Styles.blankButton3,
+                      padding: EdgeInsets.zero,
                       onPressed: () {
                         setState(() {
                           isCollapsed = false;
@@ -223,6 +223,37 @@ class _ReviewPageState extends State<ReviewPage> {
                 ],
               ),
             ),
+            deckExists?
+                FutureBuilder(
+                    future: hskList,
+                    builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot){
+                      if(snapshot.hasData){
+                        if(snapshot.data!.isNotEmpty){
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal:  8.0, vertical: 3),
+                            child: Row(
+                              children: [
+                                RichText(
+                                  text: TextSpan(
+                                    style: DefaultTextStyle.of(context).style,
+                                    children: <TextSpan>[
+                                      //const TextSpan(text: 'Review '),
+                                      TextSpan(text: snapshot.data!.length.toString(), style: const TextStyle(color: Colors.blue)),
+                                      const TextSpan(text: ' Words'),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }else{
+                          return const SizedBox(height: 0);
+                        }
+                      }else{
+                        return const SizedBox(height: 0);
+                      }
+                 })
+            :const SizedBox(height: 0),
             deckExists?
             HskListview(
               hskList: hskList,
