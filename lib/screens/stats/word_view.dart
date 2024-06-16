@@ -35,7 +35,6 @@ class _WordViewState extends State<WordView> {
               builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                if(snapshot.hasData){
                  final List<Map<String, dynamic>> stats = snapshot.data!;
-                 print(stats);
                  String? literal;
                  if(stats[0]["char_two"] != null){
                    literal = "${stats[0]["char_one"]} + ${stats[0]["char_two"]}";

@@ -90,8 +90,6 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
           reviewList = newList;
         });}
        */
-      print((await reviewList).length);
-      print(reviewList);
       if (_pageController.hasClients) {
         if (lastPage) {
           Navigator.pop(context);
