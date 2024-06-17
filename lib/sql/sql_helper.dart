@@ -483,7 +483,7 @@ class SQLHelper {
         join units on units.unit_id = courses.unit
         where units.hsk <= $hsk
         order by random()
-		limit 5
+		limit 15
     """);
     return a;
   }
