@@ -21,21 +21,16 @@ class _StatsHomeState extends State<StatsHome> {
 
   late Future<List<Map<String, dynamic>>> recentHskList;
   late Future<List<Map<String, dynamic>>> weakHskList;
-  late Future<List<Map<String, dynamic>>> statsList;
+  late Future<List<Map<String, dynamic>>> statsListFuture;
   late Future<List<Map<String, dynamic>>> timelineList;
   late Future<List<Map<String, dynamic>>> globalStats;
-  late int newWords;
-  late int reviewWords;
-  late int successRate;
-  late int mostSeenId;
-  late String mostSeen;
 
   @override
   initState() {
     super.initState();
     weakHskList = getStats(sortBy: "percent_correct", orderBy: "ASC", deckSize: 10, where: "WHERE wrong_occurrence > 0");
     recentHskList = getStats(sortBy: "last_seen", orderBy: "DESC", deckSize: 10);
-    statsList = getOverview(sortBy: "last_seen", orderBy: "DESC");
+    statsListFuture = SQLHelper.getOverview();
     timelineList = getTimeLine(sortBy: "string_date", orderBy: "ASC");
     globalStats = getGlobalStats();
   }
@@ -48,35 +43,6 @@ class _StatsHomeState extends State<StatsHome> {
     return await SQLHelper.getTotalStats();
   }
 
-  Future<List<Map<String, dynamic>>> getOverview({required String sortBy, required String orderBy,}) async {
-    final data = await SQLHelper.getOverview(
-      sortBy: "new_word", orderBy: "ASC", deckSize: -1,);
-    int newWordsAcc = 0;
-    double correct = 0;
-    double wrong = 0;
-    Map<String, dynamic> mostSeenMap = {"char": "a", "numSeen": 0, "id":0};
-    for (var element in data) {
-      int rightOccurrence = element["right_occurrence"];
-      int wrongOccurrence = element["wrong_occurrence"];
-      if (element["new_word"] == 1){
-        newWordsAcc++;
-      }
-      if (rightOccurrence + wrongOccurrence > mostSeenMap["numSeen"]){
-        mostSeenMap["char"] = element["hanzi"];
-        mostSeenMap["numSeen"] = rightOccurrence + wrongOccurrence;
-        mostSeenMap["id"] = element["wordid"];
-      }
-      correct += rightOccurrence;
-      wrong += wrongOccurrence;
-    }
-    mostSeen = mostSeenMap["char"];
-    mostSeenId = mostSeenMap["id"];
-    newWords = newWordsAcc;
-    reviewWords = data.length - newWordsAcc;
-    double doubleSuccessRate = ((100  * correct) / (wrong + correct)) ;
-    successRate = doubleSuccessRate.round();
-    return data;
-  }
 
   Future<List<Map<String, dynamic>>> getTimeLine({required String sortBy, required String orderBy,}) async {
     return await SQLHelper.getTimeline(sortBy: sortBy, orderBy: orderBy, deckSize: -1,);
@@ -130,10 +96,16 @@ class _StatsHomeState extends State<StatsHome> {
                           }
                       ),
                       FutureBuilder<List<Map<String, dynamic>>>(
-                          future: statsList,
+                          future: statsListFuture,
                           builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-                            if (snapshot.hasData) { List<Map<String, dynamic>>? hskList = snapshot.data;
-                            return _QuickStats(newWords: newWords.toString(), reviewWords: reviewWords.toString(), successRate: successRate.toString(), mostSeen: mostSeen, id: mostSeenId);
+                            if (snapshot.hasData) {
+                              List<Map<String, dynamic>> statsList = snapshot.data!;
+                              final String mostSeen = statsList[0]["most_seen"];
+                              final int mostSeenId = statsList[0]["most_seen_id"];
+                              final int newWords = statsList[0]["new_words"];
+                              final int reviewWords = statsList[0]["review_words"];
+                              final int successRate = statsList[0]["percent_correct"];
+                              return _QuickStats(newWords: newWords.toString(), reviewWords: reviewWords.toString(), successRate: successRate.toString(), mostSeen: mostSeen, id: mostSeenId);
                             } else {
                               return PrototypeHeight(
                                 prototype: const _QuickStats(newWords: "0", reviewWords: "0", successRate: "0", mostSeen: "爱", id:0),

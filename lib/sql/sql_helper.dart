@@ -425,29 +425,46 @@ class SQLHelper {
     return result;
   }
 
-  static Future<List<Map<String, dynamic>>> getOverview({required int deckSize, required String sortBy, required String orderBy}) async {
+
+  static Future<List<Map<String, dynamic>>> getOverview() async {
     final db = await SQLHelper.db();
-    return db.rawQuery("""
-    SELECT wordid, right_occurrence, wrong_occurrence, 
-    courses.hanzi, courses.hsk, courses.pinyin, courses.translations0,
-    new_word,
-    (right_occurrence - wrong_occurrence) as score 
-    FROM(
-      SELECT
-        wordid,
-        SUM(CASE stats.value WHEN 1 THEN 1 ELSE 0 END) right_occurrence,
-        SUM(CASE stats.value WHEN 0 THEN 1 ELSE 0 END) wrong_occurrence,
-        CASE WHEN MIN(stats.date) >= cast(strftime('%s', 'now', '-7 days') as int) THEN 1 ELSE 0 END new_word
-      FROM stats
-      WHERE date > 0
-      GROUP BY 
-        wordid
-    )
-    INNER JOIN courses on courses.id = wordid
-   
-    ORDER BY $sortBy $orderBy
-    LIMIT $deckSize;
-    """);
+    const sql = """
+    SELECT new_words, total_words - new_words as review_words, percent_correct, most_seen, most_seen_id
+	FROM
+      (SELECT
+		count(1) as new_words  from (
+		select count(1)from stats
+		GROUP BY wordid
+        HAVING MIN(stats.date) >= cast(strftime('%s', 'now', '-7 days') as int)
+		)      
+	  )	
+      as t1,
+      (SELECT
+      count (1) as total_words from stats
+	  where date >= cast(strftime('%s', 'now', '-7 days') as int)
+      ) 
+      as t2,
+	  (SELECT 
+		CAST (right_occurrence * 100.0 / (right_occurrence + wrong_occurrence) as INT)
+		AS percent_correct
+		FROM(
+		  SELECT
+			SUM(CASE stats.value WHEN 1 THEN 1 ELSE 0 END) right_occurrence,
+			SUM(CASE stats.value WHEN 0 THEN 1 ELSE 0 END) wrong_occurrence
+		  FROM stats
+		  WHERE date >= cast(strftime('%s', 'now', '-7 days') as int)
+		)
+      ) 
+      as t3,
+	  (SELECT
+      max (wordid) as most_seen_id, hanzi as most_seen from stats
+	    JOIN courses on courses.id = stats.wordid
+	    where date >= cast(strftime('%s', 'now', '-7 days') as int)
+      ) 
+      as t4
+    """;
+    final result = db.rawQuery(sql);
+    return result;
   }
 
   static Future<List<Map<String, dynamic>>> getTimeline({required int deckSize, required String sortBy, required String orderBy}) async {
