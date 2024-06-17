@@ -168,6 +168,7 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                           ),
                           Expanded(
                               child: PageView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
                                 controller: _pageController,
                                 itemCount: wordList.length,
                                 onPageChanged: (index) {
