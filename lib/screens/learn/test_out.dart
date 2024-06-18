@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hsk_learner/data_model/word_item.dart';
 import '../../sql/sql_helper.dart';
+import '../../sql/test_out_sql.dart';
 import '../games/multiple_choice_game.dart';
 
 
@@ -17,7 +18,7 @@ class _TestOutState extends State<TestOut> {
   late Future<List<Map<String, dynamic>>> reviewWordsListFuture;
   @override
   void initState() {
-    reviewWordsListFuture = SQLHelper.getTestOutWords(hsk: widget.hsk);
+    reviewWordsListFuture = TestOutSql.getTestOutWords(hsk: widget.hsk);
     super.initState();
   }
 
@@ -85,7 +86,7 @@ class _TestOutControllerState extends State<_TestOutController> {
   void updatePage(){
     bool lastPage = gameIndex+1 == gamesList.length;
     if(lastPage){
-      SQLHelper.completeHSKLevel(widget.hsk);
+      TestOutSql.completeHSKLevel(widget.hsk);
       Navigator.pop(context);
     }else{
       _pageController.animateToPage(gameIndex+1, duration: const Duration(milliseconds: 300), curve: Curves.linear);

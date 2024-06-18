@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/screens/stats/word_view.dart';
+import 'package:hsk_learner/sql/stats_sql.dart';
 
 import '../../utils/styles.dart';
 import '../../sql/sql_helper.dart';
@@ -28,7 +29,7 @@ class _StatsPageState extends State<StatsPage> {
   }
 
   Future<List<Map<String, dynamic>>> getStats({required String sortBy, required String orderBy})  async {
-    final data = await SQLHelper.getStats(sortBy: sortBy, orderBy: orderBy, deckSize: -1,);
+    final data = await StatsSql.getStats(sortBy: sortBy, orderBy: orderBy, deckSize: -1,);
     return data;
   }
   void refresh(){

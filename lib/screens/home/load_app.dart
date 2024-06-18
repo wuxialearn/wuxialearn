@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hsk_learner/screens/home/home_page.dart';
+import 'package:hsk_learner/sql/load_app_sql.dart';
 import 'package:hsk_learner/sql/schema_migration.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
+import '../../sql/learn_sql.dart';
+import '../../sql/preferences_sql.dart';
 import '../settings/backup.dart';
 import '../settings/preferences.dart';
 import 'package:http/http.dart' as http;
@@ -24,7 +27,7 @@ class _LoadAppState extends State<LoadApp> {
     super.initState();
   }
   void getPreferences() async {
-    final data = await SQLHelper.getPreferences();
+    final data = await PreferencesSql.getPreferences();
     await Preferences.loadDefaultPreferences();
     Preferences.setPreferences(data);
     init();
@@ -103,17 +106,17 @@ class _LoadAppState extends State<LoadApp> {
   }
 
   void setFirstRun(){
-    SQLHelper.setPreference(name: "isFirstRun", value: "0", type: "bool");
+    PreferencesSql.setPreference(name: "isFirstRun", value: "0", type: "bool");
     Preferences.setPreference(name: "isFirstRun", value: false);
   }
 
   void enableCheckForUpdate(){
-    SQLHelper.setPreference(name: "check_for_new_version_on_start", value: "1", type: "bool");
+    PreferencesSql.setPreference(name: "check_for_new_version_on_start", value: "1", type: "bool");
     Preferences.setPreference(name: "check_for_new_version_on_start", value: true);
   }
 
   void disableCheckForUpdate(){
-    SQLHelper.setPreference(name: "check_for_new_version_on_start", value: "0", type: "bool");
+    PreferencesSql.setPreference(name: "check_for_new_version_on_start", value: "0", type: "bool");
     Preferences.setPreference(name: "check_for_new_version_on_start", value: false);
   }
 
@@ -129,9 +132,9 @@ class _LoadAppState extends State<LoadApp> {
       final req = await http.get(Uri.parse(versionUrl));
       final String version = req.body.trim();
       if(version != lastVersion){
-        await SQLHelper.updateSqliteFromCsv();
+        await LoadAppSql.updateSqliteFromCsv();
         Preferences.setPreference(name: dbPref, value: version);
-        SQLHelper.setPreference(name: dbPref, value: version, type: 'string');
+        PreferencesSql.setPreference(name: dbPref, value: version, type: 'string');
         //todo: when we implement real state management we should update the courses screen here
         setState(() {
 

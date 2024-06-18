@@ -5,6 +5,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/screens/games/unit_game.dart';
 import 'package:hsk_learner/screens/settings/preferences.dart';
+import '../../sql/learn_sql.dart';
 import '../../sql/sql_helper.dart';
 
 class UnitLearn extends StatefulWidget {
@@ -43,11 +44,11 @@ class _UnitLearnState extends State<UnitLearn> {
   late List<Map<String, dynamic>> sentenceList = [];
 
   Future<List<Map<String, dynamic>>> getUnits(int index) async {
-    final data = await SQLHelper.getExamples(widget.wordList[index].hanzi);
+    final data = await LearnSql.getExamples(widget.wordList[index].hanzi);
     return data;
   }
   getSentenceList() async {
-    sentenceList = await SQLHelper.getSentencesForSubunit(widget.unit, widget.subunit);
+    sentenceList = await LearnSql.getSentencesForSubunit(widget.unit, widget.subunit);
   }
   late bool showExampleSentences;
   late bool showLiteralPref;

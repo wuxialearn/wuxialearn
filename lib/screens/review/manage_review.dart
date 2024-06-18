@@ -5,6 +5,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hsk_learner/utils/delayed_progress_indecator.dart';
 
 import '../../data_model/word_item.dart';
+import '../../sql/manage_review_sql.dart';
 import '../../sql/sql_helper.dart';
 import '../../utils/styles.dart';
 import '../stats/word_view.dart';
@@ -33,7 +34,7 @@ class _ManageReviewState extends State<ManageReview> {
   }
 
   Future<List<Map<String, dynamic>>> getManageReview({required String sortBy, required String orderBy, required String deck})  async {
-    final data = await SQLHelper.getManageReview(sortBy: sortBy, orderBy: orderBy, deckSize: -1, deck: deck);
+    final data = await ManageReviewSql.getManageReview(sortBy: sortBy, orderBy: orderBy, deckSize: -1, deck: deck);
     return data;
   }
 
@@ -64,7 +65,7 @@ class _ManageReviewState extends State<ManageReview> {
     List<String> options = [...deckNames];
     options.remove(deckName);
     if(showRemove()){
-      SQLHelper.removeFromDeck(id: id, deck: deckName);
+      ManageReviewSql.removeFromDeck(id: id, deck: deckName);
     }else{
       showCupertinoDialog(
           barrierDismissible: true,
@@ -88,7 +89,7 @@ class _ManageReviewState extends State<ManageReview> {
                       children: List.generate(options.length, (index) {
                         return TextButton(
                             onPressed: (){
-                              SQLHelper.addToReviewDeck(id: id, deck: options[index], value: true);
+                              ManageReviewSql.addToReviewDeck(id: id, deck: options[index], value: true);
                               Navigator.pop(context);
                             },
                             child: Text(options[index])

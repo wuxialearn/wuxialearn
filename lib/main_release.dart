@@ -25,14 +25,6 @@ void main() {
   runApp(const MyApp());
 }
 
-void test() async{
-  var data = await SQLHelper.sqlTest("select * from units");
-  print(data[0]);
-  var unitId = data[0]["unit_id"];
-  print (unitId.runtimeType);
-
-
-}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

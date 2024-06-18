@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
 
+import '../../sql/preferences_sql.dart';
+
 class Preferences{
   static late dynamic data;
   static Map<String, dynamic>  preferences =  {};
@@ -45,7 +47,7 @@ class Preferences{
     print(data);
     final pref = data[preference];
     print(pref);
-    SQLHelper.insertPreference(name: preference, value: pref["value"], type: pref["type"]);
+    PreferencesSql.insertPreference(name: preference, value: pref["value"], type: pref["type"]);
     insertPref(name: preference, value: pref["value"], type: pref["type"]);
   }
 

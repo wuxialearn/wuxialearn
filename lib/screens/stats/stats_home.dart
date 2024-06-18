@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hsk_learner/screens/stats/stats.dart';
 import 'package:hsk_learner/screens/stats/word_view.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
+import 'package:hsk_learner/sql/stats_sql.dart';
 import 'package:hsk_learner/utils/larg_text.dart';
 import 'package:hsk_learner/utils/prototype.dart';
 import 'package:hsk_learner/utils/styles.dart';
@@ -30,22 +31,22 @@ class _StatsHomeState extends State<StatsHome> {
     super.initState();
     weakHskList = getStats(sortBy: "percent_correct", orderBy: "ASC", deckSize: 10, where: "WHERE wrong_occurrence > 0");
     recentHskList = getStats(sortBy: "last_seen", orderBy: "DESC", deckSize: 10);
-    statsListFuture = SQLHelper.getOverview();
+    statsListFuture = StatsSql.getOverview();
     timelineList = getTimeLine(sortBy: "string_date", orderBy: "ASC");
     globalStats = getGlobalStats();
   }
 
   Future<List<Map<String, dynamic>>> getStats({required String sortBy, required String orderBy, required int deckSize, String where = ""}) async {
-    return await SQLHelper.getStats(sortBy: sortBy, orderBy: orderBy, deckSize: deckSize, where: where);
+    return await StatsSql.getStats(sortBy: sortBy, orderBy: orderBy, deckSize: deckSize, where: where);
   }
 
   Future<List<Map<String, dynamic>>> getGlobalStats() async {
-    return await SQLHelper.getTotalStats();
+    return await StatsSql.getTotalStats();
   }
 
 
   Future<List<Map<String, dynamic>>> getTimeLine({required String sortBy, required String orderBy,}) async {
-    return await SQLHelper.getTimeline(sortBy: sortBy, orderBy: orderBy, deckSize: -1,);
+    return await StatsSql.getTimeline(sortBy: sortBy, orderBy: orderBy, deckSize: -1,);
   }
   @override
   Widget build(BuildContext context) {

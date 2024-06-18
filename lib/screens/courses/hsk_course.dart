@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hsk_learner/screens/learn/test_out.dart';
+import '../../sql/learn_sql.dart';
 import '../settings/preferences.dart';
 import '../../sql/sql_helper.dart';
 import 'course_view.dart';
@@ -22,7 +23,7 @@ class _HSKCourseViewState extends State<HSKCourseView> {
     unitNumList = getUnitNum();
   }
   Future<List<Map<String, dynamic>>> getUnitNum() async {
-    final data = await SQLHelper.count2(courseName: 'hsk');
+    final data = await LearnSql.count2(courseName: 'hsk');
     return data;
   }
 

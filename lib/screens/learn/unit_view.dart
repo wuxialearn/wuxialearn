@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/screens/learn/subunit_view.dart';
+import '../../sql/learn_sql.dart';
+import '../../sql/manage_review_sql.dart';
+import '../../sql/stats_sql.dart';
 import '../settings/preferences.dart';
 import '../../sql/sql_helper.dart';
 
@@ -25,16 +28,16 @@ class _UnitViewState extends State<UnitView> {
   @override
   initState() {
     super.initState();
-    sentencesFuture = SQLHelper.getSentences(widget.unit);
-    hskFuture = SQLHelper.getUnitWithLiteralMeaning(widget.unit);
-    subunitFuture = SQLHelper.getSubunitInfo(unit: widget.unit);
+    sentencesFuture = LearnSql.getSentences(widget.unit);
+    hskFuture = LearnSql.getUnitWithLiteralMeaning(widget.unit);
+    subunitFuture = LearnSql.getSubunitInfo(unit: widget.unit);
   }
 
   updateUnits(){
     setState(() {
       widget.updateUnits();
-      hskFuture = SQLHelper.getUnitWithLiteralMeaning(widget.unit);
-      subunitFuture = SQLHelper.getSubunitInfo(unit: widget.unit);
+      hskFuture = LearnSql.getUnitWithLiteralMeaning(widget.unit);
+      subunitFuture = LearnSql.getSubunitInfo(unit: widget.unit);
     });
   }
 
@@ -93,13 +96,13 @@ class _UnitViewState extends State<UnitView> {
                                 onPressed: (){
                                   //should use transaction here and elsewhere
                                   for (final word in wordList){
-                                    SQLHelper.insertStat(value: 1, id: word.id);
-                                    SQLHelper.addToReviewDeck(id: word.id, deck: widget.courseName, value: true);
+                                    StatsSql.insertStat(value: 1, id: word.id);
+                                    ManageReviewSql.addToReviewDeck(id: word.id, deck: widget.courseName, value: true);
                                   }
                                   for (int i = 0; i< unitLength.length; i++){
-                                    SQLHelper.completeSubUnit(unit: widget.unit, subUnit: i+1);
+                                    LearnSql.completeSubUnit(unit: widget.unit, subUnit: i+1);
                                   }
-                                  SQLHelper.completeUnit(unit: widget.unit);
+                                  LearnSql.completeUnit(unit: widget.unit);
                                 },
                                 child: const Text("Complete Unit"),
                               )
@@ -162,7 +165,7 @@ class _UnitViewState extends State<UnitView> {
                                                   )
                                                   ).then((_){
                                                     setState(() {
-                                                      subunitFuture = SQLHelper.getSubunitInfo(unit: widget.unit);
+                                                      subunitFuture = LearnSql.getSubunitInfo(unit: widget.unit);
                                                     });
                                                   });
                                                 },

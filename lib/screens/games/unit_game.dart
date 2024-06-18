@@ -4,7 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import '../../data_model/word_item.dart';
+import '../../sql/learn_sql.dart';
+import '../../sql/manage_review_sql.dart';
 import '../../sql/sql_helper.dart';
+import '../../sql/stats_sql.dart';
 import 'matching_game.dart';
 import 'multiple_choice_game.dart';
 import 'sentence_game.dart';
@@ -64,8 +67,8 @@ class _UnitGameState extends State<UnitGame> {
   void callback(bool value, WordItem currWord, bool? chineseToEnglish) async {
     if(widget.unit > 0 && chineseToEnglish != null) {
       final int result = value?1:0;
-      SQLHelper.insertStat(value: result, id: currWord.id);
-      SQLHelper.addToReviewDeck(id: currWord.id, deck: widget.courseName, value: value);
+      StatsSql.insertStat(value: result, id: currWord.id);
+      ManageReviewSql.addToReviewDeck(id: currWord.id, deck: widget.courseName, value: value);
     }
     if(value == false){
       setState(() {
@@ -86,9 +89,9 @@ class _UnitGameState extends State<UnitGame> {
     bool lastPage = gameIndex+1 == gamesList.length;
     if(lastPage){
       if (widget.lastSubunit){
-        SQLHelper.completeUnit(unit:  widget.unit);
+        LearnSql.completeUnit(unit:  widget.unit);
       }
-      SQLHelper.completeSubUnit(unit: widget.unit, subUnit: widget.subunit);
+      LearnSql.completeSubUnit(unit: widget.unit, subUnit: widget.subunit);
       //here is where we update the values for the other units
       widget.updateUnits();
       Navigator.pop(context);

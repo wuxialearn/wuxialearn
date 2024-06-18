@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hsk_learner/data_model/word_item.dart';
+import 'package:hsk_learner/sql/review_flashcards_sql.dart';
 import 'package:hsk_learner/sql/review_sql.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
+import '../../sql/stats_sql.dart';
 import '../../utils/styles.dart';
 import '../settings/preferences.dart';
 import 'flashcard.dart';
@@ -69,7 +71,7 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
   answerButtonCallBack(int id) {
     return(int value) async {
       int stat = value == 0 || value == 1 ? 0:1;
-      SQLHelper.insertStat(value: stat, id: id);
+      StatsSql.insertStat(value: stat, id: id);
       DateTime dateTime = switch(value){
         0 => DateTime.now().add(const Duration(minutes: 1)),
         1 => DateTime.now().add(const Duration(minutes: 6)),
@@ -79,7 +81,7 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
         _ => DateTime.now(),
       };
       final int time  = dateTime.toUtc().millisecondsSinceEpoch ~/ 1000;
-      SQLHelper.updateReview(id: id, time: time);
+      ReviewFlashcardsSql.updateReview(id: id, time: time);
       widget.update();
       /*
       still needs some thought on what we should do here

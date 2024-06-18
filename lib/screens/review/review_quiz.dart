@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/screens/games/unit_game.dart';
+import 'package:hsk_learner/sql/learn_sql.dart';
 
 import '../../sql/sql_helper.dart';
 
@@ -52,7 +53,7 @@ class _ReviewQuizState extends State<ReviewQuiz> {
   Future<List<Map<String, List<Map<String, dynamic>>>>> getSentenceList() async {
     List<Map<String, dynamic>> completedHskList = await widget.hskList;
     Future<Map<String, List<Map<String, dynamic>>>> getUnits(int index) async {
-      final data = await SQLHelper.getExamples(completedHskList[index]["hanzi"]);
+      final data = await LearnSql.getExamples(completedHskList[index]["hanzi"]);
       Map<String, List<Map<String, dynamic>>> hskMap = {
         "hskList": [completedHskList[index]],
         "sentenceList": data

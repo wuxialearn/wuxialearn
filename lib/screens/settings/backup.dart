@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:tar/tar.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
+import '../../sql/preferences_sql.dart';
 import '../../sql/sql_helper.dart';
 
 final class Backup{
@@ -163,7 +164,7 @@ final class Backup{
     }
     final latestVersion = Preferences.getPreference("latest_db_version_constant");
     Preferences.setPreference(name: "db_version", value: latestVersion);
-    SQLHelper.setPreference(name: "db_version", value: latestVersion, type: "string");
+    PreferencesSql.setPreference(name: "db_version", value: latestVersion, type: "string");
     final currVersion  = Preferences.getPreference("db_version");
     print(latestVersion);
     print(currVersion);

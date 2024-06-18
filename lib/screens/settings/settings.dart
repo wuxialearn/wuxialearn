@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hsk_learner/sql/pg_update.dart';
+import 'package:hsk_learner/sql/preferences_sql.dart';
 import 'backup.dart';
 import 'preferences.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
@@ -31,12 +33,12 @@ class _SettingsState extends State<Settings> {
   }
   setSettingBool({required String name, required String type, required bool value}){
       String val = value == true? "1": "0";
-      SQLHelper.setPreference(name: name, value: val, type: type);
+      PreferencesSql.setPreference(name: name, value: val, type: type);
       Preferences.setPreference(name: name, value: value);
   }
 
   setSettingString({required String name, required String type, required String value}){
-    SQLHelper.setPreference(name: name, value: value, type: type);
+    PreferencesSql.setPreference(name: name, value: value, type: type);
     Preferences.setPreference(name: name, value: value);
   }
 
@@ -301,7 +303,7 @@ class _SettingsState extends State<Settings> {
                           const Text("Get latest data"),
                           IconButton(
                               onPressed: () async {
-                                Future<bool> updated =  SQLHelper.updateSqliteFromPg();
+                                Future<bool> updated =  PgUpdate.updateSqliteFromPg();
                                 updated.then((val) => showCupertinoDialog(
                                     barrierDismissible: true,
                                     context: context,

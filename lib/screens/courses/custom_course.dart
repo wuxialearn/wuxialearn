@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../sql/learn_sql.dart';
 import '../../sql/sql_helper.dart';
 import '../settings/preferences.dart';
 import 'course_view.dart';
@@ -20,7 +21,7 @@ class _CustomCourseState extends State<CustomCourse> {
     unitNumList = getUnitNum();
   }
   Future<List<Map<String, dynamic>>> getUnitNum() async {
-    final data = await SQLHelper.count2(courseName: widget.courseName);
+    final data = await LearnSql.count2(courseName: widget.courseName);
     return data;
   }
   void update() {

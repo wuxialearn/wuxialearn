@@ -4,6 +4,8 @@ import 'package:hsk_learner/sql/sql_helper.dart';
 import 'package:hsk_learner/utils/prototype.dart';
 import 'package:intl/intl.dart';
 
+import '../../sql/word_view_sql.dart';
+
 class WordView extends StatefulWidget {
   final int wordId;
   const WordView({super.key, required this.wordId});
@@ -18,8 +20,8 @@ class _WordViewState extends State<WordView> {
   @override
   initState(){
     super.initState();
-    literalMeaning = SQLHelper.getWordInfo(widget.wordId);
-    sentencesFuture = SQLHelper.getSentenceFromId(widget.wordId);
+    literalMeaning = WordViewSql.getWordInfo(widget.wordId);
+    sentencesFuture = WordViewSql.getSentenceFromId(widget.wordId);
   }
 
   @override
