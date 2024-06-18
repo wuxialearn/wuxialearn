@@ -27,14 +27,12 @@ class SQLHelper {
   }
   static Future<String> getDbPath() async {
     if (Platform.isWindows || Platform.isLinux) {
-      //var databaseFactory = databaseFactoryFfi;
       final databasesPath = (await path_provider.getApplicationSupportDirectory()).path;
       return  join(databasesPath, "demo_asset_example.db");
     }else{
       final databasesPath = await sql.getDatabasesPath();
       return join(databasesPath, "demo_asset_example.db");
     }
-
   }
   static Future<bool> loadDbFromFile(String path) async{
     try {
