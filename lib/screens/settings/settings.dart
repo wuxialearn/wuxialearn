@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'backup.dart';
 import 'preferences.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
 
@@ -141,6 +142,72 @@ class _SettingsState extends State<Settings> {
                 children: [
                   const Text("Default course"),
                   CupertinoButton(onPressed: (){ _showActionSheet(context);}, child: Text(defaultCourse), ),
+                ],
+              ),
+              Row(
+                children: [
+                  const Text("Backup data"),
+                  IconButton(
+                      onPressed: () async {
+                        Future<bool> updated =  Backup.startBackupWithFileSelection();
+                        updated.then((val) => showCupertinoDialog(
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (context) {
+                              late final String text;
+                              val == true? text = "backup succeeded"
+                              : text = "backup failed";
+                              return CupertinoAlertDialog(
+                                content: Text(text),
+                              );
+                            }
+                        ),
+                          onError:(e) => showCupertinoDialog(
+                              barrierDismissible: true,
+                              context: context,
+                              builder: (context) {
+                                return const CupertinoAlertDialog(
+                                  content: Text("backup failed"),
+                                );
+                              }
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.add)
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  const Text("restore from backup"),
+                  IconButton(
+                      onPressed: () async {
+                        Future<bool> updated =  Backup.restoreFromBackup();
+                        updated.then((val) => showCupertinoDialog(
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (context) {
+                              late final String text;
+                              val == true? text = "backup succeeded"
+                                  : text = "backup failed";
+                              return CupertinoAlertDialog(
+                                content: Text(text),
+                              );
+                            }
+                        ),
+                          onError:(e) => showCupertinoDialog(
+                              barrierDismissible: true,
+                              context: context,
+                              builder: (context) {
+                                return const CupertinoAlertDialog(
+                                  content: Text("backup failed"),
+                                );
+                              }
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.add)
+                  ),
                 ],
               ),
               GestureDetector(

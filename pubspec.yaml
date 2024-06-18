@@ -44,6 +44,8 @@ dependencies:
   intl:
   http:
   d4_dsv:
+  tar: ^2.0.0
+  file_picker: ^8.0.5
   pubspec_parse:
   lpinyin: ^2.0.2
   sqflite_common_ffi_web: '>=0.1.0-dev.1'
