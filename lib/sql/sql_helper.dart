@@ -23,36 +23,35 @@ class SQLHelper {
       }
       return factory.openDatabase('demo_asset_example.db');
     }
-    late String databasesPath;
-    late String path;
-    late bool exists;
-    if (Platform.isWindows || Platform.isLinux) {
-      //var databaseFactory = databaseFactoryFfi;
-      databasesPath = (await path_provider.getApplicationSupportDirectory()).path;
-      path = join(databasesPath, "demo_asset_example.db");
-      // Check if the database exists
-      exists = await File(path).exists();
-    }else{
-      databasesPath = await sql.getDatabasesPath();
-      path = join(databasesPath, "demo_asset_example.db");
-      // Check if the database exists
-      exists = await sql.databaseExists(path);
-    }
+    final String path = await getDbPath();
+    final bool exists = await sql.databaseExists(path);
     if (!exists) {
-      try {
-        await Directory(dirname(path)).create(recursive: true);
-      } catch (_) {}
-      // Copy from asset
-      ByteData data = await rootBundle.load("assets/example.db");
-      List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-      // Write and flush the bytes written
-      await File(path).writeAsBytes(bytes, flush: true);
-    } else {
+      await loadDbFromFile(path);
     }
     return sql.openDatabase(path);
+  }
+  static Future<String> getDbPath() async {
+    if (Platform.isWindows || Platform.isLinux) {
+      //var databaseFactory = databaseFactoryFfi;
+      final databasesPath = (await path_provider.getApplicationSupportDirectory()).path;
+      return  join(databasesPath, "demo_asset_example.db");
+    }else{
+      final databasesPath = await sql.getDatabasesPath();
+      return join(databasesPath, "demo_asset_example.db");
+    }
 
   }
-
+  static Future<bool> loadDbFromFile(String path) async{
+    try {
+      await Directory(dirname(path)).create(recursive: true);
+    } catch (_) {}
+    // Copy from asset
+    ByteData data = await rootBundle.load("assets/example.db");
+    List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    // Write and flush the bytes written
+    await File(path).writeAsBytes(bytes, flush: true);
+    return true;
+  }
 
 
   static Future<List<Map<String, dynamic>>> getPreferences() async {

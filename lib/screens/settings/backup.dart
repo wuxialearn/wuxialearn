@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:d4_dsv/d4_dsv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:tar/tar.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -63,7 +64,38 @@ final class Backup{
     return await createBackup(file: file);
   }
 
-  static Future<bool> restoreFromBackup() async {
+
+  static Future<bool> createBackup({required File file}) async{
+    late final IOSink output;
+    try {
+      output = file.openWrite();
+    }catch(e){
+      print(e);
+      return false;
+    }
+
+    final entries = await Future.wait(backupItems.map((item) async {
+      final bytes = utf8.encode(csvFormat(await item.source()));
+      return TarEntry.data(
+          TarHeader(
+            name: item.name,
+            mode: int.parse('644', radix: 8),
+          ),
+          bytes);
+    }));
+
+    final tarEntries = Stream<TarEntry>.fromIterable(entries);
+
+    try {
+      await tarEntries.pipe(tarWritingSink(output));
+    }catch(e){
+      print(e);
+      return false;
+    }
+    return true;
+  }
+
+  static Future<bool> restoreBackupFromUserFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     late File file;
@@ -72,6 +104,11 @@ final class Backup{
     } else {
       return false;
     }
+
+    return restoreBackup(file);
+  }
+
+  static Future<bool> restoreBackup(File file) async {
 
     await TarReader.forEach(file.openRead(), (entry) async {
       final contents = await entry.contents.transform(utf8.decoder).first;
@@ -106,39 +143,25 @@ final class Backup{
     }else{
       return false;
     }
-
     return true;
   }
 
-  static Future<bool> createBackup({required File file}) async{
-    late final IOSink output;
-    try {
-      output = file.openWrite();
-    }catch(e){
-      print(e);
+  static Future<bool> startBackupFromTempDir() async {
+    final Directory tempDir = await getTemporaryDirectory();
+    final file = File(join(tempDir.path, 'wuxialearn-backup.tar.gz'));
+    final isBackupStored = await createBackup(file: file);
+    if(!isBackupStored){
       return false;
     }
-
-    final entries = await Future.wait(backupItems.map((item) async {
-      final bytes = utf8.encode(csvFormat(await item.source()));
-      return TarEntry.data(
-          TarHeader(
-            name: item.name,
-            mode: int.parse('644', radix: 8),
-          ),
-          bytes);
-    }));
-
-    final tarEntries = Stream<TarEntry>.fromIterable(entries);
-
-    try {
-      await tarEntries.pipe(tarWritingSink(output));
-    }catch(e){
-      print(e);
+    final path = await SQLHelper.getDbPath();
+    await SQLHelper.loadDbFromFile(path);
+    final isBackupRestored = await restoreBackup(file);
+    if(!isBackupRestored){
       return false;
     }
     return true;
   }
+
   static Future<List<Map<String, dynamic>>> _getSubunitInfo() async {
     final db = await SQLHelper.db();
     return db.rawQuery("""
