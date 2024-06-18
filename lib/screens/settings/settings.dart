@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hsk_learner/sql/pg_update.dart';
 import 'package:hsk_learner/sql/preferences_sql.dart';
+import '../../utils/platform_info.dart';
 import 'backup.dart';
 import 'preferences.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
@@ -146,71 +147,79 @@ class _SettingsState extends State<Settings> {
                   CupertinoButton(onPressed: (){ _showActionSheet(context);}, child: Text(defaultCourse), ),
                 ],
               ),
-              Row(
-                children: [
-                  const Text("Backup data"),
-                  IconButton(
-                      onPressed: () async {
-                        Future<bool> updated =  Backup.startBackupWithFileSelection();
-                        updated.then((val) => showCupertinoDialog(
-                            barrierDismissible: true,
-                            context: context,
-                            builder: (context) {
-                              late final String text;
-                              val == true? text = "backup succeeded"
-                              : text = "backup failed  (folder my be protected)";
-                              return CupertinoAlertDialog(
-                                content: Text(text),
+              Visibility(
+                visible: !PlatformInfo.isIOs(),
+                child: Column(
+                  children: [
+                    const Text("Backup"),
+                    Row(
+                      children: [
+                        const Text("Backup data"),
+                        IconButton(
+                            onPressed: () async {
+                              Future<bool> updated =  Backup.startBackupWithFileSelection();
+                              updated.then((val) => showCupertinoDialog(
+                                  barrierDismissible: true,
+                                  context: context,
+                                  builder: (context) {
+                                    late final String text;
+                                    val == true? text = "backup succeeded"
+                                        : text = "backup failed  (folder my be protected)";
+                                    return CupertinoAlertDialog(
+                                      content: Text(text),
+                                    );
+                                  }
+                              ),
+                                onError:(e) => showCupertinoDialog(
+                                    barrierDismissible: true,
+                                    context: context,
+                                    builder: (context) {
+                                      return const CupertinoAlertDialog(
+                                        content: Text("backup failed  (folder my be protected)"),
+                                      );
+                                    }
+                                ),
                               );
-                            }
+                            },
+                            icon: const Icon(Icons.add)
                         ),
-                          onError:(e) => showCupertinoDialog(
-                              barrierDismissible: true,
-                              context: context,
-                              builder: (context) {
-                                return const CupertinoAlertDialog(
-                                  content: Text("backup failed  (folder my be protected)"),
-                                );
-                              }
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.add)
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  const Text("restore from backup"),
-                  IconButton(
-                      onPressed: () async {
-                        Future<bool> updated =  Backup.restoreBackupFromUserFile();
-                        updated.then((val) => showCupertinoDialog(
-                            barrierDismissible: true,
-                            context: context,
-                            builder: (context) {
-                              late final String text;
-                              val == true? text = "backup succeeded"
-                                  : text = "backup failed (folder my be protected)";
-                              return CupertinoAlertDialog(
-                                content: Text(text),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Text("restore from backup"),
+                        IconButton(
+                            onPressed: () async {
+                              Future<bool> updated =  Backup.restoreBackupFromUserFile();
+                              updated.then((val) => showCupertinoDialog(
+                                  barrierDismissible: true,
+                                  context: context,
+                                  builder: (context) {
+                                    late final String text;
+                                    val == true? text = "backup succeeded"
+                                        : text = "backup failed (folder my be protected)";
+                                    return CupertinoAlertDialog(
+                                      content: Text(text),
+                                    );
+                                  }
+                              ),
+                                onError:(e) => showCupertinoDialog(
+                                    barrierDismissible: true,
+                                    context: context,
+                                    builder: (context) {
+                                      return const CupertinoAlertDialog(
+                                        content: Text("backup failed  (folder my be protected)"),
+                                      );
+                                    }
+                                ),
                               );
-                            }
+                            },
+                            icon: const Icon(Icons.add)
                         ),
-                          onError:(e) => showCupertinoDialog(
-                              barrierDismissible: true,
-                              context: context,
-                              builder: (context) {
-                                return const CupertinoAlertDialog(
-                                  content: Text("backup failed  (folder my be protected)"),
-                                );
-                              }
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.add)
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
               GestureDetector(
                 onTap: (){
