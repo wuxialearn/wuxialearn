@@ -4,11 +4,12 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+
+import '../utils/platform_info.dart';
 
 class SQLHelper {
   static Future<sql.Database> db() async {
-    if (kIsWeb){
+    if (PlatformInfo.isWeb()){
       var factory = databaseFactoryFfiWeb;
       var exists = await factory.databaseExists("demo_asset_example.db");
       if(!exists){
@@ -26,7 +27,7 @@ class SQLHelper {
     return sql.openDatabase(path);
   }
   static Future<String> getDbPath() async {
-    if (Platform.isWindows || Platform.isLinux) {
+    if (PlatformInfo.isDesktop()) {
       final databasesPath = (await path_provider.getApplicationSupportDirectory()).path;
       return  join(databasesPath, "demo_asset_example.db");
     }else{
