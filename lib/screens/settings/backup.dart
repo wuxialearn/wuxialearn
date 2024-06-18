@@ -48,8 +48,13 @@ final class Backup{
       return Future.value(false);
     }
     late File file;
+    String? path;
+    try{
+      path = await FilePicker.platform.getDirectoryPath();
+    }catch(e){
+      print(e);
+    }
 
-    String? path = await FilePicker.platform.getDirectoryPath();
     if (path != null) {
       file = File(join(path, 'wuxialearn-backup.tar.gz'));
     } else {
@@ -60,7 +65,6 @@ final class Backup{
 
   static Future<bool> restoreFromBackup() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
-
 
     late File file;
     if (result != null) {
@@ -107,7 +111,13 @@ final class Backup{
   }
 
   static Future<bool> createBackup({required File file}) async{
-    final output = file.openWrite();
+    late final IOSink output;
+    try {
+      output = file.openWrite();
+    }catch(e){
+      print(e);
+      return false;
+    }
 
     final entries = await Future.wait(backupItems.map((item) async {
       final bytes = utf8.encode(csvFormat(await item.source()));
@@ -120,8 +130,13 @@ final class Backup{
     }));
 
     final tarEntries = Stream<TarEntry>.fromIterable(entries);
-    await tarEntries.pipe(tarWritingSink(output));
 
+    try {
+      await tarEntries.pipe(tarWritingSink(output));
+    }catch(e){
+      print(e);
+      return false;
+    }
     return true;
   }
   static Future<List<Map<String, dynamic>>> _getSubunitInfo() async {

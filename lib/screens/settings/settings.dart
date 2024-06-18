@@ -156,7 +156,7 @@ class _SettingsState extends State<Settings> {
                             builder: (context) {
                               late final String text;
                               val == true? text = "backup succeeded"
-                              : text = "backup failed";
+                              : text = "backup failed  (folder my be protected)";
                               return CupertinoAlertDialog(
                                 content: Text(text),
                               );
@@ -167,7 +167,7 @@ class _SettingsState extends State<Settings> {
                               context: context,
                               builder: (context) {
                                 return const CupertinoAlertDialog(
-                                  content: Text("backup failed"),
+                                  content: Text("backup failed  (folder my be protected)"),
                                 );
                               }
                           ),
@@ -189,7 +189,7 @@ class _SettingsState extends State<Settings> {
                             builder: (context) {
                               late final String text;
                               val == true? text = "backup succeeded"
-                                  : text = "backup failed";
+                                  : text = "backup failed (folder my be protected)";
                               return CupertinoAlertDialog(
                                 content: Text(text),
                               );
@@ -200,7 +200,7 @@ class _SettingsState extends State<Settings> {
                               context: context,
                               builder: (context) {
                                 return const CupertinoAlertDialog(
-                                  content: Text("backup failed"),
+                                  content: Text("backup failed  (folder my be protected)"),
                                 );
                               }
                           ),
