@@ -17,7 +17,6 @@ void main() {
     systemStatusBarContrastEnforced: false,
     statusBarIconBrightness: Brightness.dark,
   ));
-  //test();
   runApp(const MyApp());
 }
 
