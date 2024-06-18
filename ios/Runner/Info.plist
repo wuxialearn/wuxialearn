@@ -49,5 +49,7 @@
     <string>Microphone is used to transcribe audio to desired language</string>
     <key>UISupportsDocumentBrowser</key>
     <true/>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
 </dict>
 </plist>
