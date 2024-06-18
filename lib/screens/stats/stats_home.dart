@@ -4,7 +4,7 @@ import 'package:hsk_learner/screens/stats/stats.dart';
 import 'package:hsk_learner/screens/stats/word_view.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
 import 'package:hsk_learner/sql/stats_sql.dart';
-import 'package:hsk_learner/utils/larg_text.dart';
+import 'package:hsk_learner/utils/large_text.dart';
 import 'package:hsk_learner/utils/prototype.dart';
 import 'package:hsk_learner/utils/styles.dart';
 import '../../data_model/word_item.dart';
