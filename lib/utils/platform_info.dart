@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 ///calling Platform on web causes an exception so
-///we must test for web first an return before calling
+///we must test for web first and return before calling
 ///platform
 class PlatformInfo{
   PlatformInfo._();
