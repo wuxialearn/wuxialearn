@@ -78,73 +78,81 @@ class _SettingsState extends State<Settings> {
           child: ListView(
             children: [
               const SizedBox(height: 20,),
-              const Text("Review"),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
                 children: [
-                  const Text("Show translations in preview"),
-                  CupertinoSwitch(
-                    // This bool value toggles the switch.
-                    value: translation,
-                    activeColor: CupertinoColors.activeBlue,
-                    onChanged: (bool value) {
-                      setSettingBool(name: "showTranslations", type: "bool", value: value);
-                      setState(() => translation = value);
-                    },
+                  const Text("Review"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Show translations in preview"),
+                      CupertinoSwitch(
+                        // This bool value toggles the switch.
+                        value: translation,
+                        activeColor: CupertinoColors.activeBlue,
+                        onChanged: (bool value) {
+                          setSettingBool(name: "showTranslations", type: "bool", value: value);
+                          setState(() => translation = value);
+                        },
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Show pinyin by default"),
+                      CupertinoSwitch(
+                        // This bool value toggles the switch.
+                        value: reviewPinyin,
+                        activeColor: CupertinoColors.activeBlue,
+                        onChanged: (bool value) {
+                          setSettingBool(name: "show_pinyin_by_default_in_review", type: "bool", value: value);
+                          setState(() => reviewPinyin = value);
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
                 children: [
-                  const Text("Show pinyin by default"),
-                  CupertinoSwitch(
-                    // This bool value toggles the switch.
-                    value: reviewPinyin,
-                    activeColor: CupertinoColors.activeBlue,
-                    onChanged: (bool value) {
-                      setSettingBool(name: "show_pinyin_by_default_in_review", type: "bool", value: value);
-                      setState(() => reviewPinyin = value);
-                    },
+                  const Text("Learn"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Show example sentences in unit learn"),
+                      CupertinoSwitch(
+                        // This bool value toggles the switch.
+                        value: showExampleSentences,
+                        activeColor: CupertinoColors.activeBlue,
+                        onChanged: (bool value) {
+                          setSettingBool(name: "show_sentences", type: "bool", value: value);
+                          setState(() => showExampleSentences = value);
+                        },
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              const Text("Learn"),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text("Show example sentences in unit learn"),
-                  CupertinoSwitch(
-                    // This bool value toggles the switch.
-                    value: showExampleSentences,
-                    activeColor: CupertinoColors.activeBlue,
-                    onChanged: (bool value) {
-                      setSettingBool(name: "show_sentences", type: "bool", value: value);
-                      setState(() => showExampleSentences = value);
-                    },
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Show literal meaning in unit learn"),
+                      CupertinoSwitch(
+                        // This bool value toggles the switch.
+                        value: showLiteralInUnitLearn,
+                        activeColor: CupertinoColors.activeBlue,
+                        onChanged: (bool value) {
+                          setSettingBool(name: "show_literal_meaning_in_unit_learn", type: "bool", value: value);
+                          setState(() => showLiteralInUnitLearn = value);
+                        },
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text("Show literal meaning in unit learn"),
-                  CupertinoSwitch(
-                    // This bool value toggles the switch.
-                    value: showLiteralInUnitLearn,
-                    activeColor: CupertinoColors.activeBlue,
-                    onChanged: (bool value) {
-                      setSettingBool(name: "show_literal_meaning_in_unit_learn", type: "bool", value: value);
-                      setState(() => showLiteralInUnitLearn = value);
-                    },
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Default course"),
+                      CupertinoButton(onPressed: (){ _showActionSheet(context);}, child: Text(defaultCourse), ),
+                    ],
                   ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text("Default course"),
-                  CupertinoButton(onPressed: (){ _showActionSheet(context);}, child: Text(defaultCourse), ),
                 ],
               ),
               Visibility(
