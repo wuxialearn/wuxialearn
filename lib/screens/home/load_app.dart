@@ -32,6 +32,9 @@ class _LoadAppState extends State<LoadApp> {
   void init(){
     final String currentVersion = Preferences.getPreference("db_version");
     final String latestVersion = Preferences.getPreference("latest_db_version_constant");
+    print(currentVersion);
+    print(latestVersion);
+    print(currentVersion == latestVersion);
     if(currentVersion != latestVersion){
       print("backing up...");
       Backup.startBackupFromTempDir();

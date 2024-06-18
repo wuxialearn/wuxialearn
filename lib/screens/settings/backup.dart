@@ -161,8 +161,13 @@ final class Backup{
     if(!isBackupRestored){
       return false;
     }
-    final String latestVersion = Preferences.getPreference("latest_db_version_constant");
+    final latestVersion = Preferences.getPreference("latest_db_version_constant");
     Preferences.setPreference(name: "db_version", value: latestVersion);
+    SQLHelper.setPreference(name: "db_version", value: latestVersion, type: "string");
+    final currVersion  = Preferences.getPreference("db_version");
+    print(latestVersion);
+    print(currVersion);
+    print(latestVersion == currVersion);
     return true;
   }
 
