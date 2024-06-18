@@ -31,6 +31,10 @@
     "value": "0.0.1",
     "type": "string"
   },
+  "latest_db_version_constant": {
+    "value": "0.1.0",
+    "type": "string"
+  },
   "check_for_new_version_on_start": {
     "value": "0",
     "type": "bool"

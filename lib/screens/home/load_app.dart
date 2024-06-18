@@ -20,8 +20,6 @@ class _LoadAppState extends State<LoadApp> {
   @override
   void initState() {
     SchemaMigration.run();
-    print("backing up...");
-    Backup.startBackupFromTempDir();
     getPreferences();
     super.initState();
   }
@@ -29,6 +27,15 @@ class _LoadAppState extends State<LoadApp> {
     final data = await SQLHelper.getPreferences();
     await Preferences.loadDefaultPreferences();
     Preferences.setPreferences(data);
+    init();
+  }
+  void init(){
+    final String currentVersion = Preferences.getPreference("db_version");
+    final String latestVersion = Preferences.getPreference("latest_db_version_constant");
+    if(currentVersion != latestVersion){
+      print("backing up...");
+      Backup.startBackupFromTempDir();
+    }
     final bool check = Preferences.getPreference("check_for_new_version_on_start");
     final bool isFirstRun =  Preferences.getPreference("isFirstRun");
     if(check && !isFirstRun) {
