@@ -74,7 +74,7 @@ class _SettingsState extends State<Settings> {
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Column(
+          child: ListView(
             children: [
               const SizedBox(height: 20,),
               const Text("Review"),
@@ -294,6 +294,37 @@ class _SettingsState extends State<Settings> {
                             setState(() => allowAutoComplete = value);
                           },
                         ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () async {
+                            final map = Preferences.getAllPreferences();
+                            print(map);
+                            List settings = [];
+                            map.forEach((k, v) => settings.add([k, v]));
+                            showCupertinoDialog(
+                                barrierDismissible: true,
+                                context: context,
+                                builder: (context) {
+                                  return Dialog(
+                                    child: ListView.builder(
+                                      itemCount: settings.length,
+                                        itemBuilder: (BuildContext context, int index){
+                                          return Center(
+                                            child: Text("${settings[index][0]}: ${settings[index][1]}"),
+                                          );
+                                        }
+                                    ),
+                                  );
+                                }
+                            );
+                          },
+                          child: const Text("Show all settings"),
+                        )
                       ],
                     ),
                     Visibility(
