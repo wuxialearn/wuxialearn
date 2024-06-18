@@ -650,26 +650,26 @@ class SQLHelper {
     const String subUnitsUrl = 'https://cdn.jsdelivr.net/gh/wuxialearn/data@main/subunits.tsv';
     final subUnitsReq = await http.get(Uri.parse(subUnitsUrl));
     final subUnitsResult = tsvParse(subUnitsReq.body);
-
-    Batch csvBatch = db.batch();
-    csvBatch.execute("delete from courses");
-    for (final row in coursesResult.$1) {
-      csvBatch.insert('courses', row);
-    }
-    csvBatch.execute("delete from sentences");
-    for (final row in sentencesResult.$1) {
-      csvBatch.insert('sentences', row);
-    }
-    csvBatch.execute("delete from units");
-    for (final row in unitsResult.$1) {
-      csvBatch.insert('units', row);
-    }
-    csvBatch.execute("delete from subunits");
-    for (final row in subUnitsResult.$1) {
-      csvBatch.insert('subUnits', row);
-    }
-    csvBatch.commit();
-
+    await db.transaction((txn) async {
+      Batch csvBatch = txn.batch();
+      csvBatch.execute("delete from courses");
+      for (final row in coursesResult.$1) {
+        csvBatch.insert('courses', row);
+      }
+      csvBatch.execute("delete from sentences");
+      for (final row in sentencesResult.$1) {
+        csvBatch.insert('sentences', row);
+      }
+      csvBatch.execute("delete from units");
+      for (final row in unitsResult.$1) {
+        csvBatch.insert('units', row);
+      }
+      csvBatch.execute("delete from subunits");
+      for (final row in subUnitsResult.$1) {
+        csvBatch.insert('subUnits', row);
+      }
+      csvBatch.commit();
+    });
     print("update from tsv completed");
     return true;
   }
