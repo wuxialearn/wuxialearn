@@ -44,7 +44,6 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
   }
 
   void onClick(){
-    print("we have been called");
     setState(() {
       clicked = true;
     });

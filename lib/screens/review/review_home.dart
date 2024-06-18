@@ -134,7 +134,6 @@ class _ReviewPageState extends State<ReviewPage> {
       case "old words":
         reviewList = await ReviewSql.getReview(deckSize: numCards, sortBy: "last_seen", orderBy: "ASC", deckName: deckName);
     }
-    print(reviewList);
     return reviewList;
   }
 

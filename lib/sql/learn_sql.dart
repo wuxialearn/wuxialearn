@@ -41,7 +41,6 @@ class LearnSql{
   }
   static Future<List<Map<String, dynamic>>> getUnit(int unit) async {
     final db = await SQLHelper.db();
-    print("getUnit");
     return db.rawQuery("""
       SELECT
         id, hanzi, pinyin, translations0, subunit, unit

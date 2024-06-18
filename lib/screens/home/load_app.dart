@@ -35,9 +35,8 @@ class _LoadAppState extends State<LoadApp> {
   void init(){
     final String currentVersion = Preferences.getPreference("db_version");
     final String latestVersion = Preferences.getPreference("latest_db_version_constant");
-    print(currentVersion);
-    print(latestVersion);
-    print(currentVersion == latestVersion);
+    print("currentVersion: $currentVersion");
+    print("latestVersion: $latestVersion");
     if(currentVersion != latestVersion){
       print("backing up...");
       Backup.startBackupFromTempDir();
@@ -122,11 +121,7 @@ class _LoadAppState extends State<LoadApp> {
 
   void checkForDbUpdate() async {
       const String dbPref = 'db_version';
-      final prefs = Preferences.getAllPreferences();
       print("checking for update");
-      print(prefs);
-      final test = Preferences.getPreference("check_for_new_version_on_start");
-      print(test);
       final String lastVersion = Preferences.getPreference(dbPref);
       const String versionUrl = 'https://cdn.jsdelivr.net/gh/wuxialearn/data@main/version';
       final req = await http.get(Uri.parse(versionUrl));

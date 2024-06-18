@@ -112,7 +112,6 @@ class _ManageReviewState extends State<ManageReview> {
           }
       );
     }
-    print(id);
     refresh();
   }
   @override

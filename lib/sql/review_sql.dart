@@ -8,7 +8,6 @@ class ReviewSql{
     if (deckSize < 0){
       limit = "";
     }
-    print(limit);
     final a =  db.rawQuery("""
         SELECT t1.id, t1.hanzi, t1.pinyin, translations0, subunit,
         a_tl.translation as char_one, b_tl.translation as char_two, c_tl.translation as char_three, d_tl.translation as char_four

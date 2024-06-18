@@ -86,7 +86,6 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
       /*
       still needs some thought on what we should do here
       if(widget.type == "SRS"){
-        print("we are here");
         final newList =  ReviewSql.getSrsReview(deckSize: 10);
         setState(() {
           reviewList = newList;
