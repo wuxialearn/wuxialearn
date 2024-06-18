@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hsk_learner/screens/home/home_page.dart';
 import 'package:hsk_learner/sql/schema_migration.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
+import '../settings/backup.dart';
 import '../settings/preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,6 +20,8 @@ class _LoadAppState extends State<LoadApp> {
   @override
   void initState() {
     SchemaMigration.run();
+    print("backing up...");
+    Backup.startBackupFromTempDir();
     getPreferences();
     super.initState();
   }
