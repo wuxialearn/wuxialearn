@@ -1,9 +1,11 @@
 import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hsk_learner/data_model/word_item.dart';
 import '../../sql/sql_helper.dart';
 import '../../sql/test_out_sql.dart';
 import '../games/multiple_choice_game.dart';
+import '../games/unit_game.dart';
 
 
 class TestOut extends StatefulWidget {
@@ -24,15 +26,21 @@ class _TestOutState extends State<TestOut> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Map<String, dynamic>>>(
-        future: reviewWordsListFuture,
-        builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-          if (snapshot.hasData) {
-            List<WordItem> wordList = createWordList(snapshot.data!);
-            return _TestOutController(wordList: wordList, hsk: widget.hsk,);
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(
+        leading: ConfirmBackButtonIcon(),
+        middle: Text("Test Out"),
+      ),
+      child: FutureBuilder<List<Map<String, dynamic>>>(
+          future: reviewWordsListFuture,
+          builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+            if (snapshot.hasData) {
+              List<WordItem> wordList = createWordList(snapshot.data!);
+              return _TestOutController(wordList: wordList, hsk: widget.hsk,);
+            }
+            else{return const Center(child: CircularProgressIndicator());}
           }
-          else{return const Center(child: CircularProgressIndicator());}
-        }
+      ),
     );
   }
 }
