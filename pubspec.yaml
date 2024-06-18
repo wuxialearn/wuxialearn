@@ -36,7 +36,7 @@ dependencies:
   sqflite_common_ffi:
   path_provider: ^2.0.12
   shared_preferences:
-  fl_chart: ^0.61.0
+  fl_chart: ^0.68.0
   flutter_tts: ^3.6.3
   postgres: ^2.6.1
   just_audio:
