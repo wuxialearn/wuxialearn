@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:d4_dsv/d4_dsv.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:hsk_learner/screens/settings/preferences.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tar/tar.dart';
@@ -156,10 +157,12 @@ final class Backup{
     final path = await SQLHelper.getDbPath();
     await SQLHelper.loadDbFromFile(path);
     final isBackupRestored = await restoreBackup(file);
+    await file.delete();
     if(!isBackupRestored){
       return false;
     }
-    await file.delete();
+    final String latestVersion = Preferences.getPreference("latest_db_version_constant");
+    Preferences.setPreference(name: "db_version", value: latestVersion);
     return true;
   }
 
