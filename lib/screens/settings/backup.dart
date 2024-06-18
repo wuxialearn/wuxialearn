@@ -159,6 +159,7 @@ final class Backup{
     if(!isBackupRestored){
       return false;
     }
+    await file.delete();
     return true;
   }
 
