@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:d4_dsv/d4_dsv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:hsk_learner/screens/settings/preferences.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tar/tar.dart';
@@ -13,6 +14,9 @@ import '../../sql/preferences_sql.dart';
 import '../../sql/sql_helper.dart';
 
 final class Backup{
+  static const int backupFileFormatVersion = 1;
+
+  static const String backupFileFormatVersionName = "backup_file_format_version";
   static const String subUnitName = "subunit_info.csv";
   static const String unitName = "unit_info.csv";
   static const String statsName = "stats.csv";
@@ -57,15 +61,14 @@ final class Backup{
     }catch(e){
       print(e);
     }
-
+    String date = getTime();
     if (path != null) {
-      file = File(join(path, 'wuxialearn-backup.tar.gz'));
+      file = File(join(path, 'wuxialearn-backup-$date.tar.gz'));
     } else {
       return false;
     }
     return await createBackup(file: file);
   }
-
 
   static Future<bool> createBackup({required File file}) async{
     late final IOSink output;
@@ -76,7 +79,17 @@ final class Backup{
       return false;
     }
 
-    final entries = await Future.wait(backupItems.map((item) async {
+    var entries = [
+      TarEntry.data(
+        TarHeader(
+            name: "backup_file_format_version",
+            mode: int.parse('644', radix: 8),
+        ),
+        utf8.encode(backupFileFormatVersion.toString())
+      )
+    ];
+
+    entries.addAll(await Future.wait(backupItems.map((item) async {
       final bytes = utf8.encode(csvFormat(await item.source()));
       return TarEntry.data(
           TarHeader(
@@ -84,7 +97,7 @@ final class Backup{
             mode: int.parse('644', radix: 8),
           ),
           bytes);
-    }));
+    })));
 
     final tarEntries = Stream<TarEntry>.fromIterable(entries);
 
@@ -115,6 +128,7 @@ final class Backup{
     await TarReader.forEach(file.openRead(), (entry) async {
       final contents = await entry.contents.transform(utf8.decoder).first;
       switch(entry.header.name){
+        case backupFileFormatVersionName: break;
         case subUnitName: subUnitInfo.content = contents;
         case unitName: unitInfo.content = contents;
         case statsName: stats.content = contents;
@@ -204,4 +218,10 @@ final class _BackupItem{
   final String tableName;
   String? content;
   _BackupItem({required this.name, required this.source, required this.tableName,});
+}
+
+String getTime() {
+  DateTime now = DateTime.now();
+  final formatter = DateFormat('yyyy-MM-dd-HHmmss');
+  return formatter.format(now);
 }
