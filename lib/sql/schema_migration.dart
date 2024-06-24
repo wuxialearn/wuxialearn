@@ -1,5 +1,4 @@
 import 'package:hsk_learner/sql/sql_helper.dart';
-import 'package:sqflite/sqflite.dart';
 
 class SchemaMigration{
   static run() async {
@@ -9,12 +8,9 @@ class SchemaMigration{
   static Future<void> checkReviewTable() async {
     final db = await SQLHelper.db();
     await db.transaction((txn) async {
-      var exists = await txn.rawQuery("""
-        SELECT count(*) as exist FROM sqlite_master WHERE type='table' AND name='review'
-      """);
+      var exists = await SQLHelper.tableExists("review", txn);
       print(exists);
-      print(exists[0]["exist"]);
-      if (exists[0]["exist"] == 0){
+      if (!exists){
         txn.execute("""
           CREATE TABLE IF NOT EXISTS "review" (
             "id"	INTEGER NOT NULL,
@@ -54,12 +50,10 @@ class SchemaMigration{
   static Future<void> checkReviewRating() async{
     final db = await SQLHelper.db();
     await db.transaction((txn) async {
-      var exists = await txn.rawQuery("""
-        SELECT count(*) as exist FROM sqlite_master WHERE type='table' AND name='review_rating'
-      """);
+      var exists = await SQLHelper.tableExists("review_rating", txn);
       print("review rating exists: $exists");
-      print(exists[0]["exist"]);
-      if (exists[0]["exist"] == 0){
+      print(exists);
+      if (!exists){
         txn.execute("""
           CREATE TABLE IF NOT EXISTS "review_rating" (
             "rating_id"	INTEGER PRIMARY KEY,
