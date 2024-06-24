@@ -78,4 +78,14 @@ class ReviewSql{
     """);
     return a;
   }
+
+  static Future<List<Map<String, dynamic>>> getReviewRatings() async {
+    final db = await SQLHelper.db();
+    final a =  db.rawQuery("""
+        SELECT rating_id, rating_name, rating_duration_start, rating_duration_end
+        from review_rating
+        order by rating_duration_start asc
+      """);
+    return  a;
+  }
 }

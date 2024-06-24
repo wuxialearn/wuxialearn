@@ -101,11 +101,11 @@ class _StatsHomeState extends State<StatsHome> {
                           builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                             if (snapshot.hasData) {
                               List<Map<String, dynamic>> statsList = snapshot.data!;
-                              final String mostSeen = statsList[0]["most_seen"];
-                              final int mostSeenId = statsList[0]["most_seen_id"];
+                              final String mostSeen = statsList[0]["most_seen"]??"";
+                              final int mostSeenId = statsList[0]["most_seen_id"]??0;
                               final int newWords = statsList[0]["new_words"];
                               final int reviewWords = statsList[0]["review_words"];
-                              final int successRate = statsList[0]["percent_correct"];
+                              final int successRate = statsList[0]["percent_correct"]??0;
                               return _QuickStats(newWords: newWords.toString(), reviewWords: reviewWords.toString(), successRate: successRate.toString(), mostSeen: mostSeen, id: mostSeenId);
                             } else {
                               return PrototypeHeight(

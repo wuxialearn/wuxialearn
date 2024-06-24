@@ -146,6 +146,9 @@ final class Backup{
         txn.rawDelete("delete from unit_info");
         txn.rawDelete("delete from stats");
         txn.rawDelete("delete from review");
+        if(await SQLHelper.tableExists("review_rating", txn)){
+          txn.rawDelete("delete from review_rating");
+        }
 
         final batch = txn.batch();
         for (final item in backupItems){
@@ -207,7 +210,7 @@ final class Backup{
   static Future<List<Map<String, dynamic>>> _getReview() async {
     final db = await SQLHelper.db();
     return db.rawQuery("""
-      select id, deck, show_next from review
+      select id, deck, show_next, rating_id from review
     """);
   }
 }

@@ -3,6 +3,7 @@ import 'package:sqflite/sqflite.dart' as sql;
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 import '../utils/platform_info.dart';
@@ -45,5 +46,12 @@ class SQLHelper {
     // Write and flush the bytes written
     await File(path).writeAsBytes(bytes, flush: true);
     return true;
+  }
+
+  static Future<bool> tableExists(String table, DatabaseExecutor db) async{
+    final exists = await db.rawQuery("""
+        SELECT count(*) as exist FROM sqlite_master WHERE type='table' AND name='review_rating'
+      """);
+    return exists[0]["exist"] == 0;
   }
 }

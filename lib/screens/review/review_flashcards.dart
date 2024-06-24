@@ -2,14 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:hsk_learner/data_model/review_rating.dart';
 import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/sql/review_flashcards_sql.dart';
-import 'package:hsk_learner/sql/review_sql.dart';
-import 'package:hsk_learner/sql/sql_helper.dart';
+
 import '../../sql/stats_sql.dart';
-import '../../utils/styles.dart';
 import '../settings/preferences.dart';
 import 'flashcard.dart';
 class ReviewFlashcards extends StatefulWidget {
@@ -17,7 +15,8 @@ class ReviewFlashcards extends StatefulWidget {
   final Function update;
   final String type;
   final int deckSize;
-  const ReviewFlashcards({Key? key, required this.hskList, required this.update, required this.type, required this.deckSize}) : super(key: key);
+  final List<ReviewRating> ratings;
+  const ReviewFlashcards({Key? key, required this.hskList, required this.update, required this.type, required this.deckSize, required this.ratings}) : super(key: key);
 
   @override
   State<ReviewFlashcards> createState() => _ReviewFlashcardsState();
@@ -72,6 +71,7 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
     return(int value) async {
       int stat = value == 0 || value == 1 ? 0:1;
       StatsSql.insertStat(value: stat, id: id);
+      /*
       DateTime dateTime = switch(value){
         0 => DateTime.now().add(const Duration(minutes: 1)),
         1 => DateTime.now().add(const Duration(minutes: 6)),
@@ -80,6 +80,15 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
         4 => DateTime.now().add(getRandomDuration(const Duration(days: 10), const Duration(days: 30))),
         _ => DateTime.now(),
       };
+       */
+      ReviewRating rating = widget.ratings.firstWhere(
+              (element) => element.id == value);
+      late DateTime dateTime;
+      if(rating.start == rating.end){
+        dateTime = DateTime.now().add(rating.start);
+      }else{
+        dateTime = DateTime.now().add(getRandomDuration(rating.start, rating.end));
+      }
       final int time  = dateTime.toUtc().millisecondsSinceEpoch ~/ 1000;
       ReviewFlashcardsSql.updateReview(id: id, time: time);
       widget.update();
@@ -302,7 +311,9 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                   child: SingleChildScrollView(
                                                     scrollDirection: Axis.horizontal,
                                                     child: _AnswerButton(
-                                                        callback: answerButtonCallBack(wordList[pageIndex].id)
+                                                      ratings: widget.ratings,
+                                                        callback: answerButtonCallBack(wordList[pageIndex].id
+                                                        )
                                                     ),
                                                   ),
                                                 )
@@ -355,58 +366,60 @@ class _ShowNextCardButton extends StatelessWidget {
 
 class _AnswerButton extends StatelessWidget {
   final Function(int value) callback;
-  const _AnswerButton({Key? key, required this.callback,}) : super(key: key);
+  final List<ReviewRating> ratings;
+  const _AnswerButton({Key? key, required this.callback, required this.ratings,}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        TextButton(
-          onPressed: (){callback(0);},
-          child: const Column(
-            children: [
-              Text("< 1 min"),
-              Text("Again")
-            ],
-          )
-        ),
-        TextButton(
-            onPressed: (){callback(1);},
-            child: const Column(
+      children: List.generate(ratings.length, (index){
+        final Duration start = ratings[index].start;
+        final Duration end = ratings[index].end;
+        late String startInterval;
+        late int startValue;
+        late String endInterval;
+        late int endValue;
+        late String interval;
+        if(start.compareTo(const Duration(hours: 1)) < 0){
+          startValue = start.inMinutes;
+          startInterval = "min";
+        }else if(start.compareTo(const Duration(days: 1)) < 0){
+          startValue = start.inHours;
+          startInterval = "hrs";
+        }else{
+          startValue = start.inDays;
+          startInterval = "days";
+        }
+        if(end.compareTo(const Duration(hours: 1)) < 0){
+          endValue = end.inMinutes;
+          endInterval = "min";
+        }else if(end.compareTo(const Duration(days: 1)) < 0){
+          endValue = end.inHours;
+          endInterval = "hrs";
+        }else{
+          endValue = end.inDays;
+          endInterval = "days";
+        }
+        if(start == end){
+          interval = "$startValue $startInterval";
+        }else if(startInterval == endInterval){
+          interval = "$startValue - $endValue $startInterval";
+        }else{
+          interval = "$startValue $startInterval - $endValue $endInterval";
+        }
+          return TextButton(
+            onPressed: (){
+              callback(ratings[index].id);
+            },
+            child: Column(
               children: [
-                Text("< 6 min"),
-                Text("Hard")
+                Text(interval),
+                Text(ratings[index].name),
               ],
-            )
-        ),
-        TextButton(
-            onPressed: (){callback(2);},
-            child: const Column(
-              children: [
-                Text("< 12 hrs"),
-                Text("Good")
-              ],
-            )
-        ),
-        TextButton(
-            onPressed: (){callback(3);},
-            child: const Column(
-              children: [
-                Text("4 days"),
-                Text("Easy")
-              ],
-            )
-        ),
-        TextButton(
-            onPressed: (){callback(4);},
-            child: const Column(
-              children: [
-                Text("10-30 days"),
-                Text("Perfect")
-              ],
-            )
-        ),
-      ],
+            ),
+          );
+        }
+      ),
     );
   }
 }

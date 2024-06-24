@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hsk_learner/data_model/review_rating.dart';
 import 'package:hsk_learner/screens/review/review_flashcards.dart';
 import 'package:hsk_learner/screens/review/review_quiz.dart';
 import 'package:hsk_learner/widgets/collapsible.dart';
+import 'package:hsk_learner/widgets/delayed_progress_indecator.dart';
 import 'package:hsk_learner/widgets/hsk_listview/hsk_listview.dart';
 import '../../sql/review_sql.dart';
 import '../../widgets/size_transition.dart';
@@ -78,6 +80,7 @@ class _ReviewPageState extends State<ReviewPage> {
 
   late Future<List<Map<String, dynamic>>> hskList;
   late List<Future<List<Map<String, dynamic>>>> sentenceList;
+  Future<List<Map<String, dynamic>>> reviewRatingFuture = ReviewSql.getReviewRatings();
   bool lastPage = false;
   int numCards = -1;
   bool previewDeck = Preferences.getPreference("showTranslations");
@@ -269,20 +272,36 @@ class _ReviewPageState extends State<ReviewPage> {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
                 child: Center(
-                  child: TextButton(
-                    style: Styles.blankButton4,
-                    onPressed: (){
-                      if (reviewTypeValue == "Quiz"){
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => ReviewQuiz(hskList: hskList),
-                        ),);
+                  child: FutureBuilder(
+                    future: reviewRatingFuture,
+                    builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                      if (snapshot.hasData){
+                        List<ReviewRating> ratings = createReviewRating(snapshot.data!);
+                        return TextButton(
+                            style: Styles.blankButton4,
+                            onPressed: (){
+                              if (reviewTypeValue == "Quiz"){
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => ReviewQuiz(hskList: hskList),
+                                ),);
+                              }else{
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => ReviewFlashcards(
+                                    hskList: hskList,
+                                    update: update,
+                                    type: reviewWordsValue,
+                                    deckSize: numCards,
+                                    ratings: ratings,
+                                  ),
+                                ),);
+                              }
+                            },
+                            child: const Text("Review")
+                        );
                       }else{
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => ReviewFlashcards(hskList: hskList, update: update, type: reviewWordsValue, deckSize: numCards),
-                        ),);
+                        return const DelayedProgressIndicator();
                       }
                     },
-                    child: const Text("Review")
                   ),
                 ),
               ),
