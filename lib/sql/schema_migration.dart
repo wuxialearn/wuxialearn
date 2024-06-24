@@ -51,6 +51,7 @@ class SchemaMigration{
             "rating_name" text not null,
             "rating_duration_start" integer not null,
             "rating_duration_end" integer not null,
+            "order" integer,
             "rating_options" text
           )
         """);

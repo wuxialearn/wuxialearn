@@ -34,11 +34,11 @@ class _FlashCardState extends State<FlashCard> {
 
   Widget _buildFlipAnimation({required Widget front, required Widget back}) {
     return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 500),
       transitionBuilder: __transitionBuilder,
       layoutBuilder: (widget, list) => Stack(children: [widget!, ...list]),
-      switchInCurve: Curves.easeInBack,
-      switchOutCurve: Curves.easeInBack.flipped,
+      switchInCurve: Curves.linear,
+      switchOutCurve: Curves.linear,
       child: widget.showFrontSide ? _buildFront(front) : _buildRear(back),
     );
   }
