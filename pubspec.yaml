@@ -49,6 +49,9 @@ dependencies:
   pubspec_parse:
   lpinyin: ^2.0.2
   sqflite_common_ffi_web: '>=0.1.0-dev.1'
+  cr_file_saver: ^0.0.2+1
+  flutter_file_dialog: ^3.0.2
+  csv_ya: ^2.4.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

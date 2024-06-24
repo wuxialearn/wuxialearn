@@ -97,6 +97,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  cr_file_saver:
+    dependency: "direct main"
+    description:
+      name: cr_file_saver
+      sha256: eaa02c244881234854e13b1316eec3789f2a8a0b2737ca1cad8e03b89be85ce2
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2+1"
   cross_file:
     dependency: transitive
     description:
@@ -113,6 +121,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
+  csv_ya:
+    dependency: "direct main"
+    description:
+      name: csv_ya
+      sha256: "8a3e9e8d661cf859b299b21227ba163f6217c40a42f8a0efc4f7f5d26601c9c6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -198,6 +214,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_file_dialog:
+    dependency: "direct main"
+    description:
+      name: flutter_file_dialog
+      sha256: "9344b8f07be6a1b6f9854b723fb0cf84a8094ba94761af1d213589d3cb087488"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.2"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:

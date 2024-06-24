@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:csv_ya/csv_ya.dart';
 import 'package:d4_dsv/d4_dsv.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:hsk_learner/screens/settings/preferences.dart';
 import 'package:hsk_learner/utils/platform_info.dart';
 import 'package:intl/intl.dart';
@@ -62,26 +64,37 @@ final class Backup{
     if (kIsWeb){
       return Future.value(false);
     }
-    late File file;
-    String? path;
-    try{
-      if (PlatformInfo.isAndroid()){
-        path = await FilePicker.platform.getDirectoryPath(
-            initialDirectory: "/storage/emulated/11/Documents"
-        );
-      }else{
-        path = await FilePicker.platform.getDirectoryPath();
+    if(PlatformInfo.isDesktop()){
+      late File file;
+      String? path;
+      try{
+          path = await FilePicker.platform.getDirectoryPath();
+      }catch(e){print(e);}
+
+      String date = getTime();
+      if (path != null) {
+        file = File(join(path, 'wuxialearn-backup-$date.tar.gz'));
+      } else {
+        return false;
       }
-    }catch(e){
-      print(e);
+      return await createBackup(file: file);
     }
-    String date = getTime();
-    if (path != null) {
-      file = File(join(path, 'wuxialearn-backup-$date.tar.gz'));
-    } else {
+
+    final Directory tempDir = await getTemporaryDirectory();
+    final file = File(join(tempDir.path, 'wuxialearn-backup.tar.gz'));
+    final isBackupStored = await createBackup(file: file);
+    if(!isBackupStored){
       return false;
     }
-    return await createBackup(file: file);
+    String date = getTime();
+    final save = await FlutterFileDialog.saveFile(
+      params: SaveFileDialogParams(
+        sourceFilePath: file.path,
+        fileName: 'wuxialearn-backup-$date.tar.gz',
+      ),
+    );
+    file.delete();
+    return save != null;
   }
 
   static Future<bool> createBackup({required File file}) async{
@@ -167,9 +180,10 @@ final class Backup{
         final batch = txn.batch();
         for (final item in backupItems){
           final table = csvParse(item.content!).$1;
+          //final table = parseCsvAsMap(item.content!);
           for (final row in table){
-            print(row);
-            batch.insert(item.tableName, row);
+            final entry = row.map((key, value) => MapEntry(key, value.isEmpty ? null : value));
+            batch.insert(item.tableName, entry);
           }
         }
         batch.commit(noResult: true);

@@ -15,6 +15,7 @@ class _ReviewProgressState extends State<ReviewProgress> {
   late Future<List<Map<String, dynamic>>> progressFuture;
   @override
   void initState() {
+    ReviewSql.test(deck: deckName);
     progressFuture = ReviewSql.getProgress(deck: deckName);
     super.initState();
   }
@@ -23,7 +24,7 @@ class _ReviewProgressState extends State<ReviewProgress> {
 
     return Column(
       children: [
-        const SizedBox(height: 20,),
+        const SizedBox(height: 10,),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -34,6 +35,7 @@ class _ReviewProgressState extends State<ReviewProgress> {
             ),
           ],
         ),
+        const SizedBox(height: 20,),
         Expanded(
           child: FutureBuilder(
             future: progressFuture,
