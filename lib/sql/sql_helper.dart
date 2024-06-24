@@ -54,4 +54,11 @@ class SQLHelper {
       """);
     return exists[0]["exist"] != 0;
   }
+
+  static Future<bool> columnExists(String table, String column, sql.DatabaseExecutor db)  async{
+    final exists = await db.rawQuery("""
+      SELECT COUNT(*) AS exist FROM pragma_table_info('$table') WHERE name='$column'
+    """);
+    return exists[0]["exist"] != 0;
+  }
 }

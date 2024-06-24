@@ -209,7 +209,6 @@ class _ReviewPageState extends State<ReviewPage> {
                         children: [
                           const Text("Deck"),
                           CupertinoButton(onPressed: (){ _showReviewDeckActionSheet(context);}, child: Text(deckName), ),
-                          //DropDown(dropdownOptions: deckSizeOptions, callback: (value) { deckSizeValue = value; })
                         ],
                       ),
                       CupertinoButton(

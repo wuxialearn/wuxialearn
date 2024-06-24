@@ -9,7 +9,7 @@ class SchemaMigration{
     final db = await SQLHelper.db();
     await db.transaction((txn) async {
       var exists = await SQLHelper.tableExists("review", txn);
-      print(exists);
+      print("review exists: $exists");
       if (!exists){
         txn.execute("""
           CREATE TABLE IF NOT EXISTS "review" (
@@ -18,15 +18,6 @@ class SchemaMigration{
             "show_next"	INTEGER,
             "rating_id" INTEGER,
             UNIQUE(id,deck) ON CONFLICT IGNORE
-          )
-        """);
-        txn.execute("""
-          CREATE TABLE IF NOT EXISTS "review_rating" (
-            "rating_id"	INTEGER PRIMARY KEY,
-            "rating_name" text not null,
-            "rating_duration_start" integer not null,
-            "rating_duration_end" integer not null,
-            "rating_options" text,
           )
         """);
         txn.execute("""
@@ -76,7 +67,7 @@ class SchemaMigration{
         int perfectEnd = const Duration(days: 30).inSeconds;
 
         txn.rawInsert("""
-        insert into review_rating ('rating_name', rating_duration_start, rating_duration_end) 
+        insert into review_rating (rating_name, rating_duration_start, rating_duration_end) 
         values 
         ('$again', $againStart, $againStart),
         ('$hard', $hardStart, $hardStart),
@@ -85,12 +76,19 @@ class SchemaMigration{
         ('$perfect', $perfectStart, $perfectEnd)
         
         """);
-        txn.execute("""
+        final ratingIdExists = await SQLHelper.columnExists("review", "rating_id", txn);
+        if(!ratingIdExists){
+          txn.execute("""
           ALTER TABLE review ADD COLUMN rating_id integer;
         """);
+        }
+        print("reviewrating exists?");
+        print(await SQLHelper.tableExists("review_rating", txn));
       }else{
         print("review rating exists");
       }
     });
+    print("reviewrating exists?");
+    print(await SQLHelper.tableExists("review_rating", db));
   }
 }

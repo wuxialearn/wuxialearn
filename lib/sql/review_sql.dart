@@ -89,11 +89,24 @@ class ReviewSql{
     return  a;
   }
 
-  static Future<List<Map<String, dynamic>>> getProgress() async {
+  static Future<List<Map<String, dynamic>>> getProgress({required String deck}) async {
     final db = await SQLHelper.db();
     final a = await db.rawQuery("""
-        SELECT count (1) from review_rating
-        group by rating_id
+        SELECT review_rating.rating_id, count(1) as count, rating_name, 1 as rs from review_rating
+        join review on  review.rating_id = review_rating.rating_id
+        where deck = '$deck'
+        group by review_rating.rating_id
+        union ALL select review_rating.rating_id, 0 as count, rating_name, 2 from review_rating
+        where review_rating.rating_id not in (
+	          SELECT review_rating.rating_id from review_rating
+            join review on  review.rating_id = review_rating.rating_id
+            where deck = '$deck'
+            group by review_rating.rating_id
+        )
+        union all select -1, count(1), 'total', 3
+        from review
+        where deck = '$deck'
+        order by rs
       """);
     return  a;
   }

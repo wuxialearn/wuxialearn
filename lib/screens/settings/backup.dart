@@ -21,6 +21,7 @@ final class Backup{
   static const String unitName = "unit_info.csv";
   static const String statsName = "stats.csv";
   static const String reviewName = "review.csv";
+  static const String reviewRatingName = "review_rating.csv";
 
   static final subUnitInfo = _BackupItem(
     name: subUnitName,
@@ -42,12 +43,18 @@ final class Backup{
     source: _getReview,
     tableName: 'review',
   );
+  static final reviewRating  = _BackupItem(
+    name: reviewName,
+    source: _getReview,
+    tableName: 'review_rating',
+  );
 
   static final backupItems = [
     subUnitInfo,
     unitInfo,
     stats,
     review,
+    reviewRating,
   ];
 
   static Future<bool> startBackupWithFileSelection() async {
@@ -211,6 +218,13 @@ final class Backup{
     final db = await SQLHelper.db();
     return db.rawQuery("""
       select id, deck, show_next, rating_id from review
+    """);
+  }
+  static Future<List<Map<String, dynamic>>> _getReviewRating() async {
+    final db = await SQLHelper.db();
+    return db.rawQuery("""
+      select rating_id, rating_name, rating_duration_start, rating_duration_end,
+      rating_options from review
     """);
   }
 }

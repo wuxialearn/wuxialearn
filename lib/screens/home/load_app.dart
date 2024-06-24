@@ -39,7 +39,7 @@ class _LoadAppState extends State<LoadApp> {
     print("latestVersion: $latestVersion");
     if(currentVersion != latestVersion){
       print("backing up...");
-      Backup.startBackupFromTempDir();
+      //Backup.startBackupFromTempDir();
     }
     final bool check = Preferences.getPreference("check_for_new_version_on_start");
     final bool isFirstRun =  Preferences.getPreference("isFirstRun");

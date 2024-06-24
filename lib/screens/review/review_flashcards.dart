@@ -90,7 +90,7 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
         dateTime = DateTime.now().add(getRandomDuration(rating.start, rating.end));
       }
       final int time  = dateTime.toUtc().millisecondsSinceEpoch ~/ 1000;
-      ReviewFlashcardsSql.updateReview(id: id, time: time);
+      ReviewFlashcardsSql.updateReview(id: id, time: time, ratingId: rating.id);
       widget.update();
       /*
       still needs some thought on what we should do here
