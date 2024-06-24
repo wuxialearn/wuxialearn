@@ -66,6 +66,7 @@ class _SettingsState extends State<Settings> {
       ),
     );
   }
+  static const String backupFailedMessage = "backup failed  (Folder may be protected. Try using the documents directory)";
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -172,7 +173,7 @@ class _SettingsState extends State<Settings> {
                                   builder: (context) {
                                     late final String text;
                                     val == true? text = "backup succeeded"
-                                        : text = "backup failed  (folder my be protected)";
+                                        : text =  backupFailedMessage;
                                     return CupertinoAlertDialog(
                                       content: Text(text),
                                     );
@@ -183,7 +184,7 @@ class _SettingsState extends State<Settings> {
                                     context: context,
                                     builder: (context) {
                                       return const CupertinoAlertDialog(
-                                        content: Text("backup failed  (folder my be protected)"),
+                                        content: Text( backupFailedMessage),
                                       );
                                     }
                                 ),
@@ -205,7 +206,7 @@ class _SettingsState extends State<Settings> {
                                   builder: (context) {
                                     late final String text;
                                     val == true? text = "backup succeeded"
-                                        : text = "backup failed (folder my be protected)";
+                                        : text =  backupFailedMessage;
                                     return CupertinoAlertDialog(
                                       content: Text(text),
                                     );
@@ -216,7 +217,7 @@ class _SettingsState extends State<Settings> {
                                     context: context,
                                     builder: (context) {
                                       return const CupertinoAlertDialog(
-                                        content: Text("backup failed  (folder my be protected)"),
+                                        content: Text( backupFailedMessage),
                                       );
                                     }
                                 ),

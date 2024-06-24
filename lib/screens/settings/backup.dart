@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:d4_dsv/d4_dsv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:hsk_learner/screens/settings/preferences.dart';
+import 'package:hsk_learner/utils/platform_info.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -64,11 +65,19 @@ final class Backup{
     late File file;
     String? path;
     try{
-      path = await FilePicker.platform.getDirectoryPath();
+      if (PlatformInfo.isAndroid()){
+        path = await FilePicker.platform.getDirectoryPath(
+            initialDirectory: "/storage/emulated/11/Documents"
+        );
+      }else{
+        path = await FilePicker.platform.getDirectoryPath();
+      }
     }catch(e){
       print(e);
     }
     String date = getTime();
+    print((await getApplicationSupportDirectory()).path);
+    print("path: $path");
     if (path != null) {
       file = File(join(path, 'wuxialearn-backup-$date.tar.gz'));
     } else {
