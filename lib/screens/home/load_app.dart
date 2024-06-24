@@ -22,11 +22,11 @@ class _LoadAppState extends State<LoadApp> {
   bool isLoading = true;
   @override
   void initState() {
-    SchemaMigration.run();
     getPreferences();
     super.initState();
   }
   void getPreferences() async {
+    await SchemaMigration.run();
     final data = await PreferencesSql.getPreferences();
     await Preferences.loadDefaultPreferences();
     Preferences.setPreferences(data);

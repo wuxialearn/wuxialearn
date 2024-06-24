@@ -146,7 +146,7 @@ final class Backup{
         txn.rawDelete("delete from unit_info");
         txn.rawDelete("delete from stats");
         txn.rawDelete("delete from review");
-        if(await SQLHelper.tableExists("review_rating", txn)){
+        if(!await SQLHelper.tableExists("review_rating", txn)){
           txn.rawDelete("delete from review_rating");
         }
 

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hsk_learner/data_model/review_rating.dart';
 import 'package:hsk_learner/screens/review/review_flashcards.dart';
+import 'package:hsk_learner/screens/review/review_progress.dart';
 import 'package:hsk_learner/screens/review/review_quiz.dart';
 import 'package:hsk_learner/widgets/collapsible.dart';
 import 'package:hsk_learner/widgets/delayed_progress_indecator.dart';
@@ -49,7 +50,8 @@ class _ReviewHomeState extends State<ReviewHome> {
                   },
                   children: const <int, Widget>{
                     1: Text("Review"),
-                    2: Text("Manage")
+                    2: Text("Progress"),
+                    3: Text("Manage"),
                   },
                 ),
               ),
@@ -58,6 +60,7 @@ class _ReviewHomeState extends State<ReviewHome> {
                   controller: pageController,
                   children: const [
                     ReviewPage(),
+                    ReviewProgress(),
                     ManageReview(),
                   ],
                 ),

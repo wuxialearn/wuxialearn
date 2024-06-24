@@ -52,6 +52,6 @@ class SQLHelper {
     final exists = await db.rawQuery("""
         SELECT count(*) as exist FROM sqlite_master WHERE type='table' AND name='review_rating'
       """);
-    return exists[0]["exist"] == 0;
+    return exists[0]["exist"] != 0;
   }
 }

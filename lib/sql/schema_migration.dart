@@ -76,7 +76,7 @@ class SchemaMigration{
         int perfectEnd = const Duration(days: 30).inSeconds;
 
         txn.rawInsert("""
-        insert into review_rating (rating_name, rating_duration_start, rating_duration_end) 
+        insert into review_rating ('rating_name', rating_duration_start, rating_duration_end) 
         values 
         ('$again', $againStart, $againStart),
         ('$hard', $hardStart, $hardStart),
