@@ -44,8 +44,8 @@ final class Backup{
     tableName: 'review',
   );
   static final reviewRating  = _BackupItem(
-    name: reviewName,
-    source: _getReview,
+    name: reviewRatingName,
+    source: _getReviewRating,
     tableName: 'review_rating',
   );
 
@@ -78,6 +78,7 @@ final class Backup{
   }
 
   static Future<bool> createBackup({required File file}) async{
+    print("we are ahere");
     late final IOSink output;
     try {
       output = file.openWrite();
@@ -85,6 +86,7 @@ final class Backup{
       print(e);
       return false;
     }
+    print("we are ahere 2");
 
     var entries = [
       TarEntry.data(
@@ -95,7 +97,9 @@ final class Backup{
         utf8.encode(backupFileFormatVersion.toString())
       )
     ];
-
+    print("we are ahere 3");
+    final test = await _getReviewRating();
+    print(test);
     entries.addAll(await Future.wait(backupItems.map((item) async {
       final bytes = utf8.encode(csvFormat(await item.source()));
       return TarEntry.data(
@@ -140,6 +144,7 @@ final class Backup{
         case unitName: unitInfo.content = contents;
         case statsName: stats.content = contents;
         case reviewName: review.content = contents;
+        case reviewRatingName: reviewRating.content = contents;
       }
     });
 
@@ -153,14 +158,13 @@ final class Backup{
         txn.rawDelete("delete from unit_info");
         txn.rawDelete("delete from stats");
         txn.rawDelete("delete from review");
-        if(!await SQLHelper.tableExists("review_rating", txn)){
-          txn.rawDelete("delete from review_rating");
-        }
+        txn.rawDelete("delete from review_rating");
 
         final batch = txn.batch();
         for (final item in backupItems){
           final table = csvParse(item.content!).$1;
           for (final row in table){
+            print(row);
             batch.insert(item.tableName, row);
           }
         }
@@ -224,7 +228,7 @@ final class Backup{
     final db = await SQLHelper.db();
     return db.rawQuery("""
       select rating_id, rating_name, rating_duration_start, rating_duration_end,
-      rating_options from review
+      rating_options from review_rating
     """);
   }
 }

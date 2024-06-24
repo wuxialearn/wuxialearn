@@ -39,8 +39,6 @@ class _ReviewProgressState extends State<ReviewProgress> {
             future: progressFuture,
             builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                 if(snapshot.hasData){
-                  print("data");
-                  print(snapshot.data);
                   final data = snapshot.data!;
                   return Center(
                     child: GridView.count(
@@ -77,6 +75,7 @@ class _ReviewProgressState extends State<ReviewProgress> {
               Navigator.pop(context, true);
               setState(() {
                 deckName = deckNames[index];
+                progressFuture = ReviewSql.getProgress(deck: deckName);
               });
             },
             child: Text(deckNames[index]),
