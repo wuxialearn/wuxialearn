@@ -76,8 +76,6 @@ final class Backup{
       print(e);
     }
     String date = getTime();
-    print((await getApplicationSupportDirectory()).path);
-    print("path: $path");
     if (path != null) {
       file = File(join(path, 'wuxialearn-backup-$date.tar.gz'));
     } else {
@@ -87,7 +85,6 @@ final class Backup{
   }
 
   static Future<bool> createBackup({required File file}) async{
-    print("we are ahere");
     late final IOSink output;
     try {
       output = file.openWrite();
@@ -95,7 +92,6 @@ final class Backup{
       print(e);
       return false;
     }
-    print("we are ahere 2");
 
     var entries = [
       TarEntry.data(
@@ -106,7 +102,6 @@ final class Backup{
         utf8.encode(backupFileFormatVersion.toString())
       )
     ];
-    print("we are ahere 3");
     final test = await _getReviewRating();
     print(test);
     entries.addAll(await Future.wait(backupItems.map((item) async {
