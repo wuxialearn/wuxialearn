@@ -71,8 +71,10 @@ final class Backup{
     if (kIsWeb){
       return Future.value(false);
     }
-    String date = getTime();
-    String backupFileName = 'wuxialearn-backup-$date.tar.gz';
+    final DateTime now = DateTime.now();
+    final formatter = DateFormat('yyyy-MM-dd-HHmmss');
+    final String date = formatter.format(now);
+    final String backupFileName = 'wuxialearn-backup-$date.tar.gz';
     if(PlatformInfo.isDesktop()){
       late File file;
       String? path;
@@ -271,8 +273,3 @@ final class _BackupItem{
   _BackupItem({required this.name, required this.source, required this.tableName,});
 }
 
-String getTime() {
-  DateTime now = DateTime.now();
-  final formatter = DateFormat('yyyy-MM-dd-HHmmss');
-  return formatter.format(now);
-}
