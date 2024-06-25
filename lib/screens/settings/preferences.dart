@@ -55,4 +55,10 @@ class Preferences{
     final String response = await rootBundle.loadString('assets/default_prefs.json');
     data = await json.decode(response);
   }
+
+  static Future<void> initPreferences() async{
+    final data = await PreferencesSql.getPreferences();
+    await Preferences.loadDefaultPreferences();
+    Preferences.setPreferences(data);
+  }
 }

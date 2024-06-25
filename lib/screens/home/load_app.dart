@@ -27,9 +27,7 @@ class _LoadAppState extends State<LoadApp> {
   }
   void getPreferences() async {
     await SchemaMigration.run();
-    final data = await PreferencesSql.getPreferences();
-    await Preferences.loadDefaultPreferences();
-    Preferences.setPreferences(data);
+    await Preferences.initPreferences();
     init();
   }
   void init(){

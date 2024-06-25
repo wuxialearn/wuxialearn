@@ -25,6 +25,7 @@ final class Backup{
   static const String statsName = "stats.csv";
   static const String reviewName = "review.csv";
   static const String reviewRatingName = "review_rating.csv";
+  static const String preferencesName = "preferences.csv";
 
   static final subUnitInfo = _BackupItem(
     name: subUnitName,
@@ -51,6 +52,11 @@ final class Backup{
     source: _getReviewRating,
     tableName: 'review_rating',
   );
+  static final preferences  = _BackupItem(
+    name: preferencesName,
+    source: _getPreferences,
+    tableName: 'preferences',
+  );
 
   static final backupItems = [
     subUnitInfo,
@@ -58,6 +64,7 @@ final class Backup{
     stats,
     review,
     reviewRating,
+    preferences
   ];
 
   static Future<bool> startBackupWithFileSelection() async {
@@ -115,8 +122,6 @@ final class Backup{
         utf8.encode(backupFileFormatVersion.toString())
       )
     ];
-    final test = await _getReviewRating();
-    print(test);
     entries.addAll(await Future.wait(backupItems.map((item) async {
       final bytes = utf8.encode(csvFormat(await item.source()));
       return TarEntry.data(
@@ -162,6 +167,7 @@ final class Backup{
         case statsName: stats.content = contents;
         case reviewName: review.content = contents;
         case reviewRatingName: reviewRating.content = contents;
+        case preferencesName: preferences.content = contents;
       }
     });
 
@@ -171,16 +177,15 @@ final class Backup{
       final db = await SQLHelper.db();
       await db.transaction((txn) async {
 
-        txn.rawDelete("delete from subunit_info");
-        txn.rawDelete("delete from unit_info");
-        txn.rawDelete("delete from stats");
-        txn.rawDelete("delete from review");
-        txn.rawDelete("delete from review_rating");
+        for (final item in backupItems){
+          txn.rawDelete("delete from ${item.tableName}");
+        }
 
         final batch = txn.batch();
         for (final item in backupItems){
+          //this should work too
+          //final table2 = csvParseWith<Map<String, dynamic>>((item.content!), (d, _, __) => autoType(d)).$1;
           final table = csvParse(item.content!).$1;
-          //final table = parseCsvAsMap(item.content!);
           for (final row in table){
             final entry = row.map((key, value) => MapEntry(key, value.isEmpty ? null : value));
             batch.insert(item.tableName, entry);
@@ -191,6 +196,7 @@ final class Backup{
     }else{
       return false;
     }
+    Preferences.initPreferences();
     return true;
   }
 
@@ -247,6 +253,12 @@ final class Backup{
     return db.rawQuery("""
       select rating_id, rating_name, rating_duration_start, rating_duration_end,
       rating_options from review_rating
+    """);
+  }
+  static Future<List<Map<String, dynamic>>> _getPreferences() async {
+    final db = await SQLHelper.db();
+    return db.rawQuery("""
+      select name, value, type from preferences
     """);
   }
 }

@@ -199,28 +199,21 @@ class _SettingsState extends State<Settings> {
                         const Text("restore from backup"),
                         IconButton(
                             onPressed: () async {
-                              Future<bool> updated =  Backup.restoreBackupFromUserFile();
-                              updated.then((val) => showCupertinoDialog(
+                              bool updated =  await Backup.restoreBackupFromUserFile();
+                              setState(() {
+
+                              });
+                              showCupertinoDialog(
                                   barrierDismissible: true,
                                   context: context,
                                   builder: (context) {
                                     late final String text;
-                                    val == true? text = "backup succeeded"
+                                    updated? text = "backup succeeded"
                                         : text =  backupFailedMessage;
                                     return CupertinoAlertDialog(
                                       content: Text(text),
                                     );
                                   }
-                              ),
-                                onError:(e) => showCupertinoDialog(
-                                    barrierDismissible: true,
-                                    context: context,
-                                    builder: (context) {
-                                      return const CupertinoAlertDialog(
-                                        content: Text( backupFailedMessage),
-                                      );
-                                    }
-                                ),
                               );
                             },
                             icon: const Icon(Icons.add)
