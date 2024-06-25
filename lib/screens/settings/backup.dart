@@ -71,6 +71,8 @@ final class Backup{
     if (kIsWeb){
       return Future.value(false);
     }
+    String date = getTime();
+    String backupFileName = 'wuxialearn-backup-$date.tar.gz';
     if(PlatformInfo.isDesktop()){
       late File file;
       String? path;
@@ -78,9 +80,8 @@ final class Backup{
           path = await FilePicker.platform.getDirectoryPath();
       }catch(e){print(e);}
 
-      String date = getTime();
       if (path != null) {
-        file = File(join(path, 'wuxialearn-backup-$date.tar.gz'));
+        file = File(join(path, backupFileName));
       } else {
         return false;
       }
@@ -93,11 +94,10 @@ final class Backup{
     if(!isBackupStored){
       return false;
     }
-    String date = getTime();
     final save = await FlutterFileDialog.saveFile(
       params: SaveFileDialogParams(
         sourceFilePath: file.path,
-        fileName: 'wuxialearn-backup-$date.tar.gz',
+        fileName: backupFileName,
       ),
     );
     file.delete();
