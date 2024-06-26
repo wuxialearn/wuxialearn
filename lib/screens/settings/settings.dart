@@ -24,7 +24,9 @@ class _SettingsState extends State<Settings> {
   bool allowAutoComplete =  Preferences.getPreference("allow_auto_complete_unit");
   bool showLiteralInUnitLearn = Preferences.getPreference("show_literal_meaning_in_unit_learn");
   List<String> courses = Preferences.getPreference("courses");
+  List<String> homePages = ["home", "review", "stats"];
   String defaultCourse = Preferences.getPreference("default_course");
+  String defaultHomePage = Preferences.getPreference("default_home_page");
   String version = '1.0.13';
   int clicks = 0;
   bool showDebugOptions = false;
@@ -43,7 +45,7 @@ class _SettingsState extends State<Settings> {
     Preferences.setPreference(name: name, value: value);
   }
 
-  _showActionSheet<bool>(BuildContext context) {
+  _showDefaultCourseActionSheet<bool>(BuildContext context) {
     showCupertinoModalPopup<bool>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
@@ -61,6 +63,29 @@ class _SettingsState extends State<Settings> {
               });
             },
             child: Text(courses[index]),
+          );
+        }),
+      ),
+    );
+  }
+  _showDefaultHomePageActionSheet<bool>(BuildContext context) {
+    showCupertinoModalPopup<bool>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        //title: const Text('Courses'),
+        title: const Text('Select a default home page'),
+        actions:
+        List<CupertinoActionSheetAction>.generate(homePages.length,(index){
+          return CupertinoActionSheetAction(
+            isDefaultAction: true,
+            onPressed: () {
+              setSettingString(name: 'default_home_page', type: 'string', value: homePages[index]);
+              Navigator.pop(context, true);
+              setState(() {
+                defaultHomePage = Preferences.getPreference("default_home_page");
+              });
+            },
+            child: Text(homePages[index]),
           );
         }),
       ),
@@ -151,7 +176,14 @@ class _SettingsState extends State<Settings> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Default course"),
-                      CupertinoButton(onPressed: (){ _showActionSheet(context);}, child: Text(defaultCourse), ),
+                      CupertinoButton(onPressed: (){ _showDefaultCourseActionSheet(context);}, child: Text(defaultCourse), ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Default home page"),
+                      CupertinoButton(onPressed: (){ _showDefaultHomePageActionSheet(context);}, child: Text(defaultHomePage), ),
                     ],
                   ),
                 ],

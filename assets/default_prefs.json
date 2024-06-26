@@ -50,5 +50,9 @@
   "show_pinyin_by_default_in_review": {
     "value": "1",
     "type": "bool"
+  },
+  "default_home_page": {
+    "value": "home",
+    "type": "string"
   }
 }

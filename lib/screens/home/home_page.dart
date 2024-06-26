@@ -2,12 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hsk_learner/screens/courses/course_home.dart';
 import 'package:hsk_learner/screens/review/review_home.dart';
+import 'package:hsk_learner/screens/settings/preferences.dart';
 import 'package:hsk_learner/screens/settings/settings.dart';
 import '../stats/stats_home.dart';
 
 class MyHomePage extends StatefulWidget {
-  final int tab;
-  const MyHomePage({super.key, required this.tab});
+  final int? tab;
+  const MyHomePage({super.key, this.tab});
 
   @override
   MyHomePageState createState() => MyHomePageState();
@@ -18,16 +19,25 @@ class MyHomePageState extends State<MyHomePage>{
   onTappedTab(int index) {
     setState(() {tabsIndex = index;});
   }
-  int tabsIndex = 4;
+  final String s = Preferences.getPreference("default_home_page");
+  int tabsIndex = 0;
   late List<Widget> tabList = [];
   DateTime lastBackPress = DateTime.utc(1960);
   void stats() async{
   }
   @override
   void initState() {
+    tabsIndex = switch (s){
+      "home" => 0,
+      "review" => 1,
+      "stats" => 2,
+      _ => 0
+    };
     stats();
     super.initState();
-    tabsIndex = widget.tab;
+    if(widget.tab != null){
+      tabsIndex = widget.tab!;
+    }
     tabList = [
       const CourseHome(),
       const ReviewHome(),

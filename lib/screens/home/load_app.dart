@@ -64,9 +64,9 @@ class _LoadAppState extends State<LoadApp> {
           enableCheckForUpdate();
           checkForDbUpdate();
         }
-        return const MyHomePage(tab: 0);
+        return const MyHomePage();
       }else{
-        return const MyHomePage(tab: 0);
+        return const MyHomePage();
       }
     }
   }
