@@ -23,8 +23,7 @@ class MyHomePageState extends State<MyHomePage>{
   int tabsIndex = 0;
   late List<Widget> tabList = [];
   DateTime lastBackPress = DateTime.utc(1960);
-  void stats() async{
-  }
+
   @override
   void initState() {
     tabsIndex = switch (s){
@@ -33,7 +32,6 @@ class MyHomePageState extends State<MyHomePage>{
       "stats" => 2,
       _ => 0
     };
-    stats();
     super.initState();
     if(widget.tab != null){
       tabsIndex = widget.tab!;
