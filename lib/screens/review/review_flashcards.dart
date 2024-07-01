@@ -71,16 +71,6 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
     return(int value) async {
       int stat = value == 0 || value == 1 ? 0:1;
       StatsSql.insertStat(value: stat, id: id);
-      /*
-      DateTime dateTime = switch(value){
-        0 => DateTime.now().add(const Duration(minutes: 1)),
-        1 => DateTime.now().add(const Duration(minutes: 6)),
-        2 => DateTime.now().add(const Duration(hours: 12)),
-        3 => DateTime.now().add(const Duration(days: 4)),
-        4 => DateTime.now().add(getRandomDuration(const Duration(days: 10), const Duration(days: 30))),
-        _ => DateTime.now(),
-      };
-       */
       ReviewRating rating = widget.ratings.firstWhere(
               (element) => element.id == value);
       late DateTime dateTime;
@@ -373,47 +363,14 @@ class _AnswerButton extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: List.generate(ratings.length, (index){
-        final Duration start = ratings[index].start;
-        final Duration end = ratings[index].end;
-        late String startInterval;
-        late int startValue;
-        late String endInterval;
-        late int endValue;
-        late String interval;
-        if(start.compareTo(const Duration(hours: 1)) < 0){
-          startValue = start.inMinutes;
-          startInterval = "min";
-        }else if(start.compareTo(const Duration(days: 1)) < 0){
-          startValue = start.inHours;
-          startInterval = "hrs";
-        }else{
-          startValue = start.inDays;
-          startInterval = "days";
-        }
-        if(end.compareTo(const Duration(hours: 1)) < 0){
-          endValue = end.inMinutes;
-          endInterval = "min";
-        }else if(end.compareTo(const Duration(days: 1)) < 0){
-          endValue = end.inHours;
-          endInterval = "hrs";
-        }else{
-          endValue = end.inDays;
-          endInterval = "days";
-        }
-        if(start == end){
-          interval = "$startValue $startInterval";
-        }else if(startInterval == endInterval){
-          interval = "$startValue - $endValue $startInterval";
-        }else{
-          interval = "$startValue $startInterval - $endValue $endInterval";
-        }
+
           return TextButton(
             onPressed: (){
               callback(ratings[index].id);
             },
             child: Column(
               children: [
-                Text(interval),
+                Text(ratings[index].interval()),
                 Text(ratings[index].name),
               ],
             ),

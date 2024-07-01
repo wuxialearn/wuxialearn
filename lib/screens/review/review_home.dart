@@ -11,6 +11,7 @@ import '../../sql/review_sql.dart';
 import '../../widgets/size_transition.dart';
 import '../../utils/styles.dart';
 import '../settings/preferences.dart';
+import 'manage_ratings.dart';
 import 'manage_review.dart';
 
 class ReviewHome extends StatefulWidget {
@@ -51,7 +52,8 @@ class _ReviewHomeState extends State<ReviewHome> {
                   children: const <int, Widget>{
                     1: Text("Review"),
                     2: Text("Progress"),
-                    3: Text("Manage"),
+                    3: Text("Ratings"),
+                    4: Text("Decks"),
                   },
                 ),
               ),
@@ -61,6 +63,7 @@ class _ReviewHomeState extends State<ReviewHome> {
                   children: const [
                     ReviewPage(),
                     ReviewProgress(),
+                    ManageRatings(),
                     ManageReview(),
                   ],
                 ),

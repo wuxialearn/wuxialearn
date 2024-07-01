@@ -89,6 +89,17 @@ class ReviewSql{
     return  a;
   }
 
+  static Future<void> setReviewRating({
+    required int id, required String name, required int start, required int end})
+  async{
+    final db = await SQLHelper.db();
+    db.rawUpdate("""
+      update review_rating set rating_name = '$name', 
+      rating_duration_start = $start, rating_duration_end = $end
+      where rating_id = $id
+    """);
+  }
+
   static Future<List<Map<String, dynamic>>> test({required String deck}) async {
     final db = await SQLHelper.db();
     //await db.rawQuery("update review set rating_id = null where rating_id = ''");
@@ -102,7 +113,8 @@ class ReviewSql{
   static Future<List<Map<String, dynamic>>> getProgress({required String deck}) async {
     final db = await SQLHelper.db();
     final a = await db.rawQuery("""
-        SELECT review_rating.rating_id, count(1) as count, rating_name, 1 as rs from review_rating
+        SELECT review_rating.rating_id, count(1) as count, rating_name, 1 as rs 
+        from review_rating
         join review on  review.rating_id = review_rating.rating_id
         where deck = '$deck'
         group by review_rating.rating_id
@@ -122,4 +134,21 @@ class ReviewSql{
       """);
     return  a;
   }
+
+  static Future<void> insertRating({required String name, required int start, required int end}) async {
+    final db = await SQLHelper.db();
+    await db.rawInsert("""
+      insert into review_rating (rating_name, rating_duration_start, rating_duration_end)
+      values ('$name', $start, $end)
+    """);
+  }
+
+  static Future<void> deleteRating({required int id}) async {
+    final db = await SQLHelper.db();
+    db.rawDelete("""
+    delete from review_rating where id = $id
+    """);
+  }
+
+
 }
