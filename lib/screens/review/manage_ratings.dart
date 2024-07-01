@@ -50,6 +50,7 @@ class _ManageRatingsState extends State<ManageRatings> {
                         TextButton(
                           onPressed: (){
                             ReviewSql.deleteRating(id: rating.id);
+                            update();
                           },
                           child: const Text("delete"),
                         )

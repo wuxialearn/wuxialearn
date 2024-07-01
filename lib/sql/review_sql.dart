@@ -146,7 +146,7 @@ class ReviewSql{
   static Future<void> deleteRating({required int id}) async {
     final db = await SQLHelper.db();
     db.rawDelete("""
-    delete from review_rating where id = $id
+    delete from review_rating where rating_id = $id
     """);
   }
 
