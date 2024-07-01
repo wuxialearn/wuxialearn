@@ -25,52 +25,61 @@ class _ManageRatingsState extends State<ManageRatings> {
         builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
           if(snapshot.hasData){
             final ratings = createReviewRating(snapshot.data!);
-            return  ListView.builder(
-              itemCount: ratings.length +1,
-                itemBuilder: (BuildContext context, int index){
-                  if (index < ratings.length){
-                    final rating  = ratings[index];
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Text(rating.name),
-                        Text(rating.interval()),
-                        TextButton(
-                          onPressed: (){
-                            showCupertinoDialog<String>(
-                              barrierDismissible: true,
-                              context: context,
-                              builder: (BuildContext context) => Dialog(
-                                  child: _EditReviewRatingForm(rating: rating, update: update,)
+            return  Column(
+              children: [
+                const SizedBox(height: 5),
+                const Text("Manage Ratings"),
+                const SizedBox(height: 15),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: ratings.length +1,
+                      itemBuilder: (BuildContext context, int index){
+                        if (index < ratings.length){
+                          final rating  = ratings[index];
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Text(rating.name),
+                              Text(rating.interval()),
+                              TextButton(
+                                onPressed: (){
+                                  showCupertinoDialog<String>(
+                                    barrierDismissible: true,
+                                    context: context,
+                                    builder: (BuildContext context) => Dialog(
+                                        child: _EditReviewRatingForm(rating: rating, update: update,)
+                                    ),
+                                  );
+                                },
+                                child: const Text("edit"),
                               ),
-                            );
-                          },
-                          child: const Text("edit"),
-                        ),
-                        TextButton(
-                          onPressed: (){
-                            ReviewSql.deleteRating(id: rating.id);
-                            update();
-                          },
-                          child: const Text("delete"),
-                        )
-                      ],
-                    );
-                  }else{
-                    return TextButton(
-                        onPressed: (){
-                          showCupertinoDialog<String>(
-                            barrierDismissible: true,
-                            context: context,
-                            builder: (BuildContext context) => Dialog(
-                                child: _AddReviewRatingForm(update: update,)
-                            ),
+                              TextButton(
+                                onPressed: (){
+                                  ReviewSql.deleteRating(id: rating.id);
+                                  update();
+                                },
+                                child: const Text("delete"),
+                              )
+                            ],
                           );
-                        },
-                        child: const Text("add")
-                    );
-                  }
-                }
+                        }else{
+                          return TextButton(
+                              onPressed: (){
+                                showCupertinoDialog<String>(
+                                  barrierDismissible: true,
+                                  context: context,
+                                  builder: (BuildContext context) => Dialog(
+                                      child: _AddReviewRatingForm(update: update,)
+                                  ),
+                                );
+                              },
+                              child: const Text("add")
+                          );
+                        }
+                      }
+                  ),
+                ),
+              ],
             );
           }else{
             return const DelayedProgressIndicator();
