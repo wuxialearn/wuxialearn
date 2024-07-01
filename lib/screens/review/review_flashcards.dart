@@ -189,6 +189,7 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                   if (index + 1 == wordList.length) {
                                     lastPage = true;
                                   }
+                                  showSentences = false;
                                   setState(() {
                                     showShowHint = wordList[index].hanzi.length > 1;
                                   });
@@ -260,7 +261,6 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                 Visibility(
                                                   visible:  showSentences,
                                                   child: Expanded(child: _Sentences(sentencesFuture: sentencesFuture, showPinyin: showPinyin, showTranslation: false,)),
-
                                                 ),
                                                _ShowNextCardButton(callback: nextButtonCallback),
                                               ],
@@ -313,12 +313,12 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                             style: const TextStyle(fontSize: 20, color: Colors.black54),
                                                           )
                                                       ),
-                                                      Visibility(
-                                                        visible: showSentences,
-                                                        child: Expanded(child: _Sentences(sentencesFuture: sentencesFuture, showPinyin: true, showTranslation: true,)),
-                                                      )
                                                    ]
                                                   ),
+                                                ),
+                                                Visibility(
+                                                  visible: showSentences,
+                                                  child: Expanded(child: _Sentences(sentencesFuture: sentencesFuture, showPinyin: true, showTranslation: true,)),
                                                 ),
                                                 Padding(
                                                   padding: const EdgeInsets.all(15.0),
