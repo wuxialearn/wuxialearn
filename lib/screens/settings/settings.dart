@@ -189,7 +189,7 @@ class _SettingsState extends State<Settings> {
                 ],
               ),
               Visibility(
-                visible: !PlatformInfo.isIOs(),
+                visible: true,//!PlatformInfo.isIOs(),
                 child: Column(
                   children: [
                     const Text("Backup"),
