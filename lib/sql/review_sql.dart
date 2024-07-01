@@ -148,6 +148,9 @@ class ReviewSql{
     db.rawDelete("""
     delete from review_rating where rating_id = $id
     """);
+    db.rawUpdate("""
+    update review set rating_id = null where rating_id = $id
+    """);
   }
 
 
