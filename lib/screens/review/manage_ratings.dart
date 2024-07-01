@@ -30,35 +30,57 @@ class _ManageRatingsState extends State<ManageRatings> {
                 const SizedBox(height: 5),
                 const Text("Manage Ratings"),
                 const SizedBox(height: 15),
-                Table(
-                  children: List.generate(ratings.length, (int index){
-                    final rating = ratings[index];
-                    return TableRow(
-                      children: [
-                        Text(rating.name),
-                        Text(rating.interval()),
-                        TextButton(
-                          onPressed: (){
-                            showCupertinoDialog<String>(
-                              barrierDismissible: true,
-                              context: context,
-                              builder: (BuildContext context) => Dialog(
-                                  child: _EditReviewRatingForm(rating: rating, update: update,)
-                              ),
-                            );
-                          },
-                          child: const Text("edit"),
-                        ),
-                        TextButton(
-                          onPressed: (){
-                            ReviewSql.deleteRating(id: rating.id);
-                            update();
-                          },
-                          child: const Text("delete"),
-                        )
-                      ]
-                    );
-                  }),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Table(
+                    columnWidths: const <int, TableColumnWidth>{
+                      //0: IntrinsicColumnWidth(),
+
+                      2: IntrinsicColumnWidth(),
+                    },
+                    children: List.generate(ratings.length, (int index){
+                      final rating = ratings[index];
+                      return TableRow(
+                        children: [
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                              child: Text(rating.name, ),
+                          ),
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                            child: Text(rating.interval()),
+                          ),
+                          TableCell(
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                            child: Row(
+                              children: [
+                                TextButton(
+                                  onPressed: (){
+                                    showCupertinoDialog<String>(
+                                      barrierDismissible: true,
+                                      context: context,
+                                      builder: (BuildContext context) => Dialog(
+                                          child: _EditReviewRatingForm(rating: rating, update: update,)
+                                      ),
+                                    );
+                                  },
+                                  child: const Text("edit"),
+                                ),
+                                TextButton(
+                                  onPressed: (){
+                                    ReviewSql.deleteRating(id: rating.id);
+                                    update();
+                                  },
+                                  child: const Text("delete"),
+                                )
+                              ],
+                            ),
+                          )
+
+                        ]
+                      );
+                    }),
+                  ),
                 ),
                 TextButton(
                     onPressed: (){
