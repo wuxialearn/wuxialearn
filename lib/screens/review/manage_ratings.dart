@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:hsk_learner/sql/review_sql.dart';
 import 'package:hsk_learner/widgets/delayed_progress_indecator.dart';
 
@@ -31,37 +30,47 @@ class _ManageRatingsState extends State<ManageRatings> {
                 const SizedBox(height: 5),
                 const Text("Manage Ratings"),
                 const SizedBox(height: 15),
-                Expanded(
-                  child: Table(
-                    children: List.generate(ratings.length, (int index){
-                      final rating = ratings[index];
-                      return TableRow(
-                        children: [
-                          Text(rating.name),
-                          Text(rating.interval()),
-                          TextButton(
-                            onPressed: (){
-                              showCupertinoDialog<String>(
-                                barrierDismissible: true,
-                                context: context,
-                                builder: (BuildContext context) => Dialog(
-                                    child: _EditReviewRatingForm(rating: rating, update: update,)
-                                ),
-                              );
-                            },
-                            child: const Text("edit"),
-                          ),
-                          TextButton(
-                            onPressed: (){
-                              ReviewSql.deleteRating(id: rating.id);
-                              update();
-                            },
-                            child: const Text("delete"),
-                          )
-                        ]
+                Table(
+                  children: List.generate(ratings.length, (int index){
+                    final rating = ratings[index];
+                    return TableRow(
+                      children: [
+                        Text(rating.name),
+                        Text(rating.interval()),
+                        TextButton(
+                          onPressed: (){
+                            showCupertinoDialog<String>(
+                              barrierDismissible: true,
+                              context: context,
+                              builder: (BuildContext context) => Dialog(
+                                  child: _EditReviewRatingForm(rating: rating, update: update,)
+                              ),
+                            );
+                          },
+                          child: const Text("edit"),
+                        ),
+                        TextButton(
+                          onPressed: (){
+                            ReviewSql.deleteRating(id: rating.id);
+                            update();
+                          },
+                          child: const Text("delete"),
+                        )
+                      ]
+                    );
+                  }),
+                ),
+                TextButton(
+                    onPressed: (){
+                      showCupertinoDialog<String>(
+                        barrierDismissible: true,
+                        context: context,
+                        builder: (BuildContext context) => Dialog(
+                            child: _AddReviewRatingForm(update: update,)
+                        ),
                       );
-                    }),
-                  ),
+                    },
+                    child: const Text("add")
                 ),
               ],
             );
