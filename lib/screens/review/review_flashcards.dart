@@ -2,12 +2,15 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hsk_learner/data_model/review_rating.dart';
 import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/sql/review_flashcards_sql.dart';
 
 import '../../sql/stats_sql.dart';
+import '../../sql/word_view_sql.dart';
+import '../../utils/prototype.dart';
 import '../settings/preferences.dart';
 import 'flashcard.dart';
 class ReviewFlashcards extends StatefulWidget {
@@ -28,6 +31,7 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
   bool showPinyin = Preferences.getPreference("show_pinyin_by_default_in_review");
   bool showHint = false;
   bool showShowHint = false;
+  bool showSentences = false;
   final PageController _pageController = PageController(initialPage: 0);
   int offset = 0;
 
@@ -157,6 +161,16 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                               TextButton(
                                   onPressed: (){
                                     setState(() {
+                                      showSentences = !showSentences;
+                                    });
+                                  },
+                                  child: showSentences?
+                                  const Text("Hide Sentences")
+                                      :const Text("Show Sentences")
+                              ),
+                              TextButton(
+                                  onPressed: (){
+                                    setState(() {
                                       showPinyin = !showPinyin;
                                     });
                                   },
@@ -180,6 +194,7 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                   });
                                 },
                                 itemBuilder: (context, pageIndex) {
+                                  final sentencesFuture = WordViewSql.getSentenceFromId(wordList[pageIndex].id);
                                   return Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -242,6 +257,11 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                     ],
                                                   ),
                                                 ),
+                                                Visibility(
+                                                  visible:  showSentences,
+                                                  child: Expanded(child: _Sentences(sentencesFuture: sentencesFuture, showPinyin: showPinyin, showTranslation: false,)),
+
+                                                ),
                                                _ShowNextCardButton(callback: nextButtonCallback),
                                               ],
                                             ),
@@ -293,6 +313,10 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                             style: const TextStyle(fontSize: 20, color: Colors.black54),
                                                           )
                                                       ),
+                                                      Visibility(
+                                                        visible: showSentences,
+                                                        child: Expanded(child: _Sentences(sentencesFuture: sentencesFuture, showPinyin: true, showTranslation: true,)),
+                                                      )
                                                    ]
                                                   ),
                                                 ),
@@ -377,6 +401,96 @@ class _AnswerButton extends StatelessWidget {
           );
         }
       ),
+    );
+  }
+}
+
+
+class _Sentences extends StatelessWidget {
+  const _Sentences({required this.sentencesFuture, required this.showPinyin, required this.showTranslation});
+  final Future<List<Map<String, dynamic>>> sentencesFuture;
+  final bool showPinyin;
+  final bool showTranslation;
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<Map<String, dynamic>>>(
+        future: sentencesFuture,
+        builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+          if (snapshot.hasData) {
+            List<Map<String, dynamic>> sentences = snapshot.data!;
+            if (sentences.isEmpty){
+              return const Column(
+                children: [
+                  SizedBox(height: 20,),
+                  Text("There are no sentences yet for this word", style: TextStyle(fontSize: 20),),
+                ],
+              );
+            }else{
+              return CustomScrollView(
+                slivers: [
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                        childCount: sentences.length,
+                            (BuildContext context, int index){
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10,),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: PrototypeHeight(
+                                        prototype: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Visibility(
+                                              visible: showPinyin,
+                                                child: const Text("名字爱Míngzì", overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.black)),
+                                            ),
+                                            const Text("名字爱Míngzì", style: TextStyle(fontSize: 20, color: Colors.black),overflow: TextOverflow.ellipsis,),
+                                            Visibility(
+                                              visible: showTranslation,
+                                                child: const Text("名字爱Míngzì", style: TextStyle(fontSize: 16, color: Colors.black),overflow: TextOverflow.ellipsis,),
+                                            )
+                                          ],
+                                        ),
+                                        child: ListView(
+                                          scrollDirection: Axis.horizontal,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Visibility(
+                                                  visible: showPinyin,
+                                                  child: Text(sentences[index]["pinyin"], overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.black),),
+                                                ),
+                                                Text(sentences[index]["characters"], style: const TextStyle(fontSize: 20, color: Colors.black),overflow: TextOverflow.ellipsis,),
+                                                Visibility(
+                                                  visible: showTranslation,
+                                                  child: Text(sentences[index]["meaning"], style: const TextStyle(fontSize: 16, color: Colors.black),overflow: TextOverflow.ellipsis,),
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                    ),
+                  ),
+                ],
+              );
+            }
+          }
+          else{return const SizedBox();}
+        }
     );
   }
 }
