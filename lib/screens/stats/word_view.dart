@@ -132,7 +132,7 @@ class _Sentences extends StatelessWidget {
               return const Column(
                 children: [
                   SizedBox(height: 20,),
-                  Text("There are no sentences yet for this unit", style: TextStyle(fontSize: 20),),
+                  Text("There are no sentences yet for this word", style: TextStyle(fontSize: 20),),
                 ],
               );
             }else{
