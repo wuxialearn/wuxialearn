@@ -1,7 +1,10 @@
 import 'package:hsk_learner/sql/sql_helper.dart';
 
-class StatsSql{
-  static Future<List<Map<String, dynamic>>> getTimeline({required int deckSize, required String sortBy, required String orderBy}) async {
+class StatsSql {
+  static Future<List<Map<String, dynamic>>> getTimeline(
+      {required int deckSize,
+      required String sortBy,
+      required String orderBy}) async {
     final db = await SQLHelper.db();
     return db.rawQuery("""
     SELECT string_date, right_occurrence, wrong_occurrence, 
@@ -23,6 +26,7 @@ class StatsSql{
     LIMIT $deckSize;
     """);
   }
+
   static Future<List<Map<String, dynamic>>> getOverview() async {
     final db = await SQLHelper.db();
     const sql = """
@@ -118,7 +122,11 @@ class StatsSql{
     return result;
   }
 
-  static Future<List<Map<String, dynamic>>> getStats({required int deckSize, required String sortBy, required String orderBy, String where = ""}) async {
+  static Future<List<Map<String, dynamic>>> getStats(
+      {required int deckSize,
+      required String sortBy,
+      required String orderBy,
+      String where = ""}) async {
     final db = await SQLHelper.db();
     return db.rawQuery("""
     SELECT courses.id, right_occurrence, wrong_occurrence, 
@@ -144,10 +152,9 @@ class StatsSql{
     """);
   }
 
-  static void insertStat ({required int value, required int id}) async {
+  static void insertStat({required int value, required int id}) async {
     final db = await SQLHelper.db();
     await db.rawInsert(
-        "INSERT INTO stats(date, wordid, value) VALUES(strftime('%s', 'now'), $id, $value)"
-    );
+        "INSERT INTO stats(date, wordid, value) VALUES(strftime('%s', 'now'), $id, $value)");
   }
 }

@@ -6,18 +6,17 @@ class LinearGradientContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: const BoxDecoration(
+      decoration: const BoxDecoration(
           gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: <Color>[
-            Color(0xFFD8EAF8),
-            Color(0xFFF7F8F8),
-            Color(0xFFF7F8F8),
-            Color(0xFFF7F8F8),
-          ],
-        )
-      ),
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: <Color>[
+          Color(0xFFD8EAF8),
+          Color(0xFFF7F8F8),
+          Color(0xFFF7F8F8),
+          Color(0xFFF7F8F8),
+        ],
+      )),
       child: child,
     );
   }

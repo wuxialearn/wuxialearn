@@ -1,7 +1,7 @@
 import 'package:hsk_learner/sql/sql_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
-class TestOutSql{
+class TestOutSql {
   static void completeHSKLevel(int hsk) async {
     final db = await SQLHelper.db();
     Batch testOutBatch = db.batch();
@@ -15,7 +15,7 @@ class TestOutSql{
 		    where units.hsk <= $hsk
 		order by subunits.unit)
     """);
-    testOutBatch.rawInsert( """
+    testOutBatch.rawInsert("""
     INSERT INTO stats(date, wordid, value)
         SELECT strftime('%s', 'now'), courses.id, 1 from courses
         join units on units.unit_id = courses.unit
@@ -28,10 +28,10 @@ class TestOutSql{
     testOutBatch.commit();
   }
 
-
-  static Future<List<Map<String, dynamic>>> getTestOutWords({required int hsk}) async {
+  static Future<List<Map<String, dynamic>>> getTestOutWords(
+      {required int hsk}) async {
     final db = await SQLHelper.db();
-    var a =  db.rawQuery("""
+    var a = db.rawQuery("""
       SELECT
           id, hanzi, pinyin, translations0
         FROM courses

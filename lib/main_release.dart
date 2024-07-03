@@ -6,7 +6,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:hsk_learner/screens/home/load_app.dart';
 
 void main() {
-  if (PlatformInfo.isDesktop()){
+  if (PlatformInfo.isDesktop()) {
     // Initialize FFI
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
@@ -20,7 +20,6 @@ void main() {
   runApp(const MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -28,25 +27,29 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData(
-        fontFamily: '.SF UI Text',
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.blue,
-        )
-      ),
-      child:  const CupertinoApp(
+          fontFamily: '.SF UI Text',
+          colorScheme: ColorScheme.fromSwatch(
+            primarySwatch: Colors.blue,
+          )),
+      child: const CupertinoApp(
         theme: CupertinoThemeData(
-          primaryColor: Colors.blue,
-          brightness: Brightness.light,
-          textTheme: CupertinoTextThemeData(
-            textStyle: TextStyle(fontFamily: 'Roboto', color: Colors.black),
-            actionTextStyle: TextStyle(fontFamily: 'Roboto', color: Colors.black),
-            navActionTextStyle: TextStyle(fontFamily: 'Roboto', color: Colors.blue),
-            navLargeTitleTextStyle: TextStyle(fontFamily: 'Roboto', color: Colors.black),
-            navTitleTextStyle: TextStyle(fontFamily: 'Roboto', color: Colors.black),
-            pickerTextStyle: TextStyle(fontFamily: 'Roboto', color: Colors.black),
-            dateTimePickerTextStyle: TextStyle(fontFamily: 'Roboto', color: Colors.black),
-          )
-        ),
+            primaryColor: Colors.blue,
+            brightness: Brightness.light,
+            textTheme: CupertinoTextThemeData(
+              textStyle: TextStyle(fontFamily: 'Roboto', color: Colors.black),
+              actionTextStyle:
+                  TextStyle(fontFamily: 'Roboto', color: Colors.black),
+              navActionTextStyle:
+                  TextStyle(fontFamily: 'Roboto', color: Colors.blue),
+              navLargeTitleTextStyle:
+                  TextStyle(fontFamily: 'Roboto', color: Colors.black),
+              navTitleTextStyle:
+                  TextStyle(fontFamily: 'Roboto', color: Colors.black),
+              pickerTextStyle:
+                  TextStyle(fontFamily: 'Roboto', color: Colors.black),
+              dateTimePickerTextStyle:
+                  TextStyle(fontFamily: 'Roboto', color: Colors.black),
+            )),
         scrollBehavior: CupertinoScrollBehavior(),
         title: 'Flutter Demo',
         home: LoadApp(),

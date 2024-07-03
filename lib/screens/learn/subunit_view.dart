@@ -9,9 +9,17 @@ import '../../widgets/hsk_listview/hsk_listview.dart';
 import '../games/unit_game.dart';
 import '../settings/preferences.dart';
 
-
 class SubunitView extends StatefulWidget {
-  const SubunitView({super.key, required this.wordList, required this.unit, required this.subunit, required this.lastSubunit, required this.name, required this.completed, required this.updateUnits, required this.courseName});
+  const SubunitView(
+      {super.key,
+      required this.wordList,
+      required this.unit,
+      required this.subunit,
+      required this.lastSubunit,
+      required this.name,
+      required this.completed,
+      required this.updateUnits,
+      required this.courseName});
   final List<WordItem> wordList;
   final int unit;
   final int subunit;
@@ -26,7 +34,6 @@ class SubunitView extends StatefulWidget {
 }
 
 class _SubunitViewState extends State<SubunitView> {
-
   late Future<List<Map<String, dynamic>>> sentenceList;
   final bool debug = Preferences.getPreference("debug");
   final bool allowSkipUnits = Preferences.getPreference("allow_skip_units");
@@ -39,10 +46,11 @@ class _SubunitViewState extends State<SubunitView> {
   }
 
   FlutterTts flutterTts = FlutterTts();
-  setLanguage() async{
+  setLanguage() async {
     await flutterTts.setLanguage("zh-CN");
   }
-  Future speak(String text) async{
+
+  Future speak(String text) async {
     await flutterTts.speak(text);
   }
 
@@ -68,7 +76,7 @@ class _SubunitViewState extends State<SubunitView> {
                     showTranslation: true,
                     showPinyin: true,
                     separator: true,
-                    callback: (String s){
+                    callback: (String s) {
                       speak(s);
                     },
                     showPlayButton: true,
@@ -78,8 +86,9 @@ class _SubunitViewState extends State<SubunitView> {
             ),
             FutureBuilder<List<Map<String, dynamic>>>(
                 future: sentenceList,
-                builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot){
-                  if(snapshot.hasData){
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                  if (snapshot.hasData) {
                     List<Map<String, dynamic>> sentenceList = snapshot.data!;
                     return Row(
                       children: [
@@ -89,65 +98,74 @@ class _SubunitViewState extends State<SubunitView> {
                             padding: const EdgeInsets.all(8.0),
                             child: TextButton(
                               onPressed: () {
-                                Navigator.pushReplacement(context, MaterialPageRoute(
-                                  builder: (context) => UnitLearn(
-                                    courseName: widget.courseName,
-                                    wordList: widget.wordList,
-                                    unit: widget.unit,
-                                    subunit: widget.subunit,
-                                    lastSubunit: widget.lastSubunit,
-                                    name: widget.name,
-                                    updateUnits: widget.updateUnits,
-                                  ),
-                                )).then((_){
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => UnitLearn(
+                                        courseName: widget.courseName,
+                                        wordList: widget.wordList,
+                                        unit: widget.unit,
+                                        subunit: widget.subunit,
+                                        lastSubunit: widget.lastSubunit,
+                                        name: widget.name,
+                                        updateUnits: widget.updateUnits,
+                                      ),
+                                    )).then((_) {
                                   Navigator.pop(context);
                                 });
                               },
                               child: const Text(
                                 "Learn",
-                                style: TextStyle(color: Colors.blue, fontSize: 25),
+                                style:
+                                    TextStyle(color: Colors.blue, fontSize: 25),
                               ),
                             ),
                           ),
                         ),
-                        widget.completed || debug || allowSkipUnits?
-                        Flexible(
-                          fit: FlexFit.tight,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextButton(
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => UnitGame(
-                                    wordList: widget.wordList,
-                                    unit: widget.unit,
-                                    sentenceList: sentenceList,
-                                    subunit: widget.subunit,
-                                    lastSubunit: widget.lastSubunit,
-                                    name: "",
-                                    updateUnits: widget.updateUnits,
-                                    courseName: widget.courseName,
+                        widget.completed || debug || allowSkipUnits
+                            ? Flexible(
+                                fit: FlexFit.tight,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => UnitGame(
+                                              wordList: widget.wordList,
+                                              unit: widget.unit,
+                                              sentenceList: sentenceList,
+                                              subunit: widget.subunit,
+                                              lastSubunit: widget.lastSubunit,
+                                              name: "",
+                                              updateUnits: widget.updateUnits,
+                                              courseName: widget.courseName,
+                                            ),
+                                          )).then((_) {
+                                        widget.updateUnits();
+                                        Navigator.pop(context);
+                                      });
+                                    },
+                                    child: const Text(
+                                      "Quiz",
+                                      style: TextStyle(
+                                          color: Colors.blue, fontSize: 25),
+                                    ),
                                   ),
-                                )).then((_){
-                                  widget.updateUnits();
-                                  Navigator.pop(context);
-                                });
-                              },
-                              child: const Text(
-                                "Quiz",
-                                style: TextStyle(color: Colors.blue, fontSize: 25),
+                                ),
+                              )
+                            : const SizedBox(
+                                height: 0,
                               ),
-                            ),
-                          ),
-                        )
-                            : const SizedBox(height: 0,),
                       ],
                     );
-                  }else{
-                    return const SizedBox(height: 0,);
+                  } else {
+                    return const SizedBox(
+                      height: 0,
+                    );
                   }
-                }
-            ),
+                }),
           ],
         ),
       ),

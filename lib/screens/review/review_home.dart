@@ -28,53 +28,48 @@ class _ReviewHomeState extends State<ReviewHome> {
     pageController = PageController();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        navigationBar: const CupertinoNavigationBar(
-          middle: Text("Review")
-      ), 
-      child:  SafeArea(
+      navigationBar: const CupertinoNavigationBar(middle: Text("Review")),
+      child: SafeArea(
           child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CupertinoSlidingSegmentedControl(
-                  onValueChanged: (int? value) {
-                    setState(() {
-                      pageController.animateToPage(
-                          value!-1,
-                          duration: const Duration(milliseconds: 400),
-                          curve: Curves.ease
-                      );
-                    });
-                  },
-                  children: const <int, Widget>{
-                    1: Text("Review"),
-                    2: Text("Progress"),
-                    3: Text("Ratings"),
-                    4: Text("Decks"),
-                  },
-                ),
-              ),
-              Expanded(
-                child: PageView(
-                  controller: pageController,
-                  children: const [
-                    ReviewPage(),
-                    ReviewProgress(),
-                    ManageRatings(),
-                    ManageReview(),
-                  ],
-                ),
-              ),
-            ],
-          )
-      ),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CupertinoSlidingSegmentedControl(
+              onValueChanged: (int? value) {
+                setState(() {
+                  pageController.animateToPage(value! - 1,
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.ease);
+                });
+              },
+              children: const <int, Widget>{
+                1: Text("Review"),
+                2: Text("Progress"),
+                3: Text("Ratings"),
+                4: Text("Decks"),
+              },
+            ),
+          ),
+          Expanded(
+            child: PageView(
+              controller: pageController,
+              children: const [
+                ReviewPage(),
+                ReviewProgress(),
+                ManageRatings(),
+                ManageReview(),
+              ],
+            ),
+          ),
+        ],
+      )),
     );
   }
 }
-
 
 class ReviewPage extends StatefulWidget {
   const ReviewPage({Key? key}) : super(key: key);
@@ -83,18 +78,27 @@ class ReviewPage extends StatefulWidget {
 }
 
 class _ReviewPageState extends State<ReviewPage> {
-
   late Future<List<Map<String, dynamic>>> hskList;
   late List<Future<List<Map<String, dynamic>>>> sentenceList;
-  Future<List<Map<String, dynamic>>> reviewRatingFuture = ReviewSql.getReviewRatings();
+  Future<List<Map<String, dynamic>>> reviewRatingFuture =
+      ReviewSql.getReviewRatings();
   bool lastPage = false;
   int numCards = -1;
   bool previewDeck = Preferences.getPreference("showTranslations");
-  bool showPinyin = Preferences.getPreference("show_pinyin_by_default_in_review");
+  bool showPinyin =
+      Preferences.getPreference("show_pinyin_by_default_in_review");
   bool isCollapsed = true;
   bool deckExists = true;
-  List<String> reviewWordsOptions = ["SRS", "random words","difficult words", "old words",];
-  List<String> reviewTypeOptions = ["Flashcards","Quiz",];
+  List<String> reviewWordsOptions = [
+    "SRS",
+    "random words",
+    "difficult words",
+    "old words",
+  ];
+  List<String> reviewTypeOptions = [
+    "Flashcards",
+    "Quiz",
+  ];
   List<String> deckSizeOptions = ["Small", "Medium", "Large", "All"];
   List<String> deckNames = ["hsk", "wuxia"];
   String deckName = 'hsk';
@@ -114,34 +118,54 @@ class _ReviewPageState extends State<ReviewPage> {
     hskList = getReview();
   }
 
-  void update(){
-    if(reviewWordsValue == "SRS"){
+  void update() {
+    if (reviewWordsValue == "SRS") {
       setState(() {
         hskList = getReview();
       });
     }
   }
 
-  Future<List<Map<String, dynamic>>> getReview()  async {
-    switch(deckSizeValue){
-      case "Small": numCards = 10; break;
-      case "Medium": numCards = 20; break;
-      case "Large": numCards = 35; break;
-      case "All": numCards = -1; break;
+  Future<List<Map<String, dynamic>>> getReview() async {
+    switch (deckSizeValue) {
+      case "Small":
+        numCards = 10;
+        break;
+      case "Medium":
+        numCards = 20;
+        break;
+      case "Large":
+        numCards = 35;
+        break;
+      case "All":
+        numCards = -1;
+        break;
     }
     List<Map<String, dynamic>> reviewList = [];
-    switch(reviewWordsValue){
+    switch (reviewWordsValue) {
       case "SRS":
         reviewList = await ReviewSql.getSrsReview(deckSize: numCards);
         break;
       case "random words":
-        reviewList = await ReviewSql.getReview(deckSize: numCards, sortBy: "RANDOM()", orderBy: "ASC", deckName: deckName);
+        reviewList = await ReviewSql.getReview(
+            deckSize: numCards,
+            sortBy: "RANDOM()",
+            orderBy: "ASC",
+            deckName: deckName);
         break;
       case "difficult words":
-        reviewList = await ReviewSql.getReview(deckSize: numCards, sortBy: "score", orderBy: "ASC", deckName: deckName);
+        reviewList = await ReviewSql.getReview(
+            deckSize: numCards,
+            sortBy: "score",
+            orderBy: "ASC",
+            deckName: deckName);
         break;
       case "old words":
-        reviewList = await ReviewSql.getReview(deckSize: numCards, sortBy: "last_seen", orderBy: "ASC", deckName: deckName);
+        reviewList = await ReviewSql.getReview(
+            deckSize: numCards,
+            sortBy: "last_seen",
+            orderBy: "ASC",
+            deckName: deckName);
     }
     return reviewList;
   }
@@ -152,19 +176,23 @@ class _ReviewPageState extends State<ReviewPage> {
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Center(
         child: Column(
-          mainAxisSize:  MainAxisSize.min,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               decoration: BoxDecoration(
-                borderRadius: deckExists ?
-                  const BorderRadius.vertical(top: Radius.circular(10)):
-                  BorderRadius.circular(10),
+                borderRadius: deckExists
+                    ? const BorderRadius.vertical(top: Radius.circular(10))
+                    : BorderRadius.circular(10),
                 color: Colors.white,
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 8.0,),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8.0,
+              ),
               child: Column(
                 children: [
-                  const SizedBox(height: 5,),
+                  const SizedBox(
+                    height: 5,
+                  ),
                   ShrinkWidget(
                     isCollapsed: isCollapsed,
                     child: CupertinoButton(
@@ -174,70 +202,97 @@ class _ReviewPageState extends State<ReviewPage> {
                           isCollapsed = false;
                         });
                       },
-                      child: const Row(children:[Text("Review Options")]) ,
+                      child: const Row(children: [Text("Review Options")]),
                     ),
                   ),
                   Collapsible(
                     duration: 1000,
                     isCollapsed: isCollapsed,
                     child: Column(
-                    children: [
-                      const SizedBox(height: 15,),
-                      const Center(child: Text("Review Options"),),
-                      const SizedBox(height: 25,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("Review words:"),
-                          CupertinoButton(onPressed: (){ _showReviewWordsActionSheet(context);}, child: Text(reviewWordsValue), ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("Review type:"),
-                          CupertinoButton(onPressed: (){ _showReviewTypeActionSheet(context);}, child: Text(reviewTypeValue), ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("Deck size"),
-                          CupertinoButton(onPressed: (){ _showReviewSizeActionSheet(context);}, child: Text(deckSizeValue), ),
-                          //DropDown(dropdownOptions: deckSizeOptions, callback: (value) { deckSizeValue = value; })
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("Deck"),
-                          CupertinoButton(onPressed: (){ _showReviewDeckActionSheet(context);}, child: Text(deckName), ),
-                        ],
-                      ),
-                      CupertinoButton(
-                          onPressed: (){
-                            setState(() {
-                              hskList = getReview();
-                              isCollapsed = true;
-                              deckExists = true;
-                            });
-                          },
-                          child: const Text("create deck")
-                      ),
-                    ],
-                  ),
+                      children: [
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        const Center(
+                          child: Text("Review Options"),
+                        ),
+                        const SizedBox(
+                          height: 25,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Review words:"),
+                            CupertinoButton(
+                              onPressed: () {
+                                _showReviewWordsActionSheet(context);
+                              },
+                              child: Text(reviewWordsValue),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Review type:"),
+                            CupertinoButton(
+                              onPressed: () {
+                                _showReviewTypeActionSheet(context);
+                              },
+                              child: Text(reviewTypeValue),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Deck size"),
+                            CupertinoButton(
+                              onPressed: () {
+                                _showReviewSizeActionSheet(context);
+                              },
+                              child: Text(deckSizeValue),
+                            ),
+                            //DropDown(dropdownOptions: deckSizeOptions, callback: (value) { deckSizeValue = value; })
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Deck"),
+                            CupertinoButton(
+                              onPressed: () {
+                                _showReviewDeckActionSheet(context);
+                              },
+                              child: Text(deckName),
+                            ),
+                          ],
+                        ),
+                        CupertinoButton(
+                            onPressed: () {
+                              setState(() {
+                                hskList = getReview();
+                                isCollapsed = true;
+                                deckExists = true;
+                              });
+                            },
+                            child: const Text("create deck")),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-            deckExists?
-                FutureBuilder(
+            deckExists
+                ? FutureBuilder(
                     future: hskList,
-                    builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot){
-                      if(snapshot.hasData){
-                        if(snapshot.data!.isNotEmpty){
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data!.isNotEmpty) {
                           return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal:  8.0, vertical: 3),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 3),
                             child: Row(
                               children: [
                                 RichText(
@@ -245,7 +300,11 @@ class _ReviewPageState extends State<ReviewPage> {
                                     style: DefaultTextStyle.of(context).style,
                                     children: <TextSpan>[
                                       //const TextSpan(text: 'Review '),
-                                      TextSpan(text: snapshot.data!.length.toString(), style: const TextStyle(color: Colors.blue)),
+                                      TextSpan(
+                                          text:
+                                              snapshot.data!.length.toString(),
+                                          style: const TextStyle(
+                                              color: Colors.blue)),
                                       const TextSpan(text: ' Words'),
                                     ],
                                   ),
@@ -253,24 +312,26 @@ class _ReviewPageState extends State<ReviewPage> {
                               ],
                             ),
                           );
-                        }else{
+                        } else {
                           return const SizedBox(height: 0);
                         }
-                      }else{
+                      } else {
                         return const SizedBox(height: 0);
                       }
-                 })
-            :const SizedBox(height: 0),
-            deckExists?
-            HskListview(
-              hskList: hskList,
-              showTranslation: previewDeck,
-              showPinyin: showPinyin,
-              connectTop: true, color: Colors.white,
-              scrollAxis: Axis.vertical,
-              emptyListMessage: const Text("Nothing to review")
-            )
-            : const SizedBox(height: 0,),
+                    })
+                : const SizedBox(height: 0),
+            deckExists
+                ? HskListview(
+                    hskList: hskList,
+                    showTranslation: previewDeck,
+                    showPinyin: showPinyin,
+                    connectTop: true,
+                    color: Colors.white,
+                    scrollAxis: Axis.vertical,
+                    emptyListMessage: const Text("Nothing to review"))
+                : const SizedBox(
+                    height: 0,
+                  ),
             ShrinkWidget(
               //visible: isCollapsed,
               isCollapsed: isCollapsed,
@@ -279,31 +340,39 @@ class _ReviewPageState extends State<ReviewPage> {
                 child: Center(
                   child: FutureBuilder(
                     future: reviewRatingFuture,
-                    builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-                      if (snapshot.hasData){
-                        List<ReviewRating> ratings = createReviewRating(snapshot.data!);
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                      if (snapshot.hasData) {
+                        List<ReviewRating> ratings =
+                            createReviewRating(snapshot.data!);
                         return TextButton(
                             style: Styles.blankButton4,
-                            onPressed: (){
-                              if (reviewTypeValue == "Quiz"){
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => ReviewQuiz(hskList: hskList),
-                                ),);
-                              }else{
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => ReviewFlashcards(
-                                    hskList: hskList,
-                                    update: update,
-                                    type: reviewWordsValue,
-                                    deckSize: numCards,
-                                    ratings: ratings,
+                            onPressed: () {
+                              if (reviewTypeValue == "Quiz") {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ReviewQuiz(hskList: hskList),
                                   ),
-                                ),);
+                                );
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ReviewFlashcards(
+                                      hskList: hskList,
+                                      update: update,
+                                      type: reviewWordsValue,
+                                      deckSize: numCards,
+                                      ratings: ratings,
+                                    ),
+                                  ),
+                                );
                               }
                             },
-                            child: const Text("Review")
-                        );
-                      }else{
+                            child: const Text("Review"));
+                      } else {
                         return const DelayedProgressIndicator();
                       }
                     },
@@ -322,8 +391,8 @@ class _ReviewPageState extends State<ReviewPage> {
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
         title: const Text('Select word selection type'),
-        actions:
-        List<CupertinoActionSheetAction>.generate(reviewWordsOptions.length,(index){
+        actions: List<CupertinoActionSheetAction>.generate(
+            reviewWordsOptions.length, (index) {
           return CupertinoActionSheetAction(
             isDefaultAction: true,
             onPressed: () {
@@ -338,13 +407,14 @@ class _ReviewPageState extends State<ReviewPage> {
       ),
     );
   }
+
   _showReviewTypeActionSheet<bool>(BuildContext context) {
     showCupertinoModalPopup<bool>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
         title: const Text('Select a review type course'),
-        actions:
-        List<CupertinoActionSheetAction>.generate(reviewTypeOptions.length,(index){
+        actions: List<CupertinoActionSheetAction>.generate(
+            reviewTypeOptions.length, (index) {
           return CupertinoActionSheetAction(
             isDefaultAction: true,
             onPressed: () {
@@ -365,8 +435,8 @@ class _ReviewPageState extends State<ReviewPage> {
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
         title: const Text('Select a deck size'),
-        actions:
-        List<CupertinoActionSheetAction>.generate(deckSizeOptions.length,(index){
+        actions: List<CupertinoActionSheetAction>.generate(
+            deckSizeOptions.length, (index) {
           return CupertinoActionSheetAction(
             isDefaultAction: true,
             onPressed: () {
@@ -387,8 +457,8 @@ class _ReviewPageState extends State<ReviewPage> {
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
         title: const Text('Select a deck'),
-        actions:
-        List<CupertinoActionSheetAction>.generate(deckNames.length,(index){
+        actions: List<CupertinoActionSheetAction>.generate(deckNames.length,
+            (index) {
           return CupertinoActionSheetAction(
             isDefaultAction: true,
             onPressed: () {
@@ -403,5 +473,4 @@ class _ReviewPageState extends State<ReviewPage> {
       ),
     );
   }
-
 }

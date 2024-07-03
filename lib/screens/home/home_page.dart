@@ -14,11 +14,13 @@ class MyHomePage extends StatefulWidget {
   MyHomePageState createState() => MyHomePageState();
 }
 
-class MyHomePageState extends State<MyHomePage>{
-
+class MyHomePageState extends State<MyHomePage> {
   onTappedTab(int index) {
-    setState(() {tabsIndex = index;});
+    setState(() {
+      tabsIndex = index;
+    });
   }
+
   final String s = Preferences.getPreference("default_home_page");
   int tabsIndex = 0;
   late List<Widget> tabList = [];
@@ -26,14 +28,9 @@ class MyHomePageState extends State<MyHomePage>{
 
   @override
   void initState() {
-    tabsIndex = switch (s){
-      "home" => 0,
-      "review" => 1,
-      "stats" => 2,
-      _ => 0
-    };
+    tabsIndex = switch (s) { "home" => 0, "review" => 1, "stats" => 2, _ => 0 };
     super.initState();
-    if(widget.tab != null){
+    if (widget.tab != null) {
       tabsIndex = widget.tab!;
     }
     tabList = [
@@ -45,15 +42,17 @@ class MyHomePageState extends State<MyHomePage>{
       //SentenceGame(callback: sentenceGameCallBack, currSentence: currSentence(), index: 0, buildEnglish: false)
     ];
   }
-  void sentenceGameCallBack(bool value, Map<String, dynamic> currSentence, bool buildEnglish){
-  }
-  Map<String, dynamic> currSentence(){
+
+  void sentenceGameCallBack(
+      bool value, Map<String, dynamic> currSentence, bool buildEnglish) {}
+  Map<String, dynamic> currSentence() {
     //return  {"characters": "她叫什么名字", "pinyin": "tā jiào shénme míngzì", "meaning": "what's her name"};
     //return {"characters": "我的弟弟想长高", "pinyin": "Wǒ de dìdi xiǎng zhǎng gāo", "meaning": "my younger brother wants to grow taller",};
     return {
       "characters": "我 爱 我 的 国家，它 有 很多 美丽 的 河流 和 公园",
       "pinyin": "wǒ ài wǒ de guójiā, tā yǒu hěnduō měilì de héliú hé gōngyuán",
-      "meaning": "I love my country, it has many beautiful rivers and parks and more words"
+      "meaning":
+          "I love my country, it has many beautiful rivers and parks and more words"
     };
   }
 
@@ -61,16 +60,17 @@ class MyHomePageState extends State<MyHomePage>{
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if (tabsIndex != 0){
+        if (tabsIndex != 0) {
           onTappedTab(0);
           return false;
-        }else{
+        } else {
           final timestamp = DateTime.timestamp();
-          var timeSinceLastPress = timestamp.difference(lastBackPress).inMilliseconds;
+          var timeSinceLastPress =
+              timestamp.difference(lastBackPress).inMilliseconds;
           lastBackPress = timestamp;
-          if (timeSinceLastPress > 0 && timeSinceLastPress < 300){
+          if (timeSinceLastPress > 0 && timeSinceLastPress < 300) {
             return true;
-          }else{
+          } else {
             return false;
           }
         }
@@ -83,9 +83,12 @@ class MyHomePageState extends State<MyHomePage>{
           onTap: onTappedTab,
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-            BottomNavigationBarItem(icon: Icon(Icons.auto_stories), label: "Review"),
-            BottomNavigationBarItem(icon: Icon(Icons.query_stats_sharp), label: "Stats"),
-            BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.auto_stories), label: "Review"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.query_stats_sharp), label: "Stats"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.settings), label: "Settings"),
             //BottomNavigationBarItem(icon: Icon(Icons.construction), label: "testing"),
           ],
         ),

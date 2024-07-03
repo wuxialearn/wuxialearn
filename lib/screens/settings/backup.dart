@@ -15,10 +15,11 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../sql/preferences_sql.dart';
 import '../../sql/sql_helper.dart';
 
-final class Backup{
+final class Backup {
   static const int backupFileFormatVersion = 1;
 
-  static const String backupFileFormatVersionName = "backup_file_format_version.txt";
+  static const String backupFileFormatVersionName =
+      "backup_file_format_version.txt";
   static const String subUnitName = "subunit_info.csv";
   static const String unitName = "unit_info.csv";
   static const String statsName = "stats.csv";
@@ -28,7 +29,7 @@ final class Backup{
 
   static final subUnitInfo = _BackupItem(
     name: subUnitName,
-    source:  _getSubunitInfo,
+    source: _getSubunitInfo,
     tableName: 'subunit_info',
   );
   static final unitInfo = _BackupItem(
@@ -41,17 +42,17 @@ final class Backup{
     source: _getStats,
     tableName: 'stats',
   );
-  static final review  = _BackupItem(
+  static final review = _BackupItem(
     name: reviewName,
     source: _getReview,
     tableName: 'review',
   );
-  static final reviewRating  = _BackupItem(
+  static final reviewRating = _BackupItem(
     name: reviewRatingName,
     source: _getReviewRating,
     tableName: 'review_rating',
   );
-  static final preferences  = _BackupItem(
+  static final preferences = _BackupItem(
     name: preferencesName,
     source: _getPreferences,
     tableName: 'preferences',
@@ -67,19 +68,21 @@ final class Backup{
   ];
 
   static Future<bool> startBackupWithFileSelection() async {
-    if (kIsWeb){
+    if (kIsWeb) {
       return Future.value(false);
     }
     final DateTime now = DateTime.now();
     final formatter = DateFormat('yyyy-MM-dd-HHmmss');
     final String date = formatter.format(now);
     final String backupFileName = 'wuxialearn-backup-$date.tar.gz';
-    if(PlatformInfo.isDesktop()){
+    if (PlatformInfo.isDesktop()) {
       late File file;
       String? path;
-      try{
-          path = await FilePicker.platform.getDirectoryPath();
-      }catch(e){print(e);}
+      try {
+        path = await FilePicker.platform.getDirectoryPath();
+      } catch (e) {
+        print(e);
+      }
 
       if (path != null) {
         file = File(join(path, backupFileName));
@@ -92,7 +95,7 @@ final class Backup{
     final Directory tempDir = await getTemporaryDirectory();
     final file = File(join(tempDir.path, 'wuxialearn-backup.tar.gz'));
     final isBackupStored = await createBackup(file: file);
-    if(!isBackupStored){
+    if (!isBackupStored) {
       return false;
     }
     final save = await FlutterFileDialog.saveFile(
@@ -105,23 +108,22 @@ final class Backup{
     return save != null;
   }
 
-  static Future<bool> createBackup({required File file}) async{
+  static Future<bool> createBackup({required File file}) async {
     late final IOSink output;
     try {
       output = file.openWrite();
-    }catch(e){
+    } catch (e) {
       print(e);
       return false;
     }
 
     var entries = [
       TarEntry.data(
-        TarHeader(
+          TarHeader(
             name: backupFileFormatVersionName,
             mode: int.parse('644', radix: 8),
-        ),
-        utf8.encode(backupFileFormatVersion.toString())
-      )
+          ),
+          utf8.encode(backupFileFormatVersion.toString()))
     ];
     entries.addAll(await Future.wait(backupItems.map((item) async {
       final bytes = utf8.encode(csvFormat(await item.source()));
@@ -137,7 +139,7 @@ final class Backup{
 
     try {
       await tarEntries.pipe(tarWritingSink(output));
-    }catch(e){
+    } catch (e) {
       print(e);
       return false;
     }
@@ -158,43 +160,48 @@ final class Backup{
   }
 
   static Future<bool> restoreBackup(File file) async {
-
     await TarReader.forEach(file.openRead(), (entry) async {
       final contents = await entry.contents.transform(utf8.decoder).first;
-      switch(entry.header.name){
-        case backupFileFormatVersionName: break;
-        case subUnitName: subUnitInfo.content = contents;
-        case unitName: unitInfo.content = contents;
-        case statsName: stats.content = contents;
-        case reviewName: review.content = contents;
-        case reviewRatingName: reviewRating.content = contents;
-        case preferencesName: preferences.content = contents;
+      switch (entry.header.name) {
+        case backupFileFormatVersionName:
+          break;
+        case subUnitName:
+          subUnitInfo.content = contents;
+        case unitName:
+          unitInfo.content = contents;
+        case statsName:
+          stats.content = contents;
+        case reviewName:
+          review.content = contents;
+        case reviewRatingName:
+          reviewRating.content = contents;
+        case preferencesName:
+          preferences.content = contents;
       }
     });
 
     final complete = backupItems.every((element) => element.content != null);
-    if(complete){
-
+    if (complete) {
       final db = await SQLHelper.db();
       await db.transaction((txn) async {
-
-        for (final item in backupItems){
+        for (final item in backupItems) {
           txn.rawDelete("delete from ${item.tableName}");
         }
 
         final batch = txn.batch();
-        for (final item in backupItems){
+        for (final item in backupItems) {
           //this should work too
           //final table2 = csvParseWith<Map<String, dynamic>>((item.content!), (d, _, __) => autoType(d)).$1;
           final table = csvParse(item.content!).$1;
-          for (final row in table){
-            final entry = row.map((key, value) => MapEntry(key, value.isEmpty ? null : value));
+          for (final row in table) {
+            final entry = row.map(
+                (key, value) => MapEntry(key, value.isEmpty ? null : value));
             batch.insert(item.tableName, entry);
           }
         }
         batch.commit(noResult: true);
       });
-    }else{
+    } else {
       return false;
     }
     Preferences.initPreferences();
@@ -205,20 +212,22 @@ final class Backup{
     final Directory tempDir = await getTemporaryDirectory();
     final file = File(join(tempDir.path, 'wuxialearn-backup.tar.gz'));
     final isBackupStored = await createBackup(file: file);
-    if(!isBackupStored){
+    if (!isBackupStored) {
       return false;
     }
     final path = await SQLHelper.getDbPath();
     await SQLHelper.loadDbFromFile(path);
     final isBackupRestored = await restoreBackup(file);
     await file.delete();
-    if(!isBackupRestored){
+    if (!isBackupRestored) {
       return false;
     }
-    final latestVersion = Preferences.getPreference("latest_db_version_constant");
+    final latestVersion =
+        Preferences.getPreference("latest_db_version_constant");
     Preferences.setPreference(name: "db_version", value: latestVersion);
-    PreferencesSql.setPreference(name: "db_version", value: latestVersion, type: "string");
-    final currVersion  = Preferences.getPreference("db_version");
+    PreferencesSql.setPreference(
+        name: "db_version", value: latestVersion, type: "string");
+    final currVersion = Preferences.getPreference("db_version");
     print(latestVersion);
     print(currVersion);
     print(latestVersion == currVersion);
@@ -231,24 +240,28 @@ final class Backup{
       select subunit_id, completed from subunit_info
     """);
   }
+
   static Future<List<Map<String, dynamic>>> _getUnitInfo() async {
     final db = await SQLHelper.db();
     return db.rawQuery("""
       select unit_id, completed from unit_info
     """);
   }
+
   static Future<List<Map<String, dynamic>>> _getStats() async {
     final db = await SQLHelper.db();
     return db.rawQuery("""
       select wordid, date, value from stats
     """);
   }
+
   static Future<List<Map<String, dynamic>>> _getReview() async {
     final db = await SQLHelper.db();
     return db.rawQuery("""
       select id, deck, show_next, rating_id from review
     """);
   }
+
   static Future<List<Map<String, dynamic>>> _getReviewRating() async {
     final db = await SQLHelper.db();
     return db.rawQuery("""
@@ -256,6 +269,7 @@ final class Backup{
       rating_options from review_rating
     """);
   }
+
   static Future<List<Map<String, dynamic>>> _getPreferences() async {
     final db = await SQLHelper.db();
     return db.rawQuery("""
@@ -264,11 +278,14 @@ final class Backup{
   }
 }
 
-final class _BackupItem{
+final class _BackupItem {
   final String name;
   final Function source;
   final String tableName;
   String? content;
-  _BackupItem({required this.name, required this.source, required this.tableName,});
+  _BackupItem({
+    required this.name,
+    required this.source,
+    required this.tableName,
+  });
 }
-

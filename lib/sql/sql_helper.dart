@@ -10,12 +10,13 @@ import '../utils/platform_info.dart';
 
 class SQLHelper {
   static Future<sql.Database> db() async {
-    if (PlatformInfo.isWeb()){
+    if (PlatformInfo.isWeb()) {
       var factory = databaseFactoryFfiWeb;
       var exists = await factory.databaseExists("demo_asset_example.db");
-      if(!exists){
+      if (!exists) {
         final data = await rootBundle.load(url.join('assets', 'example.db'));
-        final bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+        final bytes =
+            data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
         await factory.writeDatabaseBytes("demo_asset_example.db", bytes);
       }
       return factory.openDatabase('demo_asset_example.db');
@@ -27,35 +28,40 @@ class SQLHelper {
     }
     return sql.openDatabase(path);
   }
+
   static Future<String> getDbPath() async {
     if (PlatformInfo.isDesktop()) {
-      final databasesPath = (await path_provider.getApplicationSupportDirectory()).path;
-      return  join(databasesPath, "demo_asset_example.db");
-    }else{
+      final databasesPath =
+          (await path_provider.getApplicationSupportDirectory()).path;
+      return join(databasesPath, "demo_asset_example.db");
+    } else {
       final databasesPath = await sql.getDatabasesPath();
       return join(databasesPath, "demo_asset_example.db");
     }
   }
-  static Future<bool> loadDbFromFile(String path) async{
+
+  static Future<bool> loadDbFromFile(String path) async {
     try {
       await Directory(dirname(path)).create(recursive: true);
     } catch (_) {}
     // Copy from asset
     ByteData data = await rootBundle.load("assets/example.db");
-    List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    List<int> bytes =
+        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
     // Write and flush the bytes written
     await File(path).writeAsBytes(bytes, flush: true);
     return true;
   }
 
-  static Future<bool> tableExists(String table, DatabaseExecutor db) async{
+  static Future<bool> tableExists(String table, DatabaseExecutor db) async {
     final exists = await db.rawQuery("""
         SELECT count(*) as exist FROM sqlite_master WHERE type='table' AND name='review_rating'
       """);
     return exists[0]["exist"] != 0;
   }
 
-  static Future<bool> columnExists(String table, String column, sql.DatabaseExecutor db)  async{
+  static Future<bool> columnExists(
+      String table, String column, sql.DatabaseExecutor db) async {
     final exists = await db.rawQuery("""
       SELECT COUNT(*) AS exist FROM pragma_table_info('$table') WHERE name='$column'
     """);

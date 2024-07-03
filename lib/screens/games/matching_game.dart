@@ -13,9 +13,11 @@ import '../../utils/styles.dart';
 
 class MatchingGame extends StatefulWidget {
   final List<WordItem> wordList;
-  final Function(bool value, WordItem currWord, bool? chineseToEnglish) callback;
+  final Function(bool value, WordItem currWord, bool? chineseToEnglish)
+      callback;
 
-  const MatchingGame({super.key, required this.wordList, required this.callback});
+  const MatchingGame(
+      {super.key, required this.wordList, required this.callback});
 
   @override
   State<MatchingGame> createState() => _MatchingGameState();
@@ -27,7 +29,7 @@ class _MatchingGameState extends State<MatchingGame> {
   List rightYCords = [];
   List isWrongLeft = [false, false, false, false, false];
   List isWrongRight = [false, false, false, false, false];
-  Map<String, dynamic> isClicked = {"side":"", "index": 0};
+  Map<String, dynamic> isClicked = {"side": "", "index": 0};
   String lastClicked = "";
   int nextLeft = 0;
   int nextRight = 0;
@@ -40,13 +42,15 @@ class _MatchingGameState extends State<MatchingGame> {
   final player = AudioPlayer();
   FlutterTts flutterTts = FlutterTts();
   late bool showPinyin;
-  setLanguage() async{
+  setLanguage() async {
     await flutterTts.setLanguage("zh-CN");
   }
-  Future speak(String text) async{
+
+  Future speak(String text) async {
     await flutterTts.awaitSpeakCompletion(true);
     await flutterTts.speak(text);
   }
+
   @override
   void initState() {
     super.initState();
@@ -56,7 +60,7 @@ class _MatchingGameState extends State<MatchingGame> {
     leftYCords = createYCordList(numCords);
     rightYCords = createYCordList(numCords);
     bool debug = Preferences.getPreference("debug");
-    if(!debug){
+    if (!debug) {
       leftYCords.shuffle();
       rightYCords.shuffle();
     }
@@ -67,23 +71,30 @@ class _MatchingGameState extends State<MatchingGame> {
       speak(widget.wordList[index].hanzi);
     }
     if (lastClicked != side && lastClicked != "") {
-      int leftIndex = 0; int rightIndex = 0;
-      if (side == "left") {leftIndex = index;rightIndex = nextValue;}
-      if (side == "right") {leftIndex = nextValue;rightIndex = index;}
-      if (!completed.contains(index)){
-        if(leftIndex == rightIndex){
+      int leftIndex = 0;
+      int rightIndex = 0;
+      if (side == "left") {
+        leftIndex = index;
+        rightIndex = nextValue;
+      }
+      if (side == "right") {
+        leftIndex = nextValue;
+        rightIndex = index;
+      }
+      if (!completed.contains(index)) {
+        if (leftIndex == rightIndex) {
           completed.add(index);
           setState(() {
             push(index: leftIndex, list: leftYCords);
             push(index: rightIndex, list: rightYCords);
           });
-          top = top + (2/(numCords-1));
-        }else{
+          top = top + (2 / (numCords - 1));
+        } else {
           setState(() {
             isWrongLeft[leftIndex] = true;
             isWrongRight[rightIndex] = true;
           });
-          Timer(const Duration(milliseconds: 500),(){
+          Timer(const Duration(milliseconds: 500), () {
             setState(() {
               isWrongLeft[leftIndex] = false;
               isWrongRight[rightIndex] = false;
@@ -93,7 +104,7 @@ class _MatchingGameState extends State<MatchingGame> {
       }
       lastClicked = "";
       isClicked["side"] = "";
-      if (completed.length == leftYCords.length){
+      if (completed.length == leftYCords.length) {
         setState(() {
           isFinished = true;
         });
@@ -110,9 +121,9 @@ class _MatchingGameState extends State<MatchingGame> {
 
   push({required int index, required List list}) {
     for (int i = 0; i < list.length; i++) {
-      if (list[i] < list[index] && list[i]>= top) {
+      if (list[i] < list[index] && list[i] >= top) {
         if (list[i] != list[index]) {
-          list[i] = list[i] + (2/(numCords-1));
+          list[i] = list[i] + (2 / (numCords - 1));
         }
       }
     }
@@ -121,12 +132,27 @@ class _MatchingGameState extends State<MatchingGame> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> stackLayers = List<Widget>.generate(widget.wordList.length * 2, (index) {
-      if(index < widget.wordList.length){
-        return createAnimatedAlign(index: index, yCords: leftYCords, side: "left", wordType: "hanzi", xCord: (-1.0 + offset), fontSize: 20, isWrong: isWrongLeft);
-      }else{
+    List<Widget> stackLayers =
+        List<Widget>.generate(widget.wordList.length * 2, (index) {
+      if (index < widget.wordList.length) {
+        return createAnimatedAlign(
+            index: index,
+            yCords: leftYCords,
+            side: "left",
+            wordType: "hanzi",
+            xCord: (-1.0 + offset),
+            fontSize: 20,
+            isWrong: isWrongLeft);
+      } else {
         var newIndex = index % numCords;
-        return createAnimatedAlign(index: newIndex, yCords: rightYCords, side: "right", wordType: "translations0", xCord: (1.0 - offset), fontSize: 14, isWrong: isWrongRight);
+        return createAnimatedAlign(
+            index: newIndex,
+            yCords: rightYCords,
+            side: "right",
+            wordType: "translations0",
+            xCord: (1.0 - offset),
+            fontSize: 14,
+            isWrong: isWrongRight);
       }
     });
     return CupertinoPageScaffold(
@@ -137,15 +163,15 @@ class _MatchingGameState extends State<MatchingGame> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                    onPressed: (){
+                    onPressed: () {
                       setState(() {
                         showPinyin = !showPinyin;
                         ShowPinyin.showPinyin = showPinyin;
                       });
                     },
-                    child:  showPinyin? const Text("Hide Pinyin"):
-                        const Text("Show Pinyin")
-                ),
+                    child: showPinyin
+                        ? const Text("Hide Pinyin")
+                        : const Text("Show Pinyin")),
               ],
             ),
           ),
@@ -154,7 +180,11 @@ class _MatchingGameState extends State<MatchingGame> {
           ),
           const Padding(
             padding: EdgeInsets.all(8.0),
-            child: Center(child: Text("Match the words", style: TextStyle(fontSize: 20),)),
+            child: Center(
+                child: Text(
+              "Match the words",
+              style: TextStyle(fontSize: 20),
+            )),
           ),
           const SizedBox(
             height: 40,
@@ -183,12 +213,13 @@ class _MatchingGameState extends State<MatchingGame> {
                   Flexible(
                     fit: FlexFit.tight,
                     child: TextButton(
-                      onPressed: () async {
-                        await player.setAsset('assets/correct.wav');
-                        player.play();
-                        widget.callback(true, WordItem(LargeText.hskMap), null);
-                      },
-                      child: const Text("Continue")),
+                        onPressed: () async {
+                          await player.setAsset('assets/correct.wav');
+                          player.play();
+                          widget.callback(
+                              true, WordItem(LargeText.hskMap), null);
+                        },
+                        child: const Text("Continue")),
                   ),
                 ],
               ),
@@ -199,22 +230,27 @@ class _MatchingGameState extends State<MatchingGame> {
     );
   }
 
-  createAnimatedAlign({
-    required int index, required List yCords, required String side, required String wordType,
-    required double xCord, required double fontSize, required List isWrong}) {
+  createAnimatedAlign(
+      {required int index,
+      required List yCords,
+      required String side,
+      required String wordType,
+      required double xCord,
+      required double fontSize,
+      required List isWrong}) {
     return AnimatedAlign(
       alignment: Alignment(xCord, yCords[index]),
       duration: const Duration(seconds: 1),
       curve: Curves.fastOutSlowIn,
       child: TextButton(
-        style:
-        completed.contains(index)?
-        Styles.createButton2(const Color(0xFF00FF00)):
-        isWrong[index]?
-        Styles.createButton2(const Color(0xFFFF0000)):
-        isClicked["side"]==side && isClicked["index"]==index?
-        Styles.createButton2(const Color(0xFFEEEEEE), border: const Color(0xff0000ff)):
-        Styles.createButton2(const Color(0xFFEEEEEE)),
+        style: completed.contains(index)
+            ? Styles.createButton2(const Color(0xFF00FF00))
+            : isWrong[index]
+                ? Styles.createButton2(const Color(0xFFFF0000))
+                : isClicked["side"] == side && isClicked["index"] == index
+                    ? Styles.createButton2(const Color(0xFFEEEEEE),
+                        border: const Color(0xff0000ff))
+                    : Styles.createButton2(const Color(0xFFEEEEEE)),
         onPressed: () {
           pushToTop(index: index, side: side);
         },
@@ -222,13 +258,12 @@ class _MatchingGameState extends State<MatchingGame> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Visibility(
-              visible: wordType == "hanzi" && showPinyin,
-              child: Text(widget.wordList[index].pinyin)
-            ),
+                visible: wordType == "hanzi" && showPinyin,
+                child: Text(widget.wordList[index].pinyin)),
             Text(
-              wordType == "hanzi" ?
-              widget.wordList[index].hanzi:
-                  widget.wordList[index].translation,
+              wordType == "hanzi"
+                  ? widget.wordList[index].hanzi
+                  : widget.wordList[index].translation,
               style: TextStyle(fontSize: fontSize),
             ),
           ],
@@ -238,10 +273,10 @@ class _MatchingGameState extends State<MatchingGame> {
   }
 }
 
-createYCordList(length){
-  double offset = 2/(length-1);
+createYCordList(length) {
+  double offset = 2 / (length - 1);
   final fixedLengthList = List<double>.generate(length, (int index) {
-    if(index == length-1){
+    if (index == length - 1) {
       return -1.0;
     }
     var currYCord = 1.0 - (index * offset);

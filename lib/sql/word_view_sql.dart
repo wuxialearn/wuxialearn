@@ -1,7 +1,6 @@
 import 'package:hsk_learner/sql/sql_helper.dart';
 
-class WordViewSql{
-
+class WordViewSql {
   static Future<List<Map<String, dynamic>>> getSentenceFromId(int id) async {
     final db = await SQLHelper.db();
     return db.rawQuery("""
@@ -14,7 +13,7 @@ class WordViewSql{
 
   static Future<List<Map<String, dynamic>>> getWordInfo(int id) async {
     final db = await SQLHelper.db();
-    return db.rawQuery(""" 
+    return db.rawQuery("""
      SELECT t1.id, t1.hanzi, t1.pinyin, t1.translations0, t1.translations1, t1.translations2,
       t1.unit, t1.hsk, t1.subunit,	t1.course, review.show_next,
 	  min(stats.date) as first_seen, max(stats.date) as last_seen, count(stats.wordid) as total_seen,
@@ -35,5 +34,4 @@ class WordViewSql{
           order by t1.id
     """);
   }
-
 }

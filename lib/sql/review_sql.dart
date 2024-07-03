@@ -1,14 +1,14 @@
 import 'package:hsk_learner/sql/sql_helper.dart';
 
-class ReviewSql{
-
-  static Future<List<Map<String, dynamic>>> getSrsReview({required int deckSize}) async {
+class ReviewSql {
+  static Future<List<Map<String, dynamic>>> getSrsReview(
+      {required int deckSize}) async {
     final db = await SQLHelper.db();
     String limit = "limit $deckSize";
-    if (deckSize < 0){
+    if (deckSize < 0) {
       limit = "";
     }
-    final a =  db.rawQuery("""
+    final a = db.rawQuery("""
         SELECT t1.id, t1.hanzi, t1.pinyin, translations0, subunit,
         a_tl.translation as char_one, b_tl.translation as char_two, c_tl.translation as char_three, d_tl.translation as char_four
             from(
@@ -28,15 +28,17 @@ class ReviewSql{
         ORDER BY show_next ASC
 		    $limit
       """);
-    return  a;
+    return a;
   }
 
   static Future<List<Map<String, dynamic>>> getReview({
-    required int deckSize, required String sortBy, required String orderBy,
+    required int deckSize,
+    required String sortBy,
+    required String orderBy,
     required String deckName,
   }) async {
     final db = await SQLHelper.db();
-    final a =  db.rawQuery("""
+    final a = db.rawQuery("""
         SELECT t1.id, t1.score, t1.percent_correct, t1.hanzi,
         t1.translations0, t1.hsk, t1.pinyin,
         a_tl.translation as char_one, b_tl.translation as char_two, 
@@ -81,17 +83,19 @@ class ReviewSql{
 
   static Future<List<Map<String, dynamic>>> getReviewRatings() async {
     final db = await SQLHelper.db();
-    final a =  await db.rawQuery("""
+    final a = await db.rawQuery("""
         SELECT rating_id, rating_name, rating_duration_start, rating_duration_end
         from review_rating
         order by rating_duration_start asc
       """);
-    return  a;
+    return a;
   }
 
-  static Future<void> setReviewRating({
-    required int id, required String name, required int start, required int end})
-  async{
+  static Future<void> setReviewRating(
+      {required int id,
+      required String name,
+      required int start,
+      required int end}) async {
     final db = await SQLHelper.db();
     db.rawUpdate("""
       update review_rating set rating_name = '$name', 
@@ -110,7 +114,8 @@ class ReviewSql{
     return a;
   }
 
-  static Future<List<Map<String, dynamic>>> getProgress({required String deck}) async {
+  static Future<List<Map<String, dynamic>>> getProgress(
+      {required String deck}) async {
     final db = await SQLHelper.db();
     final a = await db.rawQuery("""
         SELECT review_rating.rating_id, count(1) as count, rating_name, 1 as rs 
@@ -132,10 +137,11 @@ class ReviewSql{
         where deck = '$deck'
         order by rs
       """);
-    return  a;
+    return a;
   }
 
-  static Future<void> insertRating({required String name, required int start, required int end}) async {
+  static Future<void> insertRating(
+      {required String name, required int start, required int end}) async {
     final db = await SQLHelper.db();
     await db.rawInsert("""
       insert into review_rating (rating_name, rating_duration_start, rating_duration_end)
@@ -152,5 +158,4 @@ class ReviewSql{
     update review set rating_id = null where rating_id = $id
     """);
   }
-
 }

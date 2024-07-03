@@ -13,13 +13,21 @@ import '../../sql/word_view_sql.dart';
 import '../../utils/prototype.dart';
 import '../settings/preferences.dart';
 import 'flashcard.dart';
+
 class ReviewFlashcards extends StatefulWidget {
   final Future<List<Map<String, dynamic>>> hskList;
   final Function update;
   final String type;
   final int deckSize;
   final List<ReviewRating> ratings;
-  const ReviewFlashcards({Key? key, required this.hskList, required this.update, required this.type, required this.deckSize, required this.ratings}) : super(key: key);
+  const ReviewFlashcards(
+      {Key? key,
+      required this.hskList,
+      required this.update,
+      required this.type,
+      required this.deckSize,
+      required this.ratings})
+      : super(key: key);
 
   @override
   State<ReviewFlashcards> createState() => _ReviewFlashcardsState();
@@ -28,7 +36,8 @@ class ReviewFlashcards extends StatefulWidget {
 class _ReviewFlashcardsState extends State<ReviewFlashcards> {
   bool lastPage = false;
   bool wasClicked = false;
-  bool showPinyin = Preferences.getPreference("show_pinyin_by_default_in_review");
+  bool showPinyin =
+      Preferences.getPreference("show_pinyin_by_default_in_review");
   bool showHint = false;
   bool showShowHint = false;
   bool showSentences = false;
@@ -50,13 +59,15 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
     showShowHint = wordList[0].hanzi.length > 1;
   }
 
-  nextButtonCallback(){
+  nextButtonCallback() {
     setState(() {
       wasClicked = true;
     });
   }
 
-  Future<List<Map<String, dynamic>>> appendElements(Future<List<Map<String, dynamic>>> listFuture, Future<List<Map<String, dynamic>>> elementsToAdd) async {
+  Future<List<Map<String, dynamic>>> appendElements(
+      Future<List<Map<String, dynamic>>> listFuture,
+      Future<List<Map<String, dynamic>>> elementsToAdd) async {
     final list = await listFuture;
     final list2 = await elementsToAdd;
     final list3 = [...list, ...list2];
@@ -68,22 +79,23 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
     int maxMilliseconds = max.inMilliseconds;
     Random rnd = Random();
     var range = (maxMilliseconds - minMilliseconds);
-    return Duration(milliseconds:minMilliseconds + rnd.nextInt(range));
+    return Duration(milliseconds: minMilliseconds + rnd.nextInt(range));
   }
 
   answerButtonCallBack(int id) {
-    return(int value) async {
-      int stat = value == 0 || value == 1 ? 0:1;
+    return (int value) async {
+      int stat = value == 0 || value == 1 ? 0 : 1;
       StatsSql.insertStat(value: stat, id: id);
-      ReviewRating rating = widget.ratings.firstWhere(
-              (element) => element.id == value);
+      ReviewRating rating =
+          widget.ratings.firstWhere((element) => element.id == value);
       late DateTime dateTime;
-      if(rating.start == rating.end){
+      if (rating.start == rating.end) {
         dateTime = DateTime.now().add(rating.start);
-      }else{
-        dateTime = DateTime.now().add(getRandomDuration(rating.start, rating.end));
+      } else {
+        dateTime =
+            DateTime.now().add(getRandomDuration(rating.start, rating.end));
       }
-      final int time  = dateTime.toUtc().millisecondsSinceEpoch ~/ 1000;
+      final int time = dateTime.toUtc().millisecondsSinceEpoch ~/ 1000;
       ReviewFlashcardsSql.updateReview(id: id, time: time, ratingId: rating.id);
       widget.update();
       /*
@@ -116,14 +128,16 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
     _pageController.dispose();
     super.dispose();
   }
+
   FlutterTts flutterTts = FlutterTts();
-  setLanguage() async{
+  setLanguage() async {
     await flutterTts.setLanguage("zh-CN");
   }
 
-  Future speak(String text) async{
+  Future speak(String text) async {
     await flutterTts.speak(text);
   }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -135,7 +149,8 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
           children: [
             FutureBuilder<List<Map<String, dynamic>>>(
                 future: reviewList,
-                builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                   if (snapshot.hasData) {
                     List<WordItem> wordList = createWordList(snapshot.data!);
                     return Expanded(
@@ -148,205 +163,270 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                               Visibility(
                                 visible: showShowHint,
                                 child: TextButton(
-                                    onPressed: (){
+                                    onPressed: () {
                                       setState(() {
                                         showHint = !showHint;
                                       });
                                     },
-                                    child: showHint?
-                                    const Text("Hide Hint")
-                                        :const Text("Show Hint")
-                                ),
+                                    child: showHint
+                                        ? const Text("Hide Hint")
+                                        : const Text("Show Hint")),
                               ),
                               TextButton(
-                                  onPressed: (){
+                                  onPressed: () {
                                     setState(() {
                                       showSentences = !showSentences;
                                     });
                                   },
-                                  child: showSentences?
-                                  const Text("Hide Sentences")
-                                      :const Text("Show Sentences")
-                              ),
+                                  child: showSentences
+                                      ? const Text("Hide Sentences")
+                                      : const Text("Show Sentences")),
                               TextButton(
-                                  onPressed: (){
+                                  onPressed: () {
                                     setState(() {
                                       showPinyin = !showPinyin;
                                     });
                                   },
-                                  child: showPinyin?
-                                    const Text("Hide Pinyin")
-                                    :const Text("Show Pinyin")
-                              ),
+                                  child: showPinyin
+                                      ? const Text("Hide Pinyin")
+                                      : const Text("Show Pinyin")),
                             ],
                           ),
                           Expanded(
                               child: PageView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                controller: _pageController,
-                                itemCount: wordList.length,
-                                onPageChanged: (index) {
-                                  if (index + 1 == wordList.length) {
-                                    lastPage = true;
-                                  }
-                                  showSentences = false;
-                                  setState(() {
-                                    showShowHint = wordList[index].hanzi.length > 1;
-                                  });
-                                },
-                                itemBuilder: (context, pageIndex) {
-                                  final sentencesFuture = WordViewSql.getSentenceFromId(wordList[pageIndex].id);
-                                  return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                          child: FlashCard(
-                                            showFrontSide: !wasClicked,
-                                            front: Column(
-                                              children: [
-                                                Expanded(
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
+                            physics: const NeverScrollableScrollPhysics(),
+                            controller: _pageController,
+                            itemCount: wordList.length,
+                            onPageChanged: (index) {
+                              if (index + 1 == wordList.length) {
+                                lastPage = true;
+                              }
+                              showSentences = false;
+                              setState(() {
+                                showShowHint = wordList[index].hanzi.length > 1;
+                              });
+                            },
+                            itemBuilder: (context, pageIndex) {
+                              final sentencesFuture =
+                                  WordViewSql.getSentenceFromId(
+                                      wordList[pageIndex].id);
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: FlashCard(
+                                        showFrontSide: !wasClicked,
+                                        front: Column(
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Visibility(
+                                                      visible: showPinyin,
+                                                      child: Text(
+                                                        wordList[pageIndex]
+                                                            .pinyin,
+                                                        style: const TextStyle(
+                                                            fontSize: 20,
+                                                            color:
+                                                                Colors.black54),
+                                                      )),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       Visibility(
-                                                        visible: showPinyin,
-                                                          child: Text(
-                                                              wordList[pageIndex].pinyin,
-                                                              style: const TextStyle(fontSize: 20, color: Colors.black54),
-                                                          )
+                                                        maintainState: true,
+                                                        maintainSize: true,
+                                                        maintainAnimation: true,
+                                                        visible: false,
+                                                        child: IconButton(
+                                                            onPressed: () {
+                                                              speak(wordList[
+                                                                      pageIndex]
+                                                                  .hanzi);
+                                                            },
+                                                            icon: const Icon(
+                                                                Icons
+                                                                    .volume_up)),
                                                       ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          Visibility(
-                                                            maintainState: true,
-                                                            maintainSize: true,
-                                                            maintainAnimation: true,
-                                                            visible: false,
-                                                            child: IconButton(
-                                                                onPressed: () {
-                                                                  speak(wordList[pageIndex].hanzi);
-                                                                },
-                                                                icon: const Icon(Icons.volume_up)
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            wordList[pageIndex].hanzi,
-                                                            style: const TextStyle(fontSize: 40, color: Colors.black),
-                                                          ),
-                                                          Visibility(
-                                                            maintainState: true,
-                                                            maintainSize: true,
-                                                            maintainAnimation: true,
-                                                            visible: showPinyin,
-                                                            child: IconButton(
-                                                                onPressed: () {
-                                                                  speak(wordList[pageIndex].hanzi);
-                                                                },
-                                                                icon: const Icon(Icons.volume_up)
-                                                            ),
-                                                          ),
-                                                        ],
+                                                      Text(
+                                                        wordList[pageIndex]
+                                                            .hanzi,
+                                                        style: const TextStyle(
+                                                            fontSize: 40,
+                                                            color:
+                                                                Colors.black),
                                                       ),
                                                       Visibility(
-                                                          visible: showHint,
-                                                          child: Text(
-                                                            wordList[pageIndex].literal.join(" + "),
-                                                            style: const TextStyle(fontSize: 20, color: Colors.black54),
-                                                          )
+                                                        maintainState: true,
+                                                        maintainSize: true,
+                                                        maintainAnimation: true,
+                                                        visible: showPinyin,
+                                                        child: IconButton(
+                                                            onPressed: () {
+                                                              speak(wordList[
+                                                                      pageIndex]
+                                                                  .hanzi);
+                                                            },
+                                                            icon: const Icon(
+                                                                Icons
+                                                                    .volume_up)),
                                                       ),
                                                     ],
                                                   ),
-                                                ),
-                                                Visibility(
-                                                  visible:  showSentences,
-                                                  child: Expanded(child: _Sentences(sentencesFuture: sentencesFuture, showPinyin: showPinyin, showTranslation: false,)),
-                                                ),
-                                               _ShowNextCardButton(callback: nextButtonCallback),
-                                              ],
+                                                  Visibility(
+                                                      visible: showHint,
+                                                      child: Text(
+                                                        wordList[pageIndex]
+                                                            .literal
+                                                            .join(" + "),
+                                                        style: const TextStyle(
+                                                            fontSize: 20,
+                                                            color:
+                                                                Colors.black54),
+                                                      )),
+                                                ],
+                                              ),
                                             ),
-                                            back: Column(
-                                              children: [
-                                                Expanded(
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      Text(wordList[pageIndex].pinyin, style: const TextStyle(fontSize: 25, color: Colors.black),),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          Visibility(
-                                                            maintainState: true,
-                                                            maintainSize: true,
-                                                            maintainAnimation: true,
-                                                            visible: false,
-                                                            child: IconButton(
-                                                                onPressed: () {
-                                                                  speak(wordList[pageIndex].hanzi);
-                                                                },
-                                                                icon: const Icon(Icons.volume_up)
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            wordList[pageIndex].hanzi,
-                                                            style: const TextStyle(fontSize: 40, color: Colors.black),
-                                                          ),
-                                                          Visibility(
-                                                            maintainState: true,
-                                                            maintainSize: true,
-                                                            maintainAnimation: true,
-                                                            visible: true,
-                                                            child: IconButton(
-                                                                onPressed: () {
-                                                                  speak(wordList[pageIndex].hanzi);
-                                                                },
-                                                                icon: const Icon(Icons.volume_up)
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Text(wordList[pageIndex].translation, style: const TextStyle(fontSize: 25, color: Colors.black),),
-                                                      Visibility(
-                                                          visible: showHint,
-                                                          child: Text(
-                                                            wordList[pageIndex].literal.join(" + "),
-                                                            style: const TextStyle(fontSize: 20, color: Colors.black54),
-                                                          )
-                                                      ),
-                                                   ]
-                                                  ),
-                                                ),
-                                                Visibility(
-                                                  visible: showSentences,
-                                                  child: Expanded(child: _Sentences(sentencesFuture: sentencesFuture, showPinyin: true, showTranslation: true,)),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(15.0),
-                                                  child: SingleChildScrollView(
-                                                    scrollDirection: Axis.horizontal,
-                                                    child: _AnswerButton(
-                                                      ratings: widget.ratings,
-                                                        callback: answerButtonCallBack(wordList[pageIndex].id
-                                                        )
+                                            Visibility(
+                                              visible: showSentences,
+                                              child: Expanded(
+                                                  child: _Sentences(
+                                                sentencesFuture:
+                                                    sentencesFuture,
+                                                showPinyin: showPinyin,
+                                                showTranslation: false,
+                                              )),
+                                            ),
+                                            _ShowNextCardButton(
+                                                callback: nextButtonCallback),
+                                          ],
+                                        ),
+                                        back: Column(
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      wordList[pageIndex]
+                                                          .pinyin,
+                                                      style: const TextStyle(
+                                                          fontSize: 25,
+                                                          color: Colors.black),
                                                     ),
-                                                  ),
-                                                )
-                                              ],
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Visibility(
+                                                          maintainState: true,
+                                                          maintainSize: true,
+                                                          maintainAnimation:
+                                                              true,
+                                                          visible: false,
+                                                          child: IconButton(
+                                                              onPressed: () {
+                                                                speak(wordList[
+                                                                        pageIndex]
+                                                                    .hanzi);
+                                                              },
+                                                              icon: const Icon(
+                                                                  Icons
+                                                                      .volume_up)),
+                                                        ),
+                                                        Text(
+                                                          wordList[pageIndex]
+                                                              .hanzi,
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontSize: 40,
+                                                                  color: Colors
+                                                                      .black),
+                                                        ),
+                                                        Visibility(
+                                                          maintainState: true,
+                                                          maintainSize: true,
+                                                          maintainAnimation:
+                                                              true,
+                                                          visible: true,
+                                                          child: IconButton(
+                                                              onPressed: () {
+                                                                speak(wordList[
+                                                                        pageIndex]
+                                                                    .hanzi);
+                                                              },
+                                                              icon: const Icon(
+                                                                  Icons
+                                                                      .volume_up)),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Text(
+                                                      wordList[pageIndex]
+                                                          .translation,
+                                                      style: const TextStyle(
+                                                          fontSize: 25,
+                                                          color: Colors.black),
+                                                    ),
+                                                    Visibility(
+                                                        visible: showHint,
+                                                        child: Text(
+                                                          wordList[pageIndex]
+                                                              .literal
+                                                              .join(" + "),
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontSize: 20,
+                                                                  color: Colors
+                                                                      .black54),
+                                                        )),
+                                                  ]),
+                                            ),
+                                            Visibility(
+                                              visible: showSentences,
+                                              child: Expanded(
+                                                  child: _Sentences(
+                                                sentencesFuture:
+                                                    sentencesFuture,
+                                                showPinyin: true,
+                                                showTranslation: true,
+                                              )),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(15.0),
+                                              child: SingleChildScrollView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                child: _AnswerButton(
+                                                    ratings: widget.ratings,
+                                                    callback:
+                                                        answerButtonCallBack(
+                                                            wordList[pageIndex]
+                                                                .id)),
+                                              ),
                                             )
-                                          ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              )
-                          ),
+                                          ],
+                                        )),
+                                  ),
+                                ],
+                              );
+                            },
+                          )),
                         ],
                       ),
                     );
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
                   }
-                  else{return const Center(child: CircularProgressIndicator());}
-                }
-            ),
+                }),
           ],
         ),
       ),
@@ -356,7 +436,10 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
 
 class _ShowNextCardButton extends StatelessWidget {
   final Function() callback;
-  const _ShowNextCardButton({Key? key, required this.callback,}) : super(key: key);
+  const _ShowNextCardButton({
+    Key? key,
+    required this.callback,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -381,33 +464,37 @@ class _ShowNextCardButton extends StatelessWidget {
 class _AnswerButton extends StatelessWidget {
   final Function(int value) callback;
   final List<ReviewRating> ratings;
-  const _AnswerButton({Key? key, required this.callback, required this.ratings,}) : super(key: key);
+  const _AnswerButton({
+    Key? key,
+    required this.callback,
+    required this.ratings,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: List.generate(ratings.length, (index){
-
-          return TextButton(
-            onPressed: (){
-              callback(ratings[index].id);
-            },
-            child: Column(
-              children: [
-                Text(ratings[index].interval()),
-                Text(ratings[index].name),
-              ],
-            ),
-          );
-        }
-      ),
+      children: List.generate(ratings.length, (index) {
+        return TextButton(
+          onPressed: () {
+            callback(ratings[index].id);
+          },
+          child: Column(
+            children: [
+              Text(ratings[index].interval()),
+              Text(ratings[index].name),
+            ],
+          ),
+        );
+      }),
     );
   }
 }
 
-
 class _Sentences extends StatelessWidget {
-  const _Sentences({required this.sentencesFuture, required this.showPinyin, required this.showTranslation});
+  const _Sentences(
+      {required this.sentencesFuture,
+      required this.showPinyin,
+      required this.showTranslation});
   final Future<List<Map<String, dynamic>>> sentencesFuture;
   final bool showPinyin;
   final bool showTranslation;
@@ -415,82 +502,124 @@ class _Sentences extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder<List<Map<String, dynamic>>>(
         future: sentencesFuture,
-        builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+        builder: (BuildContext context,
+            AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
           if (snapshot.hasData) {
             List<Map<String, dynamic>> sentences = snapshot.data!;
-            if (sentences.isEmpty){
+            if (sentences.isEmpty) {
               return const Column(
                 children: [
-                  SizedBox(height: 20,),
-                  Text("There are no sentences yet for this word", style: TextStyle(fontSize: 20),),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    "There are no sentences yet for this word",
+                    style: TextStyle(fontSize: 20),
+                  ),
                 ],
               );
-            }else{
+            } else {
               return CustomScrollView(
                 slivers: [
                   SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                        childCount: sentences.length,
-                            (BuildContext context, int index){
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10,),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                    delegate:
+                        SliverChildBuilderDelegate(childCount: sentences.length,
+                            (BuildContext context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 10,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: PrototypeHeight(
-                                        prototype: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                Expanded(
+                                  child: PrototypeHeight(
+                                    prototype: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Visibility(
+                                          visible: showPinyin,
+                                          child: const Text("名字爱Míngzì",
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  color: Colors.black)),
+                                        ),
+                                        const Text(
+                                          "名字爱Míngzì",
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.black),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Visibility(
+                                          visible: showTranslation,
+                                          child: const Text(
+                                            "名字爱Míngzì",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.black),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    child: ListView(
+                                      scrollDirection: Axis.horizontal,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Visibility(
                                               visible: showPinyin,
-                                                child: const Text("名字爱Míngzì", overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.black)),
+                                              child: Text(
+                                                sentences[index]["pinyin"],
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                    color: Colors.black),
+                                              ),
                                             ),
-                                            const Text("名字爱Míngzì", style: TextStyle(fontSize: 20, color: Colors.black),overflow: TextOverflow.ellipsis,),
+                                            Text(
+                                              sentences[index]["characters"],
+                                              style: const TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.black),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                             Visibility(
                                               visible: showTranslation,
-                                                child: const Text("名字爱Míngzì", style: TextStyle(fontSize: 16, color: Colors.black),overflow: TextOverflow.ellipsis,),
+                                              child: Text(
+                                                sentences[index]["meaning"],
+                                                style: const TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.black),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
                                             )
                                           ],
                                         ),
-                                        child: ListView(
-                                          scrollDirection: Axis.horizontal,
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Visibility(
-                                                  visible: showPinyin,
-                                                  child: Text(sentences[index]["pinyin"], overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.black),),
-                                                ),
-                                                Text(sentences[index]["characters"], style: const TextStyle(fontSize: 20, color: Colors.black),overflow: TextOverflow.ellipsis,),
-                                                Visibility(
-                                                  visible: showTranslation,
-                                                  child: Text(sentences[index]["meaning"], style: const TextStyle(fontSize: 16, color: Colors.black),overflow: TextOverflow.ellipsis,),
-                                                )
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ],
                             ),
-                          );
-                        }
-                    ),
+                          ],
+                        ),
+                      );
+                    }),
                   ),
                 ],
               );
             }
+          } else {
+            return const SizedBox();
           }
-          else{return const SizedBox();}
-        }
-    );
+        });
   }
 }

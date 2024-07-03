@@ -5,24 +5,27 @@ import 'package:hsk_learner/sql/sql_helper.dart';
 
 import '../../sql/preferences_sql.dart';
 
-class Preferences{
+class Preferences {
   static late dynamic data;
-  static Map<String, dynamic>  preferences =  {};
+  static Map<String, dynamic> preferences = {};
   static getPreference(String preference) {
-    if (!preferences.containsKey(preference)){
+    if (!preferences.containsKey(preference)) {
       print("$preference not found");
       setPreferenceFromJson(preference);
     }
     return preferences[preference];
   }
-  static getAllPreferences(){
+
+  static getAllPreferences() {
     return preferences;
   }
-  static setPreference({required String name, required dynamic value}){
+
+  static setPreference({required String name, required dynamic value}) {
     preferences[name] = value;
   }
-  static setPreferences(List<Map<String, dynamic>> newPreferences){
-    for(int i = 0; i< newPreferences.length; i++){
+
+  static setPreferences(List<Map<String, dynamic>> newPreferences) {
+    for (int i = 0; i < newPreferences.length; i++) {
       String name = newPreferences[i]["name"];
       String type = newPreferences[i]["type"];
       String value = newPreferences[i]["value"];
@@ -30,33 +33,36 @@ class Preferences{
     }
   }
 
-  static insertPref({required String name, required String value, required String type}){
-    switch (type){
+  static insertPref(
+      {required String name, required String value, required String type}) {
+    switch (type) {
       case "bool":
         bool newValue = (value == "1");
         preferences[name] = newValue;
-      case 'json' :
+      case 'json':
         preferences[name] = jsonDecode(value).cast<String>();
-      case 'string' :
+      case 'string':
         preferences[name] = value.toString();
     }
   }
 
-  static setPreferenceFromJson(String preference)  {
+  static setPreferenceFromJson(String preference) {
     print("setPreferenceFromJson");
     print(data);
     final pref = data[preference];
     print(pref);
-    PreferencesSql.insertPreference(name: preference, value: pref["value"], type: pref["type"]);
+    PreferencesSql.insertPreference(
+        name: preference, value: pref["value"], type: pref["type"]);
     insertPref(name: preference, value: pref["value"], type: pref["type"]);
   }
 
-  static Future<void>  loadDefaultPreferences() async {
-    final String response = await rootBundle.loadString('assets/default_prefs.json');
+  static Future<void> loadDefaultPreferences() async {
+    final String response =
+        await rootBundle.loadString('assets/default_prefs.json');
     data = await json.decode(response);
   }
 
-  static Future<void> initPreferences() async{
+  static Future<void> initPreferences() async {
     final data = await PreferencesSql.getPreferences();
     await Preferences.loadDefaultPreferences();
     Preferences.setPreferences(data);

@@ -1,16 +1,17 @@
 import 'package:hsk_learner/sql/sql_helper.dart';
 
-class SchemaMigration{
+class SchemaMigration {
   static run() async {
     await checkReviewTable();
     checkReviewRating();
   }
+
   static Future<void> checkReviewTable() async {
     final db = await SQLHelper.db();
     await db.transaction((txn) async {
       var exists = await SQLHelper.tableExists("review", txn);
       print("review exists: $exists");
-      if (!exists){
+      if (!exists) {
         txn.execute("""
           CREATE TABLE IF NOT EXISTS "review" (
             "id"	INTEGER NOT NULL,
@@ -32,19 +33,19 @@ class SchemaMigration{
           JOIN stats on stats.wordid = courses.id
           GROUP BY courses.id
         """);
-      }else{
+      } else {
         print("review exists");
       }
     });
   }
 
-  static Future<void> checkReviewRating() async{
+  static Future<void> checkReviewRating() async {
     final db = await SQLHelper.db();
     await db.transaction((txn) async {
       var exists = await SQLHelper.tableExists("review_rating", txn);
       print("review rating exists: $exists");
       print(exists);
-      if (!exists){
+      if (!exists) {
         txn.execute("""
           CREATE TABLE IF NOT EXISTS "review_rating" (
             "rating_id"	INTEGER PRIMARY KEY,
@@ -77,15 +78,16 @@ class SchemaMigration{
         ('$perfect', $perfectStart, $perfectEnd)
         
         """);
-        final ratingIdExists = await SQLHelper.columnExists("review", "rating_id", txn);
-        if(!ratingIdExists){
+        final ratingIdExists =
+            await SQLHelper.columnExists("review", "rating_id", txn);
+        if (!ratingIdExists) {
           txn.execute("""
           ALTER TABLE review ADD COLUMN rating_id integer;
         """);
         }
         print("reviewrating exists?");
         print(await SQLHelper.tableExists("review_rating", txn));
-      }else{
+      } else {
         print("review rating exists");
       }
     });

@@ -1,9 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 class DropDown extends StatefulWidget {
   final List<String> dropdownOptions;
   final Function(dynamic value) callback;
-  const DropDown({Key? key, required this.dropdownOptions, required  this.callback,}) : super(key: key);
+  const DropDown({
+    Key? key,
+    required this.dropdownOptions,
+    required this.callback,
+  }) : super(key: key);
 
   @override
   State<DropDown> createState() => _DropDownState();
@@ -36,7 +41,8 @@ class _DropDownState extends State<DropDown> {
         });
         widget.callback(dropdownValue);
       },
-      items: widget.dropdownOptions.map<DropdownMenuItem<String>>((String value) {
+      items:
+          widget.dropdownOptions.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),

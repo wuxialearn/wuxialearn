@@ -4,13 +4,12 @@ import 'package:flutter/material.dart';
 class HskChart extends StatelessWidget {
   final List<Map<String, dynamic>>? timelineList;
   final int numDays;
-  const HskChart({Key? key, this.timelineList, required this.numDays}) : super(key: key);
+  const HskChart({Key? key, this.timelineList, required this.numDays})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return LineChart(
-        mainData(timelineList: timelineList, numDays: numDays)
-    );
+    return LineChart(mainData(timelineList: timelineList, numDays: numDays));
   }
 }
 
@@ -19,30 +18,35 @@ List<Color> gradientColors = [
   Colors.blue,
 ];
 
-LineChartData mainData({List<Map<String, dynamic>>? timelineList, required int numDays}) {
+LineChartData mainData(
+    {List<Map<String, dynamic>>? timelineList, required int numDays}) {
   List<FlSpot> flSpots = [];
   double maxY = 0;
   int timelineListIndex = 0;
-  if(timelineList != null){
+  if (timelineList != null) {
     final today = DateTime.timestamp();
-    for (int i = 1; i < numDays+1; i++) {
+    for (int i = 1; i < numDays + 1; i++) {
       double x = -1;
-      if(timelineListIndex < timelineList.length){
-        DateTime date = DateTime.parse(timelineList[timelineListIndex]["string_date"]);
+      if (timelineListIndex < timelineList.length) {
+        DateTime date =
+            DateTime.parse(timelineList[timelineListIndex]["string_date"]);
         x = numDays - daysBetween(date, today);
       }
-      if (x == i){
+      if (x == i) {
         double value = timelineList[timelineListIndex]["total"].toDouble();
-        flSpots.add(FlSpot(x-1, value));
-        if (value > maxY){ maxY = value;}
+        flSpots.add(FlSpot(x - 1, value));
+        if (value > maxY) {
+          maxY = value;
+        }
         timelineListIndex++;
-      }else{
-        flSpots.add(FlSpot(i.toDouble()-1, 0));
+      } else {
+        flSpots.add(FlSpot(i.toDouble() - 1, 0));
       }
     }
     maxY++;
-    maxY =( (maxY / 10).ceil() * 10);
-    if(timelineList.isEmpty  || timelineList[0]["string_date"] == "2022-10-26"){
+    maxY = ((maxY / 10).ceil() * 10);
+    if (timelineList.isEmpty ||
+        timelineList[0]["string_date"] == "2022-10-26") {
       maxY = 0;
     }
   }
@@ -55,11 +59,9 @@ LineChartData mainData({List<Map<String, dynamic>>? timelineList, required int n
       rightTitles: AxisTitles(
         sideTitles: SideTitles(showTitles: false),
       ),
-
       topTitles: AxisTitles(
         sideTitles: SideTitles(showTitles: false),
       ),
-
       bottomTitles: AxisTitles(
         sideTitles: SideTitles(
           showTitles: true,
@@ -82,7 +84,7 @@ LineChartData mainData({List<Map<String, dynamic>>? timelineList, required int n
       border: Border.all(color: const Color(0xff37434d)),
     ),
     minX: 0,
-    maxX: numDays.toDouble()-1,
+    maxX: numDays.toDouble() - 1,
     minY: 0,
     maxY: maxY,
     lineBarsData: [
@@ -100,16 +102,14 @@ LineChartData mainData({List<Map<String, dynamic>>? timelineList, required int n
         belowBarData: BarAreaData(
           show: true,
           gradient: LinearGradient(
-            colors: gradientColors
-                .map((color) => color.withOpacity(0.3))
-                .toList(),
+            colors:
+                gradientColors.map((color) => color.withOpacity(0.3)).toList(),
           ),
         ),
       ),
     ],
   );
 }
-
 
 Widget leftTitleWidgets(double value, TitleMeta meta) {
   double max = meta.max;
@@ -118,23 +118,23 @@ Widget leftTitleWidgets(double value, TitleMeta meta) {
     fontSize: 15,
   );
   String text;
-  if (max < 1){
-    return const Text("10", style: TextStyle(color: Colors.transparent), textAlign: TextAlign.left);
-  } else if (value == max){
+  if (max < 1) {
+    return const Text("10",
+        style: TextStyle(color: Colors.transparent), textAlign: TextAlign.left);
+  } else if (value == max) {
     text = "${max.toInt()}";
-  }else if(value == max * 2~/3){
-    text = "${max * 2~/3}";
-  }else if(value == max * 1~/3){
-    text = "${max * 1~/3}";
-  } else if (value == 0 ){
+  } else if (value == max * 2 ~/ 3) {
+    text = "${max * 2 ~/ 3}";
+  } else if (value == max * 1 ~/ 3) {
+    text = "${max * 1 ~/ 3}";
+  } else if (value == 0) {
     text = "0";
+  } else {
+    return Container();
   }
-  else{return Container();}
 
   return Text(text, style: style, textAlign: TextAlign.left);
 }
-
-
 
 Widget bottomTitleWidgets(double value, TitleMeta meta) {
   const style = TextStyle(

@@ -2,8 +2,15 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class FlashCard extends StatefulWidget {
-  final Widget front; final Widget back; final bool showFrontSide;
-  const FlashCard({Key? key, required this.front, required this.back, required this.showFrontSide}) : super(key: key);
+  final Widget front;
+  final Widget back;
+  final bool showFrontSide;
+  const FlashCard(
+      {Key? key,
+      required this.front,
+      required this.back,
+      required this.showFrontSide})
+      : super(key: key);
 
   @override
   _FlashCardState createState() => _FlashCardState();
@@ -31,7 +38,6 @@ class _FlashCardState extends State<FlashCard> {
     );
   }
 
-
   Widget _buildFlipAnimation({required Widget front, required Widget back}) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 500),
@@ -43,7 +49,8 @@ class _FlashCardState extends State<FlashCard> {
     );
   }
 
-  Widget __transitionBuilder(Widget animatedWidget, Animation<double> animation) {
+  Widget __transitionBuilder(
+      Widget animatedWidget, Animation<double> animation) {
     final rotateAnim = Tween(begin: pi, end: 0.0).animate(animation);
     return AnimatedBuilder(
       animation: rotateAnim,
@@ -82,7 +89,10 @@ class _FlashCardState extends State<FlashCard> {
     );
   }
 
-  Widget __buildLayout({required Key key, required Widget child,}) {
+  Widget __buildLayout({
+    required Key key,
+    required Widget child,
+  }) {
     return Container(
       key: key,
       decoration: BoxDecoration(

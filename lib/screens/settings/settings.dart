@@ -16,13 +16,17 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   bool translation = Preferences.getPreference("showTranslations");
-  bool reviewPinyin =  Preferences.getPreference("show_pinyin_by_default_in_review");
-  bool checkVersionOnStart = Preferences.getPreference("check_for_new_version_on_start");
-  bool debug  = Preferences.getPreference("debug");
+  bool reviewPinyin =
+      Preferences.getPreference("show_pinyin_by_default_in_review");
+  bool checkVersionOnStart =
+      Preferences.getPreference("check_for_new_version_on_start");
+  bool debug = Preferences.getPreference("debug");
   bool allowSkipUnits = Preferences.getPreference("allow_skip_units");
   bool showExampleSentences = Preferences.getPreference("show_sentences");
-  bool allowAutoComplete =  Preferences.getPreference("allow_auto_complete_unit");
-  bool showLiteralInUnitLearn = Preferences.getPreference("show_literal_meaning_in_unit_learn");
+  bool allowAutoComplete =
+      Preferences.getPreference("allow_auto_complete_unit");
+  bool showLiteralInUnitLearn =
+      Preferences.getPreference("show_literal_meaning_in_unit_learn");
   List<String> courses = Preferences.getPreference("courses");
   List<String> homePages = ["home", "review", "stats"];
   String defaultCourse = Preferences.getPreference("default_course");
@@ -34,13 +38,16 @@ class _SettingsState extends State<Settings> {
   void initState() {
     super.initState();
   }
-  setSettingBool({required String name, required String type, required bool value}){
-      String val = value == true? "1": "0";
-      PreferencesSql.setPreference(name: name, value: val, type: type);
-      Preferences.setPreference(name: name, value: value);
+
+  setSettingBool(
+      {required String name, required String type, required bool value}) {
+    String val = value == true ? "1" : "0";
+    PreferencesSql.setPreference(name: name, value: val, type: type);
+    Preferences.setPreference(name: name, value: value);
   }
 
-  setSettingString({required String name, required String type, required String value}){
+  setSettingString(
+      {required String name, required String type, required String value}) {
     PreferencesSql.setPreference(name: name, value: value, type: type);
     Preferences.setPreference(name: name, value: value);
   }
@@ -52,11 +59,14 @@ class _SettingsState extends State<Settings> {
         //title: const Text('Courses'),
         title: const Text('Select a default course'),
         actions:
-        List<CupertinoActionSheetAction>.generate(courses.length,(index){
+            List<CupertinoActionSheetAction>.generate(courses.length, (index) {
           return CupertinoActionSheetAction(
             isDefaultAction: true,
             onPressed: () {
-              setSettingString(name: 'default_course', type: 'string', value: courses[index]);
+              setSettingString(
+                  name: 'default_course',
+                  type: 'string',
+                  value: courses[index]);
               Navigator.pop(context, true);
               setState(() {
                 defaultCourse = Preferences.getPreference("default_course");
@@ -68,21 +78,26 @@ class _SettingsState extends State<Settings> {
       ),
     );
   }
+
   _showDefaultHomePageActionSheet<bool>(BuildContext context) {
     showCupertinoModalPopup<bool>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
         //title: const Text('Courses'),
         title: const Text('Select a default home page'),
-        actions:
-        List<CupertinoActionSheetAction>.generate(homePages.length,(index){
+        actions: List<CupertinoActionSheetAction>.generate(homePages.length,
+            (index) {
           return CupertinoActionSheetAction(
             isDefaultAction: true,
             onPressed: () {
-              setSettingString(name: 'default_home_page', type: 'string', value: homePages[index]);
+              setSettingString(
+                  name: 'default_home_page',
+                  type: 'string',
+                  value: homePages[index]);
               Navigator.pop(context, true);
               setState(() {
-                defaultHomePage = Preferences.getPreference("default_home_page");
+                defaultHomePage =
+                    Preferences.getPreference("default_home_page");
               });
             },
             child: Text(homePages[index]),
@@ -91,7 +106,9 @@ class _SettingsState extends State<Settings> {
       ),
     );
   }
-  static const String backupFailedMessage = "backup failed  (Folder may be protected. Try using the documents directory)";
+
+  static const String backupFailedMessage =
+      "backup failed  (Folder may be protected. Try using the documents directory)";
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -103,7 +120,9 @@ class _SettingsState extends State<Settings> {
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: ListView(
             children: [
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Column(
                 children: [
                   const Text("Review"),
@@ -116,7 +135,10 @@ class _SettingsState extends State<Settings> {
                         value: translation,
                         activeColor: CupertinoColors.activeBlue,
                         onChanged: (bool value) {
-                          setSettingBool(name: "showTranslations", type: "bool", value: value);
+                          setSettingBool(
+                              name: "showTranslations",
+                              type: "bool",
+                              value: value);
                           setState(() => translation = value);
                         },
                       ),
@@ -131,7 +153,10 @@ class _SettingsState extends State<Settings> {
                         value: reviewPinyin,
                         activeColor: CupertinoColors.activeBlue,
                         onChanged: (bool value) {
-                          setSettingBool(name: "show_pinyin_by_default_in_review", type: "bool", value: value);
+                          setSettingBool(
+                              name: "show_pinyin_by_default_in_review",
+                              type: "bool",
+                              value: value);
                           setState(() => reviewPinyin = value);
                         },
                       ),
@@ -151,7 +176,10 @@ class _SettingsState extends State<Settings> {
                         value: showExampleSentences,
                         activeColor: CupertinoColors.activeBlue,
                         onChanged: (bool value) {
-                          setSettingBool(name: "show_sentences", type: "bool", value: value);
+                          setSettingBool(
+                              name: "show_sentences",
+                              type: "bool",
+                              value: value);
                           setState(() => showExampleSentences = value);
                         },
                       ),
@@ -166,7 +194,10 @@ class _SettingsState extends State<Settings> {
                         value: showLiteralInUnitLearn,
                         activeColor: CupertinoColors.activeBlue,
                         onChanged: (bool value) {
-                          setSettingBool(name: "show_literal_meaning_in_unit_learn", type: "bool", value: value);
+                          setSettingBool(
+                              name: "show_literal_meaning_in_unit_learn",
+                              type: "bool",
+                              value: value);
                           setState(() => showLiteralInUnitLearn = value);
                         },
                       ),
@@ -176,14 +207,24 @@ class _SettingsState extends State<Settings> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Default course"),
-                      CupertinoButton(onPressed: (){ _showDefaultCourseActionSheet(context);}, child: Text(defaultCourse), ),
+                      CupertinoButton(
+                        onPressed: () {
+                          _showDefaultCourseActionSheet(context);
+                        },
+                        child: Text(defaultCourse),
+                      ),
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Default home page"),
-                      CupertinoButton(onPressed: (){ _showDefaultHomePageActionSheet(context);}, child: Text(defaultHomePage), ),
+                      CupertinoButton(
+                        onPressed: () {
+                          _showDefaultHomePageActionSheet(context);
+                        },
+                        child: Text(defaultHomePage),
+                      ),
                     ],
                   ),
                 ],
@@ -199,32 +240,32 @@ class _SettingsState extends State<Settings> {
                         const Text("Backup data"),
                         IconButton(
                             onPressed: () async {
-                              Future<bool> updated =  Backup.startBackupWithFileSelection();
-                              updated.then((val) => showCupertinoDialog(
-                                  barrierDismissible: true,
-                                  context: context,
-                                  builder: (context) {
-                                    late final String text;
-                                    val == true? text = "backup succeeded"
-                                        : text =  backupFailedMessage;
-                                    return CupertinoAlertDialog(
-                                      content: Text(text),
-                                    );
-                                  }
-                              ),
-                                onError:(e) => showCupertinoDialog(
+                              Future<bool> updated =
+                                  Backup.startBackupWithFileSelection();
+                              updated.then(
+                                (val) => showCupertinoDialog(
+                                    barrierDismissible: true,
+                                    context: context,
+                                    builder: (context) {
+                                      late final String text;
+                                      val == true
+                                          ? text = "backup succeeded"
+                                          : text = backupFailedMessage;
+                                      return CupertinoAlertDialog(
+                                        content: Text(text),
+                                      );
+                                    }),
+                                onError: (e) => showCupertinoDialog(
                                     barrierDismissible: true,
                                     context: context,
                                     builder: (context) {
                                       return const CupertinoAlertDialog(
-                                        content: Text( backupFailedMessage),
+                                        content: Text(backupFailedMessage),
                                       );
-                                    }
-                                ),
+                                    }),
                               );
                             },
-                            icon: const Icon(Icons.add)
-                        ),
+                            icon: const Icon(Icons.add)),
                       ],
                     ),
                     Row(
@@ -232,34 +273,32 @@ class _SettingsState extends State<Settings> {
                         const Text("restore from backup"),
                         IconButton(
                             onPressed: () async {
-                              bool updated =  await Backup.restoreBackupFromUserFile();
-                              setState(() {
-
-                              });
+                              bool updated =
+                                  await Backup.restoreBackupFromUserFile();
+                              setState(() {});
                               showCupertinoDialog(
                                   barrierDismissible: true,
                                   context: context,
                                   builder: (context) {
                                     late final String text;
-                                    updated? text = "backup succeeded"
-                                        : text =  backupFailedMessage;
+                                    updated
+                                        ? text = "backup succeeded"
+                                        : text = backupFailedMessage;
                                     return CupertinoAlertDialog(
                                       content: Text(text),
                                     );
-                                  }
-                              );
+                                  });
                             },
-                            icon: const Icon(Icons.add)
-                        ),
+                            icon: const Icon(Icons.add)),
                       ],
                     ),
                   ],
                 ),
               ),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   clicks++;
-                  if(clicks == 5){
+                  if (clicks == 5) {
                     setState(() {
                       showDebugOptions = true;
                     });
@@ -268,13 +307,12 @@ class _SettingsState extends State<Settings> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Text("Version "),
-                    Text(version)
-                  ],
+                  children: [const Text("Version "), Text(version)],
                 ),
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Visibility(
                 visible: showDebugOptions,
                 child: Column(
@@ -289,8 +327,9 @@ class _SettingsState extends State<Settings> {
                           value: debug,
                           activeColor: CupertinoColors.activeBlue,
                           onChanged: (bool value) {
-                            setSettingBool(name: "debug", type: "bool", value: value);
-                            setState(()=> debug = value);
+                            setSettingBool(
+                                name: "debug", type: "bool", value: value);
+                            setState(() => debug = value);
                           },
                         ),
                       ],
@@ -304,8 +343,11 @@ class _SettingsState extends State<Settings> {
                           value: allowSkipUnits,
                           activeColor: CupertinoColors.activeBlue,
                           onChanged: (bool value) {
-                            setSettingBool(name: "allow_skip_units", type: "bool", value: value);
-                            setState(()=> allowSkipUnits = value);
+                            setSettingBool(
+                                name: "allow_skip_units",
+                                type: "bool",
+                                value: value);
+                            setState(() => allowSkipUnits = value);
                           },
                         ),
                       ],
@@ -319,7 +361,10 @@ class _SettingsState extends State<Settings> {
                           value: checkVersionOnStart,
                           activeColor: CupertinoColors.activeBlue,
                           onChanged: (bool value) {
-                            setSettingBool(name: "check_for_new_version_on_start", type: "bool", value: value);
+                            setSettingBool(
+                                name: "check_for_new_version_on_start",
+                                type: "bool",
+                                value: value);
                             setState(() => checkVersionOnStart = value);
                           },
                         ),
@@ -334,7 +379,10 @@ class _SettingsState extends State<Settings> {
                           value: allowAutoComplete,
                           activeColor: CupertinoColors.activeBlue,
                           onChanged: (bool value) {
-                            setSettingBool(name: "allow_auto_complete_unit", type: "bool", value: value);
+                            setSettingBool(
+                                name: "allow_auto_complete_unit",
+                                type: "bool",
+                                value: value);
                             setState(() => allowAutoComplete = value);
                           },
                         ),
@@ -356,16 +404,16 @@ class _SettingsState extends State<Settings> {
                                 builder: (context) {
                                   return Dialog(
                                     child: ListView.builder(
-                                      itemCount: settings.length,
-                                        itemBuilder: (BuildContext context, int index){
+                                        itemCount: settings.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
                                           return Center(
-                                            child: Text("${settings[index][0]}: ${settings[index][1]}"),
+                                            child: Text(
+                                                "${settings[index][0]}: ${settings[index][1]}"),
                                           );
-                                        }
-                                    ),
+                                        }),
                                   );
-                                }
-                            );
+                                });
                           },
                           child: const Text("Show all settings"),
                         )
@@ -378,36 +426,37 @@ class _SettingsState extends State<Settings> {
                           const Text("Get latest data"),
                           IconButton(
                               onPressed: () async {
-                                Future<bool> updated =  PgUpdate.updateSqliteFromPg();
-                                updated.then((val) => showCupertinoDialog(
-                                    barrierDismissible: true,
-                                    context: context,
-                                    builder: (context) {
-                                      return const CupertinoAlertDialog(
-                                        content: Text("updated: true"),
-                                      );
-                                    }
-                                ),
-                                  onError:(e) => showCupertinoDialog(
+                                Future<bool> updated =
+                                    PgUpdate.updateSqliteFromPg();
+                                updated.then(
+                                  (val) => showCupertinoDialog(
+                                      barrierDismissible: true,
+                                      context: context,
+                                      builder: (context) {
+                                        return const CupertinoAlertDialog(
+                                          content: Text("updated: true"),
+                                        );
+                                      }),
+                                  onError: (e) => showCupertinoDialog(
                                       barrierDismissible: true,
                                       context: context,
                                       builder: (context) {
                                         return const CupertinoAlertDialog(
                                           content: Text("updated: false"),
                                         );
-                                      }
-                                  ),
+                                      }),
                                 );
                               },
-                              icon: const Icon(Icons.add)
-                          ),
+                              icon: const Icon(Icons.add)),
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
             ],
           ),
         ),
@@ -417,15 +466,16 @@ class _SettingsState extends State<Settings> {
 }
 
 // only for testing, can be deleted
-Map<String, dynamic> currSentence(){
+Map<String, dynamic> currSentence() {
   //return  {"characters": "她叫什么名字", "pinyin": "tā jiào shénme míngzì", "meaning": "what's her name"};
   //return {"characters": "我的弟弟想长高", "pinyin": "Wǒ de dìdi xiǎng zhǎng gāo", "meaning": "my younger brother wants to grow taller",};
   return {
     "characters": "我爱我的国家，它有很多美丽的河流和公园",
     "pinyin": "wǒ ài wǒ de guójiā, tā yǒu hěnduō měilì de héliú hé gōngyuán",
-    "meaning": "I love my country, it has many beautiful rivers and parks and more words"
+    "meaning":
+        "I love my country, it has many beautiful rivers and parks and more words"
   };
 }
 
-void sentenceGameCallBack(bool value, Map<String, dynamic> currSentence, bool buildEnglish){
-}
+void sentenceGameCallBack(
+    bool value, Map<String, dynamic> currSentence, bool buildEnglish) {}

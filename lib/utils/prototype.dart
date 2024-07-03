@@ -6,7 +6,8 @@ enum PrototypeHeightSlot {
   child,
 }
 
-class PrototypeHeight extends SlottedMultiChildRenderObjectWidget<PrototypeHeightSlot, RenderBox> {
+class PrototypeHeight extends SlottedMultiChildRenderObjectWidget<
+    PrototypeHeightSlot, RenderBox> {
   const PrototypeHeight({
     super.key,
     required this.prototype,
@@ -32,9 +33,10 @@ class PrototypeHeight extends SlottedMultiChildRenderObjectWidget<PrototypeHeigh
   }
 
   @override
-  SlottedContainerRenderObjectMixin<PrototypeHeightSlot, RenderBox> createRenderObject(
-      BuildContext context,
-      ) {
+  SlottedContainerRenderObjectMixin<PrototypeHeightSlot, RenderBox>
+      createRenderObject(
+    BuildContext context,
+  ) {
     return RenderPrototypeHeight(
       backgroundColor: backgroundColor,
     );
@@ -42,9 +44,10 @@ class PrototypeHeight extends SlottedMultiChildRenderObjectWidget<PrototypeHeigh
 
   @override
   void updateRenderObject(
-      BuildContext context,
-      SlottedContainerRenderObjectMixin<PrototypeHeightSlot, RenderBox> renderObject,
-      ) {
+    BuildContext context,
+    SlottedContainerRenderObjectMixin<PrototypeHeightSlot, RenderBox>
+        renderObject,
+  ) {
     (renderObject as RenderPrototypeHeight).backgroundColor = backgroundColor;
   }
 }
@@ -53,7 +56,8 @@ class RenderPrototypeHeight extends RenderBox
     with
         SlottedContainerRenderObjectMixin<PrototypeHeightSlot, RenderBox>,
         DebugOverflowIndicatorMixin {
-  RenderPrototypeHeight({Color? backgroundColor}) : _backgroundColor = backgroundColor;
+  RenderPrototypeHeight({Color? backgroundColor})
+      : _backgroundColor = backgroundColor;
 
   Color? get backgroundColor => _backgroundColor;
   Color? _backgroundColor;
@@ -155,7 +159,7 @@ class RenderPrototypeHeight extends RenderBox
   @override
   bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
     final RenderBox? child = _child;
-    if(child != null){
+    if (child != null) {
       final BoxParentData parentData = child.parentData! as BoxParentData;
       final bool isHit = result.addWithPaintOffset(
         offset: parentData.offset,

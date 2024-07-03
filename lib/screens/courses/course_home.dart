@@ -22,18 +22,16 @@ class _CourseHomeState extends State<CourseHome> {
           middle: Text("Home"),
         ),
         child: SafeArea(
-          child: switch (course){
-           'hsk' =>  HSKCourseView(changeCourse: changeCourse),
-            _ =>  CustomCourse(courseName: course, changeCourse: changeCourse),
+          child: switch (course) {
+            'hsk' => HSKCourseView(changeCourse: changeCourse),
+            _ => CustomCourse(courseName: course, changeCourse: changeCourse),
           },
-        )
-    );
+        ));
   }
 
-  void changeCourse(String courseName){
+  void changeCourse(String courseName) {
     setState(() {
       course = courseName;
     });
   }
 }
-

@@ -4,14 +4,18 @@ import 'package:sqflite/sqflite.dart';
 
 import 'connection_db_info.dart';
 
-class PgUpdate{
+class PgUpdate {
   static late PostgreSQLConnection connection;
   static bool connected = false;
-  static Future<PostgreSQLConnection> psql() async{
-    if (connected == false || connection.isClosed){
+  static Future<PostgreSQLConnection> psql() async {
+    if (connected == false || connection.isClosed) {
       // will be added back later
       ConnectionInfo connectionInfo = ConnectionInfo();
-      connection = PostgreSQLConnection(connectionInfo.host, connectionInfo.port, connectionInfo.databaseName, username: connectionInfo.username, password: connectionInfo.password, useSSL: connectionInfo.useSSL);
+      connection = PostgreSQLConnection(
+          connectionInfo.host, connectionInfo.port, connectionInfo.databaseName,
+          username: connectionInfo.username,
+          password: connectionInfo.password,
+          useSSL: connectionInfo.useSSL);
       await connection.open();
       connected = true;
     }
@@ -20,14 +24,16 @@ class PgUpdate{
 
   static Future<bool> updateSqliteFromPg() async {
     final pgdb = await psql();
-    List<Map<String, Map<String, dynamic>>> hsk = await pgdb.mappedResultsQuery("""
+    List<Map<String, Map<String, dynamic>>> hsk =
+        await pgdb.mappedResultsQuery("""
       SELECT * FROM courses ORDER BY id
     """);
     List<Map<String, dynamic>> hskResult = [];
     for (final row in hsk) {
       hskResult.add(row["courses"]!);
     }
-    List<Map<String, Map<String, dynamic>>> sentences = await pgdb.mappedResultsQuery("""
+    List<Map<String, Map<String, dynamic>>> sentences =
+        await pgdb.mappedResultsQuery("""
       SELECT * FROM sentences ORDER BY id
     """);
     List<Map<String, dynamic>> sentencesResult = [];
@@ -35,7 +41,8 @@ class PgUpdate{
       sentencesResult.add(row["sentences"]!);
     }
 
-    List<Map<String, Map<String, dynamic>>> units = await pgdb.mappedResultsQuery("""
+    List<Map<String, Map<String, dynamic>>> units =
+        await pgdb.mappedResultsQuery("""
       SELECT * FROM units ORDER BY unit_id
     """);
     List<Map<String, dynamic>> unitsResult = [];
@@ -43,7 +50,8 @@ class PgUpdate{
       unitsResult.add(row["units"]!);
     }
 
-    List<Map<String, Map<String, dynamic>>> subUnits = await pgdb.mappedResultsQuery("""
+    List<Map<String, Map<String, dynamic>>> subUnits =
+        await pgdb.mappedResultsQuery("""
       select unit, subunit, 0 as completed from courses
       where unit is not null and subunit is not null
       group by unit, subunit
@@ -53,7 +61,6 @@ class PgUpdate{
     for (final row in subUnits) {
       subUnitsResult.add(row["courses"]!);
     }
-
 
     final db = await SQLHelper.db();
     Batch hskBatch = db.batch();

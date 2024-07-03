@@ -6,7 +6,7 @@ import 'package:hsk_learner/sql/learn_sql.dart';
 import '../../sql/sql_helper.dart';
 
 class ReviewQuiz extends StatefulWidget {
-  final Future<List<Map<String, dynamic>>>hskList;
+  final Future<List<Map<String, dynamic>>> hskList;
   const ReviewQuiz({Key? key, required this.hskList}) : super(key: key);
 
   @override
@@ -14,7 +14,6 @@ class ReviewQuiz extends StatefulWidget {
 }
 
 class _ReviewQuizState extends State<ReviewQuiz> {
-
   late Future<List<Map<String, List<Map<String, dynamic>>>>> hskMap;
   @override
   void initState() {
@@ -26,31 +25,44 @@ class _ReviewQuizState extends State<ReviewQuiz> {
   Widget build(BuildContext context) {
     return FutureBuilder<List<Map<String, List<Map<String, dynamic>>>>>(
         future: hskMap,
-        builder: (BuildContext context, AsyncSnapshot<List<Map<String, List<Map<String, dynamic>>>>> snapshot) {
+        builder: (BuildContext context,
+            AsyncSnapshot<List<Map<String, List<Map<String, dynamic>>>>>
+                snapshot) {
           if (snapshot.hasData) {
-            List<Map<String, List<Map<String, dynamic>>>>? hskMap = snapshot.data;
+            List<Map<String, List<Map<String, dynamic>>>>? hskMap =
+                snapshot.data;
             List<WordItem> wordList = [];
             List<Map<String, dynamic>> sentenceList = [];
-            if(hskMap != null){
-              for (var i = 0; i< hskMap.length; i++) {
+            if (hskMap != null) {
+              for (var i = 0; i < hskMap.length; i++) {
                 wordList.add(WordItem(hskMap[i]["hskList"]![0]));
-                if (hskMap[i]["sentenceList"] != null ){
-                  if(hskMap[i]["sentenceList"]!.isNotEmpty){
+                if (hskMap[i]["sentenceList"] != null) {
+                  if (hskMap[i]["sentenceList"]!.isNotEmpty) {
                     sentenceList.add(hskMap[i]["sentenceList"]![0]);
                   }
                 }
               }
-              return UnitGame(courseName: "", wordList: wordList, sentenceList: sentenceList, unit: 0, subunit: 0, lastSubunit: false, name: "review", updateUnits: (){},);
-            }else{
+              return UnitGame(
+                courseName: "",
+                wordList: wordList,
+                sentenceList: sentenceList,
+                unit: 0,
+                subunit: 0,
+                lastSubunit: false,
+                name: "review",
+                updateUnits: () {},
+              );
+            } else {
               return Container();
             }
+          } else {
+            return const Center(child: CircularProgressIndicator());
           }
-          else{return const Center(child: CircularProgressIndicator());}
-        }
-    );
+        });
   }
 
-  Future<List<Map<String, List<Map<String, dynamic>>>>> getSentenceList() async {
+  Future<List<Map<String, List<Map<String, dynamic>>>>>
+      getSentenceList() async {
     List<Map<String, dynamic>> completedHskList = await widget.hskList;
     Future<Map<String, List<Map<String, dynamic>>>> getUnits(int index) async {
       final data = await LearnSql.getExamples(completedHskList[index]["hanzi"]);
@@ -60,8 +72,9 @@ class _ReviewQuizState extends State<ReviewQuiz> {
       };
       return hskMap;
     }
-    List<Future<Map<String, List<Map<String, dynamic>>>>> hskMap =  List.generate(completedHskList.length, (i) => getUnits(i));
+
+    List<Future<Map<String, List<Map<String, dynamic>>>>> hskMap =
+        List.generate(completedHskList.length, (i) => getUnits(i));
     return await Future.wait(hskMap);
   }
 }
-

@@ -4,12 +4,18 @@ class Collapsible extends StatefulWidget {
   final Widget child;
   final bool isCollapsed;
   final int duration;
-  const Collapsible({Key? key, required this.child, required this.isCollapsed, required this.duration}) : super(key: key);
+  const Collapsible(
+      {Key? key,
+      required this.child,
+      required this.isCollapsed,
+      required this.duration})
+      : super(key: key);
   @override
   State<Collapsible> createState() => _CollapsibleState();
 }
 
-class _CollapsibleState extends State<Collapsible> with SingleTickerProviderStateMixin {
+class _CollapsibleState extends State<Collapsible>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   static final Animatable<double> _sizeTween = Tween<double>(
     begin: 0.0,
@@ -25,13 +31,15 @@ class _CollapsibleState extends State<Collapsible> with SingleTickerProviderStat
       duration: Duration(milliseconds: widget.duration),
     );
     final CurvedAnimation curve =
-    CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn);
+        CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn);
     _sizeAnimation = _sizeTween.animate(curve);
+
     /// Sanity check.
     if (!widget.isCollapsed) {
       _controller.forward(from: 1.0);
     }
   }
+
   @override
   void didUpdateWidget(covariant Collapsible oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -44,13 +52,11 @@ class _CollapsibleState extends State<Collapsible> with SingleTickerProviderStat
     }
   }
 
-
   @override
   dispose() {
     _controller.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
