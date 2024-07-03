@@ -230,14 +230,15 @@ class _MatchingGameState extends State<MatchingGame> {
     );
   }
 
-  createAnimatedAlign(
-      {required int index,
-      required List yCords,
-      required String side,
-      required String wordType,
-      required double xCord,
-      required double fontSize,
-      required List isWrong}) {
+  createAnimatedAlign({
+    required int index,
+    required List yCords,
+    required String side,
+    required String wordType,
+    required double xCord,
+    required double fontSize,
+    required List isWrong,
+  }) {
     return AnimatedAlign(
       alignment: Alignment(xCord, yCords[index]),
       duration: const Duration(seconds: 1),
@@ -248,8 +249,10 @@ class _MatchingGameState extends State<MatchingGame> {
             : isWrong[index]
                 ? Styles.createButton2(const Color(0xFFFF0000))
                 : isClicked["side"] == side && isClicked["index"] == index
-                    ? Styles.createButton2(const Color(0xFFEEEEEE),
-                        border: const Color(0xff0000ff))
+                    ? Styles.createButton2(
+                        const Color(0xFFEEEEEE),
+                        border: const Color(0xff0000ff),
+                      )
                     : Styles.createButton2(const Color(0xFFEEEEEE)),
         onPressed: () {
           pushToTop(index: index, side: side);
@@ -258,8 +261,9 @@ class _MatchingGameState extends State<MatchingGame> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Visibility(
-                visible: wordType == "hanzi" && showPinyin,
-                child: Text(widget.wordList[index].pinyin)),
+              visible: wordType == "hanzi" && showPinyin,
+              child: Text(widget.wordList[index].pinyin),
+            ),
             Text(
               wordType == "hanzi"
                   ? widget.wordList[index].hanzi
