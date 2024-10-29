@@ -34,4 +34,5 @@ class WordViewSql {
           order by t1.id
     """);
   }
+
 }
