@@ -167,29 +167,27 @@ class _UnitLearnState extends State<UnitLearn> {
                                       icon: const Icon(Icons.volume_up)),
                                 ),
                                 Row(
-                                    children: List.generate(widget.wordList[pageIndex]
-                                        .hanzi.length, (e){
-                                      return GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => CharacterView(character: widget.wordList[pageIndex].hanzi[e]
-                                                )
-                                            ),
-                                          );
-                                        },
-                                        child: Text(
-                                            widget.wordList[pageIndex].hanzi[e],
-                                          style: const TextStyle(
-                                              fontSize: 40,
-                                              color: Colors.blue
-                                          ),
-                                        ),
+                                    children: List.generate(
+                                        widget.wordList[pageIndex].hanzi.length,
+                                        (e) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => CharacterView(
+                                                character: widget
+                                                    .wordList[pageIndex]
+                                                    .hanzi[e])),
                                       );
-                                    }
-                                    )
-                                ),
+                                    },
+                                    child: Text(
+                                      widget.wordList[pageIndex].hanzi[e],
+                                      style: const TextStyle(
+                                          fontSize: 40, color: Colors.blue),
+                                    ),
+                                  );
+                                })),
                                 IconButton(
                                     onPressed: () {
                                       speak(widget.wordList[pageIndex].hanzi);

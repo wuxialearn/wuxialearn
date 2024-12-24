@@ -255,30 +255,34 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                                     .volume_up)),
                                                       ),
                                                       Row(
-                                                          children: List.generate(wordList[pageIndex]
-                                                              .hanzi.length, (e){
-                                                            return GestureDetector(
-                                                              onTap: () {
-                                                                Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                      builder: (context) => CharacterView(character: wordList[pageIndex]
-                                                                          .hanzi[e])
-                                                                  ),
-                                                                );
-                                                              },
-                                                              child: Text(
-                                                                wordList[pageIndex]
-                                                                    .hanzi[e],
-                                                                style: const TextStyle(
-                                                                  fontSize: 40,
-                                                                  color: Colors.blue
-                                                                ),
-                                                              ),
+                                                          children: List.generate(
+                                                              wordList[
+                                                                      pageIndex]
+                                                                  .hanzi
+                                                                  .length, (e) {
+                                                        return GestureDetector(
+                                                          onTap: () {
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (context) =>
+                                                                      CharacterView(
+                                                                          character:
+                                                                              wordList[pageIndex].hanzi[e])),
                                                             );
-                                                          }
-                                                          )
-                                                      ),
+                                                          },
+                                                          child: Text(
+                                                            wordList[pageIndex]
+                                                                .hanzi[e],
+                                                            style:
+                                                                const TextStyle(
+                                                                    fontSize:
+                                                                        40,
+                                                                    color: Colors
+                                                                        .blue),
+                                                          ),
+                                                        );
+                                                      })),
                                                       Visibility(
                                                         maintainState: true,
                                                         maintainSize: true,
@@ -360,30 +364,34 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                                       .volume_up)),
                                                         ),
                                                         Row(
-                                                            children: List.generate(wordList[pageIndex]
-                                                                .hanzi.length, (e){
-                                                              return GestureDetector(
-                                                                onTap: () {
-                                                                  Navigator.push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                        builder: (context) => CharacterView(character: wordList[pageIndex]
-                                                                            .hanzi[e])
-                                                                    ),
-                                                                  );
-                                                                },
-                                                                child: Text(
-                                                                  wordList[pageIndex]
-                                                                      .hanzi[e],
-                                                                  style: const TextStyle(
-                                                                      fontSize: 40,
-                                                                      color: Colors.blue
-                                                                  ),
-                                                                ),
+                                                            children: List.generate(
+                                                                wordList[
+                                                                        pageIndex]
+                                                                    .hanzi
+                                                                    .length,
+                                                                (e) {
+                                                          return GestureDetector(
+                                                            onTap: () {
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder: (context) =>
+                                                                        CharacterView(
+                                                                            character:
+                                                                                wordList[pageIndex].hanzi[e])),
                                                               );
-                                                            }
-                                                            )
-                                                        ),
+                                                            },
+                                                            child: Text(
+                                                              wordList[
+                                                                      pageIndex]
+                                                                  .hanzi[e],
+                                                              style: const TextStyle(
+                                                                  fontSize: 40,
+                                                                  color: Colors
+                                                                      .blue),
+                                                            ),
+                                                          );
+                                                        })),
                                                         Visibility(
                                                           maintainState: true,
                                                           maintainSize: true,

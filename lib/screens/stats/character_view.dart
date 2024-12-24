@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:hsk_learner/sql/character_view_sql.dart';
 import 'package:hsk_learner/utils/prototype.dart';
 
-
 class CharacterView extends StatefulWidget {
   final String character;
   const CharacterView({super.key, required this.character});
@@ -131,7 +130,7 @@ class _Sentences extends StatefulWidget {
 
 class _SentencesState extends State<_Sentences> {
   bool showPinyin = false;
-  bool showTranslations = false ;
+  bool showTranslations = false;
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Map<String, dynamic>>>(
@@ -192,88 +191,88 @@ class _SentencesState extends State<_Sentences> {
                   ),
                   SliverList(
                     delegate:
-                    SliverChildBuilderDelegate(childCount: sentences.length,
+                        SliverChildBuilderDelegate(childCount: sentences.length,
                             (BuildContext context, int index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0,
-                              vertical: 10,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 10,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: PrototypeHeight(
-                                        prototype: Column(
-                                          crossAxisAlignment:
+                                Expanded(
+                                  child: PrototypeHeight(
+                                    prototype: Column(
+                                      crossAxisAlignment:
                                           CrossAxisAlignment.start,
+                                      children: [
+                                        Visibility(
+                                          visible: showPinyin,
+                                          child: const Text(
+                                            "名字爱Míngzì",
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        const Text(
+                                          "名字爱Míngzì",
+                                          style: TextStyle(fontSize: 20),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Visibility(
+                                          visible: showTranslations,
+                                          child: const Text(
+                                            "名字爱Míngzì",
+                                            style: TextStyle(fontSize: 16),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    child: ListView(
+                                      scrollDirection: Axis.horizontal,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Visibility(
                                               visible: showPinyin,
-                                              child: const Text(
-                                                "名字爱Míngzì",
+                                              child: Text(
+                                                sentences[index]["pinyin"],
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
-                                            const Text(
-                                              "名字爱Míngzì",
-                                              style: TextStyle(fontSize: 20),
+                                            Text(
+                                              sentences[index]["characters"],
+                                              style:
+                                                  const TextStyle(fontSize: 20),
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                             Visibility(
                                               visible: showTranslations,
-                                              child: const Text(
-                                                "名字爱Míngzì",
-                                                style: TextStyle(fontSize: 16),
+                                              child: Text(
+                                                sentences[index]["meaning"],
+                                                style: const TextStyle(
+                                                    fontSize: 16),
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
                                           ],
                                         ),
-                                        child: ListView(
-                                          scrollDirection: Axis.horizontal,
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Visibility(
-                                                  visible: showPinyin,
-                                                  child: Text(
-                                                    sentences[index]["pinyin"],
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  sentences[index]["characters"],
-                                                  style:
-                                                  const TextStyle(fontSize: 20),
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                                Visibility(
-                                                  visible: showTranslations,
-                                                  child: Text(
-                                                    sentences[index]["meaning"],
-                                                    style:
-                                                    const TextStyle(fontSize: 16),
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ],
                             ),
-                          );
-                        }),
+                          ],
+                        ),
+                      );
+                    }),
                   ),
                 ],
               );
