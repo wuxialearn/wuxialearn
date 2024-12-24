@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hsk_learner/data_model/review_rating.dart';
 import 'package:hsk_learner/data_model/word_item.dart';
+import 'package:hsk_learner/screens/stats/character_view.dart';
 import 'package:hsk_learner/sql/review_flashcards_sql.dart';
 
 import '../../sql/stats_sql.dart';
@@ -253,13 +254,30 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                                 Icons
                                                                     .volume_up)),
                                                       ),
-                                                      Text(
-                                                        wordList[pageIndex]
-                                                            .hanzi,
-                                                        style: const TextStyle(
-                                                            fontSize: 40,
-                                                            color:
-                                                                Colors.black),
+                                                      Row(
+                                                          children: List.generate(wordList[pageIndex]
+                                                              .hanzi.length, (e){
+                                                            return GestureDetector(
+                                                              onTap: () {
+                                                                Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder: (context) => CharacterView(character: wordList[pageIndex]
+                                                                          .hanzi[e])
+                                                                  ),
+                                                                );
+                                                              },
+                                                              child: Text(
+                                                                wordList[pageIndex]
+                                                                    .hanzi[e],
+                                                                style: const TextStyle(
+                                                                  fontSize: 40,
+                                                                  color: Colors.blue
+                                                                ),
+                                                              ),
+                                                            );
+                                                          }
+                                                          )
                                                       ),
                                                       Visibility(
                                                         maintainState: true,
@@ -341,14 +359,30 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                                   Icons
                                                                       .volume_up)),
                                                         ),
-                                                        Text(
-                                                          wordList[pageIndex]
-                                                              .hanzi,
-                                                          style:
-                                                              const TextStyle(
-                                                                  fontSize: 40,
-                                                                  color: Colors
-                                                                      .black),
+                                                        Row(
+                                                            children: List.generate(wordList[pageIndex]
+                                                                .hanzi.length, (e){
+                                                              return GestureDetector(
+                                                                onTap: () {
+                                                                  Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder: (context) => CharacterView(character: wordList[pageIndex]
+                                                                            .hanzi[e])
+                                                                    ),
+                                                                  );
+                                                                },
+                                                                child: Text(
+                                                                  wordList[pageIndex]
+                                                                      .hanzi[e],
+                                                                  style: const TextStyle(
+                                                                      fontSize: 40,
+                                                                      color: Colors.blue
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            }
+                                                            )
                                                         ),
                                                         Visibility(
                                                           maintainState: true,
