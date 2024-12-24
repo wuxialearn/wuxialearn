@@ -68,7 +68,7 @@ class MyApp2 extends StatelessWidget {
       scrollBehavior: const CupertinoScrollBehavior(),
       theme: ThemeData.light(useMaterial3: false),
       title: 'Flutter Demo',
-      home: const LoadApp(),
+      home: const LoadApp(fdroid: false,),
       //home: const MyStatefulWidget(),
     );
   }
