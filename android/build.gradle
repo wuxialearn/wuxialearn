@@ -15,6 +15,13 @@ allprojects {
         google()
         mavenCentral()
     }
+    /*
+    //cr_file_saver does not support agp > 8.0
+    //see:
+    //https://github.com/Cleveroad/cr_file_saver/pull/16
+    //https://github.com/Cleveroad/cr_file_saver/issues/17
+    //https://stackoverflow.com/questions/78744324/could-not-create-an-instance-of-type-com-android-build-api-variant-impl-libraryv
+    */
     subprojects {
         afterEvaluate { project ->
             if (project.hasProperty('android')) {
