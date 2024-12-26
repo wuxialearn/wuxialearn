@@ -23,6 +23,7 @@ jobs:
         with:
           distribution: 'oracle'
           java-version: '17'
+          cache: gradle
 
         #3 Setup Flutter
       - name: Set Up Flutter
