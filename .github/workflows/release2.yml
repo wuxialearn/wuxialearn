@@ -28,8 +28,9 @@ jobs:
       - name: Set Up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.2'
+          flutter-version: '3.27.1'
           channel: 'stable'
+          cache: true
 
         #4 Install Dependencies
       - name: Install Dependencies
@@ -51,19 +52,6 @@ jobs:
       - name: Build APK
         run: flutter build apk --release
 
-        #7 Building App Bundle (aab)
-      - name: Build appBundle
-        run: flutter build appbundle
-
-        #8 Build IPA ( IOS Build )
-      - name: Build IPA
-        run: flutter build ipa --no-codesign
-
-      - name: Compress Archives and IPAs
-        run: |
-          cd build
-          tar -czf ios_build.tar.gz ios
-
         #9 Upload Artifacts
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
@@ -72,7 +60,6 @@ jobs:
           path: |
             build/app/outputs/flutter-apk/app-release.apk
             build/app/outputs/bundle/release/app-release.aab
-            build/ios_build.tar.gz
 
         #10 Extract Version
       - name: Extract version from pubspec.yaml
@@ -90,14 +77,6 @@ jobs:
           else
             echo "TAG_EXISTS=false" >> $GITHUB_ENV
           fi
-
-        #12 Modify Tag if it Exists
-      - name: Modify Tag
-        if: env.TAG_EXISTS == 'true'
-        id: modify_tag
-        run: |
-          new_version="${{ env.VERSION }}-build-${{ github.run_number }}"
-          echo "VERSION=$new_version" >> $GITHUB_ENV
         
         #13 Create Release
       - name: Create Release
