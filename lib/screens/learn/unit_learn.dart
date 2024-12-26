@@ -1,12 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/screens/games/unit_game.dart';
 import 'package:hsk_learner/screens/settings/preferences.dart';
 import '../../sql/learn_sql.dart';
-import '../../sql/sql_helper.dart';
 import '../stats/character_view.dart';
 
 class UnitLearn extends StatefulWidget {

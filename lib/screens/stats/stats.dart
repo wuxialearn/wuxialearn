@@ -6,7 +6,6 @@ import 'package:hsk_learner/screens/stats/word_view.dart';
 import 'package:hsk_learner/sql/stats_sql.dart';
 
 import '../../utils/styles.dart';
-import '../../sql/sql_helper.dart';
 
 class StatsPage extends StatefulWidget {
   const StatsPage({Key? key}) : super(key: key);

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:hsk_learner/sql/sql_helper.dart';
 
 import '../../sql/preferences_sql.dart';
 

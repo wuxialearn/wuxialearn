@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:hsk_learner/sql/review_sql.dart';
 import 'package:hsk_learner/widgets/delayed_progress_indecator.dart';
 

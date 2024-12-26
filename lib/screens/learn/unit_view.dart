@@ -6,7 +6,6 @@ import '../../sql/learn_sql.dart';
 import '../../sql/manage_review_sql.dart';
 import '../../sql/stats_sql.dart';
 import '../settings/preferences.dart';
-import '../../sql/sql_helper.dart';
 
 class UnitView extends StatefulWidget {
   final int unit;

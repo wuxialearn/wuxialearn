@@ -5,7 +5,6 @@ import 'package:hsk_learner/sql/preferences_sql.dart';
 import '../../utils/platform_info.dart';
 import 'backup.dart';
 import 'preferences.dart';
-import 'package:hsk_learner/sql/sql_helper.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -133,7 +132,7 @@ class _SettingsState extends State<Settings> {
                       CupertinoSwitch(
                         // This bool value toggles the switch.
                         value: translation,
-                        activeColor: CupertinoColors.activeBlue,
+                        activeTrackColor: CupertinoColors.activeBlue,
                         onChanged: (bool value) {
                           setSettingBool(
                               name: "showTranslations",
@@ -151,7 +150,7 @@ class _SettingsState extends State<Settings> {
                       CupertinoSwitch(
                         // This bool value toggles the switch.
                         value: reviewPinyin,
-                        activeColor: CupertinoColors.activeBlue,
+                        activeTrackColor: CupertinoColors.activeBlue,
                         onChanged: (bool value) {
                           setSettingBool(
                               name: "show_pinyin_by_default_in_review",
@@ -174,7 +173,7 @@ class _SettingsState extends State<Settings> {
                       CupertinoSwitch(
                         // This bool value toggles the switch.
                         value: showExampleSentences,
-                        activeColor: CupertinoColors.activeBlue,
+                        activeTrackColor: CupertinoColors.activeBlue,
                         onChanged: (bool value) {
                           setSettingBool(
                               name: "show_sentences",
@@ -192,7 +191,7 @@ class _SettingsState extends State<Settings> {
                       CupertinoSwitch(
                         // This bool value toggles the switch.
                         value: showLiteralInUnitLearn,
-                        activeColor: CupertinoColors.activeBlue,
+                        activeTrackColor: CupertinoColors.activeBlue,
                         onChanged: (bool value) {
                           setSettingBool(
                               name: "show_literal_meaning_in_unit_learn",
@@ -325,7 +324,7 @@ class _SettingsState extends State<Settings> {
                         CupertinoSwitch(
                           // This bool value toggles the switch.
                           value: debug,
-                          activeColor: CupertinoColors.activeBlue,
+                          activeTrackColor: CupertinoColors.activeBlue,
                           onChanged: (bool value) {
                             setSettingBool(
                                 name: "debug", type: "bool", value: value);
@@ -341,7 +340,7 @@ class _SettingsState extends State<Settings> {
                         CupertinoSwitch(
                           // This bool value toggles the switch.
                           value: allowSkipUnits,
-                          activeColor: CupertinoColors.activeBlue,
+                          activeTrackColor: CupertinoColors.activeBlue,
                           onChanged: (bool value) {
                             setSettingBool(
                                 name: "allow_skip_units",
@@ -359,7 +358,7 @@ class _SettingsState extends State<Settings> {
                         CupertinoSwitch(
                           // This bool value toggles the switch.
                           value: checkVersionOnStart,
-                          activeColor: CupertinoColors.activeBlue,
+                          activeTrackColor: CupertinoColors.activeBlue,
                           onChanged: (bool value) {
                             setSettingBool(
                                 name: "check_for_new_version_on_start",
@@ -377,7 +376,7 @@ class _SettingsState extends State<Settings> {
                         CupertinoSwitch(
                           // This bool value toggles the switch.
                           value: allowAutoComplete,
-                          activeColor: CupertinoColors.activeBlue,
+                          activeTrackColor: CupertinoColors.activeBlue,
                           onChanged: (bool value) {
                             setSettingBool(
                                 name: "allow_auto_complete_unit",

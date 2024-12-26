@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hsk_learner/screens/learn/test_out.dart';
 import '../../sql/learn_sql.dart';
 import '../settings/preferences.dart';
-import '../../sql/sql_helper.dart';
 import 'course_view.dart';
 
 class HSKCourseView extends StatefulWidget {

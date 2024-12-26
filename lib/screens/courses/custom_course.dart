@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../sql/learn_sql.dart';
-import '../../sql/sql_helper.dart';
 import '../settings/preferences.dart';
 import 'course_view.dart';
 

@@ -1,12 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hsk_learner/widgets/delayed_progress_indecator.dart';
 
 import '../../data_model/word_item.dart';
 import '../../sql/manage_review_sql.dart';
-import '../../sql/sql_helper.dart';
 import '../../utils/styles.dart';
 import '../stats/word_view.dart';
 

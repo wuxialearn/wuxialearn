@@ -3,10 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hsk_learner/screens/home/home_page.dart';
 import 'package:hsk_learner/sql/load_app_sql.dart';
 import 'package:hsk_learner/sql/schema_migration.dart';
-import 'package:hsk_learner/sql/sql_helper.dart';
-import '../../sql/learn_sql.dart';
 import '../../sql/preferences_sql.dart';
-import '../settings/backup.dart';
 import '../settings/preferences.dart';
 import 'package:http/http.dart' as http;
 

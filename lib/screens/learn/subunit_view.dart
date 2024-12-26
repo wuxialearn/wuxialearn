@@ -4,7 +4,6 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:hsk_learner/data_model/word_item.dart';
 import 'package:hsk_learner/screens/learn/unit_learn.dart';
 import '../../sql/learn_sql.dart';
-import '../../sql/sql_helper.dart';
 import '../../widgets/hsk_listview/hsk_listview.dart';
 import '../games/unit_game.dart';
 import '../settings/preferences.dart';

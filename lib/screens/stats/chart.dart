@@ -51,10 +51,10 @@ LineChartData mainData(
     }
   }
   return LineChartData(
-    gridData: FlGridData(
+    gridData: const FlGridData(
       show: false,
     ),
-    titlesData: FlTitlesData(
+    titlesData: const FlTitlesData(
       show: true,
       rightTitles: AxisTitles(
         sideTitles: SideTitles(showTitles: false),
@@ -96,7 +96,7 @@ LineChartData mainData(
         ),
         barWidth: 5,
         isStrokeCapRound: true,
-        dotData: FlDotData(
+        dotData: const FlDotData(
           show: false,
         ),
         belowBarData: BarAreaData(

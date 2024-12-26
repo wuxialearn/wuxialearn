@@ -192,7 +192,7 @@ class GridItem extends StatelessWidget {
           border: Border.all(color: unitColor, width: 3)),
       child: TextButton(
         style: ButtonStyle(
-            overlayColor: MaterialStateProperty.all(Colors.transparent)),
+            overlayColor: WidgetStateProperty.all(Colors.transparent)),
         onPressed: () {
           if (isUnitOpen) {
             Navigator.push(
