@@ -24,13 +24,13 @@ Wuxia Learn is a free and open source Chinese language learning app.
 
 <p float="left">
       
-<img src="https://github.com/wuxialearn/assets/blob/main/home%20screen.png?raw=true" alt='home screen' width="300">
+<img src="https://github.com/wuxialearn/assets/blob/main/home%20screen.png?raw=true" alt='home screen' width="33%">
 
-<img src="https://github.com/wuxialearn/assets/blob/main/basic%20game%20screen.png?raw=true" alt='game screen' width="300">
+<img src="https://github.com/wuxialearn/assets/blob/main/basic%20game%20screen.png?raw=true" alt='game screen' width="33%">
 
-<img src="https://github.com/wuxialearn/assets/blob/main/stats%20screen.png?raw=true" alt='stats screen' width="300">
+<img src="https://github.com/wuxialearn/assets/blob/main/stats%20screen.png?raw=true" alt='stats screen' width="33%">
 
-<img src="https://github.com/wuxialearn/assets/blob/main/sentence%20game%20screen.png?raw=true" alt='sentence game screen' width="300">
+<img src="https://github.com/wuxialearn/assets/blob/main/sentence%20game%20screen.png?raw=true" alt='sentence game screen' width="33%">
 
 </p>
       
