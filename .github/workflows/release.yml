@@ -67,20 +67,17 @@ jobs:
           version=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
           echo "VERSION=$version" >> $GITHUB_ENV
 
-        #11 Check if Tag Exists
-      - name: Check if Tag Exists
-        id: check_tag
+        #11 Get Latest Tag
+      - name: Get Latest Tag
+        id: get_latest_tag
         run: |
-          if git rev-parse "v${{ env.VERSION }}" >/dev/null 2>&1; then
-            echo "TAG_EXISTS=true" >> $GITHUB_ENV
-          else
-            echo "TAG_EXISTS=false" >> $GITHUB_ENV
-          fi
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "LATEST_TAG=$latest_tag" >> $GITHUB_ENV
+
+        #12 Upload to Latest Tag
+      - name: Upload to Latest Tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          gh release upload ${{ env.LATEST_TAG }} build/app/outputs/flutter-apk/app-release.apk build/app/outputs/bundle/release/app-release.aab --clobber
         
-        #13 Create Release
-      - name: Create Release
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "build/app/outputs/flutter-apk/app-release.apk,build/app/outputs/bundle/release/app-release.aab,build/ios_build.tar.gz"
-          tag: v${{ env.VERSION }}
-          token: ${{ secrets.TOKEN }}
