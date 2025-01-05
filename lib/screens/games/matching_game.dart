@@ -250,10 +250,10 @@ class _MatchingGameState extends State<MatchingGame> {
                 ? Styles.createButton2(const Color(0xFFFF0000))
                 : isClicked["side"] == side && isClicked["index"] == index
                     ? Styles.createButton2(
-                        const Color(0xFFEEEEEE),
+                        const Color(0xFFB0B0B0),
                         border: const Color(0xff0000ff),
                       )
-                    : Styles.createButton2(const Color(0xFFEEEEEE)),
+                    : Styles.createButton2(const Color(0xFFB0B0B0)),
         onPressed: () {
           pushToTop(index: index, side: side);
         },

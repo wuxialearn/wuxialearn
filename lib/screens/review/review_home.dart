@@ -197,7 +197,7 @@ class _ReviewPageState extends State<ReviewPage> {
                 borderRadius: deckExists
                     ? const BorderRadius.vertical(top: Radius.circular(10))
                     : BorderRadius.circular(10),
-                color: Colors.white,
+                color: Theme.of(context).scaffoldBackgroundColor,
               ),
               padding: const EdgeInsets.symmetric(
                 horizontal: 8.0,
@@ -340,7 +340,7 @@ class _ReviewPageState extends State<ReviewPage> {
                     showTranslation: previewDeck,
                     showPinyin: showPinyin,
                     connectTop: true,
-                    color: Colors.white,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     scrollAxis: Axis.vertical,
                     emptyListMessage: const Text("Nothing to review"))
                 : const SizedBox(
