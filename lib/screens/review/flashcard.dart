@@ -30,7 +30,7 @@ class _FlashCardState extends State<FlashCard> {
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle(
-      style: const TextStyle(color: Colors.white),
+      style: TextStyle(color: Theme.of(context).scaffoldBackgroundColor),
       textAlign: TextAlign.center,
       child: Center(
         child: _buildFlipAnimation(front: widget.front, back: widget.back),
@@ -98,7 +98,7 @@ class _FlashCardState extends State<FlashCard> {
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(20.0),
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
       ),
       child: Center(
         child: child,

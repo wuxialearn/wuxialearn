@@ -144,7 +144,7 @@ class _UnitViewState extends State<UnitView> {
                                     decoration: BoxDecoration(
                                       color: subunits[i]["completed"] == 1
                                           ? Colors.lightBlue
-                                          : Colors.white,
+                                          : Theme.of(context).scaffoldBackgroundColor,
                                       border: Border.all(
                                           width: 2.0, color: Colors.lightBlue),
                                       borderRadius: BorderRadius.circular(5),
@@ -229,10 +229,10 @@ class _UnitViewState extends State<UnitView> {
                                               },
                                               icon: Container(
                                                   decoration:
-                                                      const BoxDecoration(
-                                                    color: Colors.white,
+                                                      BoxDecoration(
+                                                    color: Theme.of(context).scaffoldBackgroundColor,
                                                     borderRadius:
-                                                        BorderRadius.all(
+                                                        const BorderRadius.all(
                                                             Radius.circular(
                                                                 100)),
                                                   ),

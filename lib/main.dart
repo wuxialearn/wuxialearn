@@ -25,34 +25,39 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+	
+	final brightness = MediaQuery.platformBrightnessOf(context);
+
     return Theme(
       data: ThemeData(
+		  brightness: brightness,
           fontFamily: '.SF UI Text',
           colorScheme: ColorScheme.fromSwatch(
-            primarySwatch: Colors.blue,
+            brightness: brightness,
+			primarySwatch: Colors.blue,
           )),
-      child: const CupertinoApp(
+      child: CupertinoApp(
         theme: CupertinoThemeData(
+			brightness: brightness,
             primaryColor: Colors.blue,
-            brightness: Brightness.light,
             textTheme: CupertinoTextThemeData(
-              textStyle: TextStyle(fontFamily: 'Roboto', color: Colors.black),
+              textStyle: TextStyle(fontFamily: 'Roboto', color: brightness == Brightness.dark ? Colors.white : Colors.black),
               actionTextStyle:
-                  TextStyle(fontFamily: 'Roboto', color: Colors.black),
+                  TextStyle(fontFamily: 'Roboto', color: brightness == Brightness.dark ? Colors.white : Colors.black),
               navActionTextStyle:
-                  TextStyle(fontFamily: 'Roboto', color: Colors.blue),
+                  const TextStyle(fontFamily: 'Roboto', color: Colors.blue),
               navLargeTitleTextStyle:
-                  TextStyle(fontFamily: 'Roboto', color: Colors.black),
+                  TextStyle(fontFamily: 'Roboto', color: brightness == Brightness.dark ? Colors.white : Colors.black),
               navTitleTextStyle:
-                  TextStyle(fontFamily: 'Roboto', color: Colors.black),
+                  TextStyle(fontFamily: 'Roboto', color: brightness == Brightness.dark ? Colors.white : Colors.black),
               pickerTextStyle:
-                  TextStyle(fontFamily: 'Roboto', color: Colors.black),
+                  TextStyle(fontFamily: 'Roboto', color: brightness == Brightness.dark ? Colors.white : Colors.black),
               dateTimePickerTextStyle:
-                  TextStyle(fontFamily: 'Roboto', color: Colors.black),
+                  TextStyle(fontFamily: 'Roboto', color: brightness == Brightness.dark ? Colors.white : Colors.black),
             )),
         scrollBehavior: CupertinoScrollBehavior(),
         title: 'Wuxia Learn',
-        home: LoadApp(fdroid: true),
+        home: const LoadApp(fdroid: true),
         //home: const MyStatefulWidget(),
       ),
     );
@@ -67,6 +72,8 @@ class MyApp2 extends StatelessWidget {
     return MaterialApp(
       scrollBehavior: const CupertinoScrollBehavior(),
       theme: ThemeData.light(useMaterial3: false),
+	    darkTheme: ThemeData.dark(useMaterial3: false),
+	    themeMode: ThemeMode.system,
       title: 'Wuxia Learn',
       home: const LoadApp(fdroid: true),
       //home: const MyStatefulWidget(),

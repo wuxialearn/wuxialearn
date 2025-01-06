@@ -91,7 +91,7 @@ class _ManageReviewState extends State<ManageReview> {
                   Radius.circular(10),
                 ),
               ),
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               shadowColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
               child: Padding(

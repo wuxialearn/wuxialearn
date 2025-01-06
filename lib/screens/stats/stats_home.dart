@@ -77,7 +77,7 @@ class _StatsHomeState extends State<StatsHome> {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).scaffoldBackgroundColor,
                       borderRadius: BorderRadius.circular(5)),
                   child: Column(
                     children: [
@@ -183,7 +183,7 @@ class _StatsHomeState extends State<StatsHome> {
                           globalStats: globalStats,
                         ),
                         child: Container(
-                          color: Colors.white,
+                          color: Theme.of(context).scaffoldBackgroundColor,
                         ),
                       );
                     }
@@ -221,7 +221,7 @@ class TotalStats extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 15),
         decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(7)),
+            color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.circular(7)),
         child: Column(
           children: [
             const Row(
@@ -377,7 +377,7 @@ class _HorizontalHskList extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Container(
         decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(5)),
+            color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.circular(5)),
         padding: const EdgeInsets.only(left: 8, right: 8),
         child: Column(
           children: [
@@ -401,7 +401,7 @@ class _HorizontalHskList extends StatelessWidget {
             PrototypeHeight(
               prototype: PrototypeHorizontalHskListView(
                 connectTop: true,
-                color: Colors.white,
+                color: Theme.of(context).scaffoldBackgroundColor,
                 wordItem: wordMap,
                 showTranslation: true,
                 playCallback: (String s) {},
@@ -423,7 +423,7 @@ class _HorizontalHskList extends StatelessWidget {
                                 ? const BorderRadius.vertical(
                                     bottom: Radius.circular(10))
                                 : BorderRadius.circular(10),
-                            color: Colors.white,
+                            color: Theme.of(context).scaffoldBackgroundColor,
                           ),
                           child: ListView.builder(
                             physics: const ScrollPhysics(),
@@ -446,7 +446,7 @@ class _HorizontalHskList extends StatelessWidget {
                       return PrototypeHeight(
                         prototype: PrototypeHorizontalHskListView(
                           connectTop: true,
-                          color: Colors.white,
+                          color: Theme.of(context).scaffoldBackgroundColor,
                           wordItem: wordMap,
                           showTranslation: true,
                           playCallback: (String s) {},

@@ -578,7 +578,7 @@ class CheckAnswerBottomSheet extends StatelessWidget {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                    color: Colors.white,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     child: TextButton(
                       //style: Styles.createButton(const Color(0xFFD9EAFD)),
                       onPressed: () {
@@ -660,7 +660,7 @@ class _CheckAnswerDialogState extends State<_CheckAnswerDialog> {
                 Container(
                   clipBehavior: Clip.none,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     borderRadius: const BorderRadius.vertical(
                         bottom: Radius.circular(20)),
                     boxShadow: [

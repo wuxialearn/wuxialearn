@@ -59,7 +59,7 @@ class _CourseViewState extends State<CourseView> {
                                 Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white,
+                                    color: Theme.of(context).scaffoldBackgroundColor,
                                   ),
                                   padding: const EdgeInsets.only(top: 10.0),
                                   child: Row(
