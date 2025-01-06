@@ -55,8 +55,8 @@ class MyApp extends StatelessWidget {
               dateTimePickerTextStyle:
                   TextStyle(fontFamily: 'Roboto', color: brightness == Brightness.dark ? Colors.white : Colors.black),
             )),
-        scrollBehavior: const CupertinoScrollBehavior(),
-        title: 'Flutter Demo',
+        scrollBehavior: CupertinoScrollBehavior(),
+        title: 'Wuxia Learn',
         home: const LoadApp(fdroid: true),
         //home: const MyStatefulWidget(),
       ),
@@ -72,9 +72,9 @@ class MyApp2 extends StatelessWidget {
     return MaterialApp(
       scrollBehavior: const CupertinoScrollBehavior(),
       theme: ThemeData.light(useMaterial3: false),
-	  darkTheme: ThemeData.dark(useMaterial3: false),
-	  themeMode: ThemeMode.system,
-      title: 'Flutter Demo',
+	    darkTheme: ThemeData.dark(useMaterial3: false),
+	    themeMode: ThemeMode.system,
+      title: 'Wuxia Learn',
       home: const LoadApp(fdroid: true),
       //home: const MyStatefulWidget(),
     );
