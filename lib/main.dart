@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
                   TextStyle(fontFamily: 'Roboto', color: Colors.black),
             )),
         scrollBehavior: CupertinoScrollBehavior(),
-        title: 'Flutter Demo',
+        title: 'Wuxia Learn',
         home: LoadApp(fdroid: true),
         //home: const MyStatefulWidget(),
       ),
@@ -67,7 +67,7 @@ class MyApp2 extends StatelessWidget {
     return MaterialApp(
       scrollBehavior: const CupertinoScrollBehavior(),
       theme: ThemeData.light(useMaterial3: false),
-      title: 'Flutter Demo',
+      title: 'Wuxia Learn',
       home: const LoadApp(fdroid: true),
       //home: const MyStatefulWidget(),
     );
