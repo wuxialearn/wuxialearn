@@ -74,7 +74,7 @@ class MyApp2 extends StatelessWidget {
       theme: ThemeData.light(useMaterial3: false),
 	    darkTheme: ThemeData.dark(useMaterial3: false),
 	    themeMode: ThemeMode.system,
-      ///title: 'Wuxia Learn',
+      //title: 'Wuxia Learn',
       title: 'Wuxia Learn',
       home: const LoadApp(fdroid: true),
       //home: const MyStatefulWidget(),
