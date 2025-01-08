@@ -1,4 +1,4 @@
-name: Build Artifacts on Push
+name: Build & Release 
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:  
   build:      
-    name: Build Artifacts on Push
+    name: Build & Release
     runs-on: macos-latest 
 
     steps:
