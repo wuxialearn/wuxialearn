@@ -8,7 +8,7 @@ on:
 jobs:  
   build:      
     name: Build Artifacts on Push
-    runs-on: macos-latest 
+    runs-on: ubuntu-latest
 
     steps:
         #1 Checkout Repository
