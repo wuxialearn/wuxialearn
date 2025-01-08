@@ -217,7 +217,7 @@ class _AnswersListState extends State<AnswersList> {
     buttonSelectionWords.insert(0, widget.currWord);
     if (!debug) buttonSelectionWords.shuffle();
     colorsList = List.generate(
-        buttonSelectionWords.length, (int index) => const Color(0xFFEEEEEE));
+        buttonSelectionWords.length, (int index) => const Color(0xFFB0B0B0));
   }
 
   final player = AudioPlayer();

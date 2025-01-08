@@ -77,7 +77,7 @@ class MyHomePageState extends State<MyHomePage> {
       },
       child: CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           currentIndex: tabsIndex,
           //border: Border.all(color: Colors.white),
           onTap: onTappedTab,

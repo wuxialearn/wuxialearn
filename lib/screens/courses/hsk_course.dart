@@ -77,7 +77,7 @@ class _HSKCourseViewState extends State<HSKCourseView> {
                     padding: const EdgeInsets.symmetric(horizontal: 15.0),
                     child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).scaffoldBackgroundColor,
                           borderRadius: BorderRadius.circular(7.0),
                           boxShadow: [
                             BoxShadow(

@@ -9,7 +9,7 @@ class PageOne extends StatelessWidget {
     return CupertinoPageScaffold(
       backgroundColor: Colors.blue,
       child: Container(
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: TextButton(
           onPressed: () {
             Navigator.push(context,
@@ -32,7 +32,7 @@ class PageTwo extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            color: Colors.white,
+            color: Theme.of(context).scaffoldBackgroundColor,
             child: Center(
               child: TextButton(
                 onPressed: () {
@@ -63,7 +63,7 @@ class PageThree extends StatelessWidget {
     return CupertinoPageScaffold(
       backgroundColor: Colors.red,
       child: Container(
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: TextButton(
             onPressed: () {
               Navigator.pop(context);
