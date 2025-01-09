@@ -91,6 +91,7 @@ flutter:
     - assets/correct.wav
     - assets/wrong.wav
     - assets/default_prefs.json
+    - pubspec.yaml
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
