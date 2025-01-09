@@ -445,9 +445,9 @@ class _SentenceGameState extends State<SentenceGame> {
                                                   sentenceToBuild.replaceAll(
                                                       " ", "")) {
                                             isCorrect = true;
-                                            void callback() {
+                                            void callback(bool isCorrect) {
                                               widget.callback(
-                                                  true,
+                                                  isCorrect,
                                                   widget.currSentence,
                                                   widget.buildEnglish);
                                             }
@@ -474,9 +474,9 @@ class _SentenceGameState extends State<SentenceGame> {
                                             player.play();
                                             //player.play(AssetSource('wrong.wav'));
                                             //player.release();
-                                            void callback() {
+                                            void callback(bool isCorrect) {
                                               widget.callback(
-                                                  false,
+                                                  isCorrect,
                                                   widget.currSentence,
                                                   widget.buildEnglish);
                                             }
@@ -598,7 +598,7 @@ class CheckAnswerBottomSheet extends StatelessWidget {
 }
 
 class _CheckAnswerDialog extends StatefulWidget {
-  final Function callback;
+  final Function(bool) callback;
   final String correctSentence;
   final BoxConstraints constraints;
   final bool isCorrect;
@@ -681,13 +681,26 @@ class _CheckAnswerDialogState extends State<_CheckAnswerDialog> {
                         fit: FlexFit.tight,
                         child: TextButton(
                             onPressed: () {
-                              widget.callback();
+                              widget.callback(widget.isCorrect);
                             },
                             child: const Text(
-                              "continue",
+                              "Continue",
                               style: TextStyle(fontSize: 18),
                             )),
                       ),
+                      if (!widget.isCorrect)
+                        Flexible(
+                          fit: FlexFit.tight,
+                          child: TextButton(
+                            onPressed: () {
+                              widget.callback(true);
+                            },
+                            child: const Text(
+                              "Mark as correct",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
