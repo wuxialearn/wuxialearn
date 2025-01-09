@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 
 import '../../sql/preferences_sql.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class Preferences {
   static late dynamic data;
   static Map<String, dynamic> preferences = {};
@@ -65,5 +67,16 @@ class Preferences {
     final data = await PreferencesSql.getPreferences();
     await Preferences.loadDefaultPreferences();
     Preferences.setPreferences(data);
+  }
+}
+
+
+class SharedPrefs {
+  static late SharedPreferences prefs;
+  static Future<void> init() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+  static SharedPreferences getPrefs() {
+    return prefs;
   }
 }

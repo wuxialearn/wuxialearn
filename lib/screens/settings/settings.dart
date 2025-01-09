@@ -230,6 +230,31 @@ class _SettingsState extends State<Settings> {
                   ),
                 ],
               ),
+              Column(
+                children: [
+                  const Text("theme"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Dark mode (requires app restart)"),
+                      CupertinoSwitch(
+                        value: switch (SharedPrefs.prefs.getString('theme')) {
+                          "dark" => true,
+                          "light" => false,
+                          _ => MediaQuery.platformBrightnessOf(context) ==
+                              Brightness.dark
+                        },
+                        activeTrackColor: CupertinoColors.activeBlue,
+                        onChanged: (bool value) {
+                          SharedPrefs.prefs.setString(
+                              'theme', value ? 'dark' : 'light');
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
               Visibility(
                 //disabled for ios as it is currently not working
                 visible: !PlatformInfo.isIOs(),
