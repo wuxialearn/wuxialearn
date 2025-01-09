@@ -78,6 +78,9 @@ class ReviewPage extends StatefulWidget {
   State<ReviewPage> createState() => _ReviewPageState();
 }
 
+const flashCardType = "Flashcards";
+const quizType = "Quiz (ungraded)";
+
 class _ReviewPageState extends State<ReviewPage> {
   late Future<List<Map<String, dynamic>>> hskList;
   late List<Future<List<Map<String, dynamic>>>> sentenceList;
@@ -97,13 +100,13 @@ class _ReviewPageState extends State<ReviewPage> {
     "old words",
   ];
   List<String> reviewTypeOptions = [
-    "Flashcards",
-    "Quiz",
+    flashCardType,
+    quizType,
   ];
   List<String> deckSizeOptions = ["Small", "Medium", "Large", "All"];
   List<String> deckNames = ["hsk", "wuxia"];
   String deckName = 'hsk';
-  String reviewTypeValue = "Flashcards";
+  String reviewTypeValue = flashCardType;
   String reviewWordsValue = "SRS";
   String deckSizeValue = "Small";
   final PageController _pageController = PageController(initialPage: 0);
@@ -124,7 +127,7 @@ class _ReviewPageState extends State<ReviewPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       reviewTypeValue = prefs.getString('reviewType') ??
-          'Flashcards'; // Default to Flashcards
+          flashCardType; // Default to Flashcards
       reviewWordsValue = prefs.getString('reviewWords') ?? 'SRS'; // Default to
       deckSizeValue =
           prefs.getString('deckSize') ?? 'Small'; // Default to Flashcards
@@ -362,7 +365,7 @@ class _ReviewPageState extends State<ReviewPage> {
                         return TextButton(
                             style: Styles.blankButton4,
                             onPressed: () {
-                              if (reviewTypeValue == "Quiz") {
+                              if (reviewTypeValue == quizType) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
