@@ -232,7 +232,7 @@ class _SettingsState extends State<Settings> {
               ),
               Column(
                 children: [
-                  const Text("theme"),
+                  const Text("Theme"),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
