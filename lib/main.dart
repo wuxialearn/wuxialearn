@@ -6,6 +6,11 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:hsk_learner/screens/home/load_app.dart';
 
 void main() {
+  initSettings();
+  runApp(const MyApp(fdroid: true));
+}
+
+void initSettings() {
   if (PlatformInfo.isDesktop()) {
     // Initialize FFI
     sqfliteFfiInit();
@@ -17,11 +22,11 @@ void main() {
     systemStatusBarContrastEnforced: false,
     statusBarIconBrightness: Brightness.dark,
   ));
-  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool fdroid;
+  const MyApp({super.key, required this.fdroid});
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +62,7 @@ class MyApp extends StatelessWidget {
             )),
         scrollBehavior: CupertinoScrollBehavior(),
         title: 'Wuxia Learn',
-        home: const LoadApp(fdroid: true),
+        home: LoadApp(fdroid: fdroid),
         //home: const MyStatefulWidget(),
       ),
     );
