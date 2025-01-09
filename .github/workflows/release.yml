@@ -15,7 +15,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-        #2 Setup Java
+        #2 Get Latest Tag
+      - name: Get Latest Tag
+        id: get_latest_tag
+        run: |
+          latest_tag=$(git tag -l --sort=-committerdate | head -n1)
+          echo "LATEST_TAG=$latest_tag" >> $GITHUB_ENV
+
+        #3 Setup Java
       - name: Set Up Java
         uses: actions/setup-java@v3.12.0
         with:
@@ -23,7 +30,7 @@ jobs:
           java-version: '17'
           cache: gradle
 
-        #3 Setup Flutter
+        #4 Setup Flutter
       - name: Set Up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -31,11 +38,11 @@ jobs:
           channel: 'stable'
           cache: true
 
-        #4 Install Dependencies
+        #5 Install Dependencies
       - name: Install Dependencies
         run: flutter pub get
 
-        #5 Setup Keystore
+        #6 Setup Keystore
       - name: Decode Keystore
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
@@ -47,11 +54,11 @@ jobs:
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "storeFile=keystore.jks" >> android/key.properties
         
-       #6 Building APK
+       #7 Building APK
       - name: Build APK
         run: flutter build apk --release --split-per-abi
 
-        #9 Upload Artifacts
+        #8 Upload Artifacts
       - name: Upload arm64-v8a APK
         uses: actions/upload-artifact@v4
         with:
@@ -70,21 +77,7 @@ jobs:
           name: app-x86_64-release.apk
           path: build/app/outputs/flutter-apk/app-x86_64-release.apk
 
-        #10 Extract Version
-      - name: Extract version from pubspec.yaml
-        id: extract_version
-        run: |
-          version=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
-          echo "VERSION=$version" >> $GITHUB_ENV
-
-        #11 Get Latest Tag
-      - name: Get Latest Tag
-        id: get_latest_tag
-        run: |
-          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
-          echo "LATEST_TAG=$latest_tag" >> $GITHUB_ENV
-
-        #12 Upload to Latest Tag
+        #9 Upload to Latest Tag
       - name: Upload to Latest Tag
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
