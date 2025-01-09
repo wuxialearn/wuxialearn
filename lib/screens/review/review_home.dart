@@ -110,6 +110,7 @@ class _ReviewPageState extends State<ReviewPage> {
   String reviewWordsValue = "SRS";
   String deckSizeValue = "Small";
   final PageController _pageController = PageController(initialPage: 0);
+  final SharedPreferences prefs = SharedPrefs.prefs;
   @override
   void dispose() {
     _pageController.dispose();
@@ -123,8 +124,7 @@ class _ReviewPageState extends State<ReviewPage> {
     hskList = getReview();
   }
 
-  void _loadReviewType() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  void _loadReviewType() {
     setState(() {
       reviewTypeValue = prefs.getString('reviewType') ??
           flashCardType; // Default to Flashcards
@@ -412,12 +412,11 @@ class _ReviewPageState extends State<ReviewPage> {
             reviewWordsOptions.length, (index) {
           return CupertinoActionSheetAction(
             isDefaultAction: true,
-            onPressed: () async {
+            onPressed: () {
               Navigator.pop(context, true);
               setState(() {
                 reviewWordsValue = reviewWordsOptions[index];
               });
-              SharedPreferences prefs = await SharedPreferences.getInstance();
               prefs.setString('reviewWords', reviewWordsValue);
             },
             child: Text(reviewWordsOptions[index]),
@@ -436,13 +435,11 @@ class _ReviewPageState extends State<ReviewPage> {
             reviewTypeOptions.length, (index) {
           return CupertinoActionSheetAction(
             isDefaultAction: true,
-            onPressed: () async {
+            onPressed: () {
               Navigator.pop(context, true);
               setState(() {
                 reviewTypeValue = reviewTypeOptions[index];
               });
-              // Save the selected review type to SharedPreferences
-              SharedPreferences prefs = await SharedPreferences.getInstance();
               prefs.setString('reviewType', reviewTypeValue);
             },
             child: Text(reviewTypeOptions[index]),
@@ -461,12 +458,11 @@ class _ReviewPageState extends State<ReviewPage> {
             deckSizeOptions.length, (index) {
           return CupertinoActionSheetAction(
             isDefaultAction: true,
-            onPressed: () async {
+            onPressed: () {
               Navigator.pop(context, true);
               setState(() {
                 deckSizeValue = deckSizeOptions[index];
               });
-              SharedPreferences prefs = await SharedPreferences.getInstance();
               prefs.setString('deckSize', deckSizeValue);
             },
             child: Text(deckSizeOptions[index]),
@@ -485,12 +481,11 @@ class _ReviewPageState extends State<ReviewPage> {
             (index) {
           return CupertinoActionSheetAction(
             isDefaultAction: true,
-            onPressed: () async {
+            onPressed: () {
               Navigator.pop(context, true);
               setState(() {
                 deckName = deckNames[index];
               });
-              SharedPreferences prefs = await SharedPreferences.getInstance();
               prefs.setString('deckName', deckName);
             },
             child: Text(deckNames[index]),
