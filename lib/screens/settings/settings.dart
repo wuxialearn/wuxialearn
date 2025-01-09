@@ -5,7 +5,6 @@ import 'package:hsk_learner/sql/preferences_sql.dart';
 import '../../utils/platform_info.dart';
 import 'backup.dart';
 import 'preferences.dart';
-import 'dart:io';
 import 'package:pubspec_parse/pubspec_parse.dart';
 import 'package:flutter/services.dart';
 
