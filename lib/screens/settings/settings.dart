@@ -7,6 +7,7 @@ import 'backup.dart';
 import 'preferences.dart';
 import 'dart:io';
 import 'package:pubspec_parse/pubspec_parse.dart';
+import 'package:flutter/services.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -477,8 +478,7 @@ class _SettingsState extends State<Settings> {
   }
   
   Future<String> _getVersion() async {
-    final file = File('pubspec.yaml');
-    final content = await file.readAsString();
+    final content = await rootBundle.loadString('pubspec.yaml');
     final pubspec = Pubspec.parse(content);
     final version = pubspec.version?.toString() ?? 'Unknown';
     return version.split('+').first;
