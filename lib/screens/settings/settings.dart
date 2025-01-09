@@ -5,6 +5,8 @@ import 'package:hsk_learner/sql/preferences_sql.dart';
 import '../../utils/platform_info.dart';
 import 'backup.dart';
 import 'preferences.dart';
+import 'dart:io';
+import 'package:pubspec_parse/pubspec_parse.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -306,7 +308,18 @@ class _SettingsState extends State<Settings> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: [const Text("Version "), Text(version)],
+                    children: [const Text("Version "), FutureBuilder<String>(
+                    future: _getVersion(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CupertinoActivityIndicator();
+                      } else if (snapshot.hasError) {
+                      return const Text("Error");
+                      } else {
+                      return Text(snapshot.data ?? 'Unknown');
+                      }
+                    },
+                    )],
                 ),
               ),
               const SizedBox(
@@ -462,6 +475,15 @@ class _SettingsState extends State<Settings> {
       ),
     );
   }
+  
+  Future<String> _getVersion() async {
+    final file = File('pubspec.yaml');
+    final content = await file.readAsString();
+    final pubspec = Pubspec.parse(content);
+    final version = pubspec.version?.toString() ?? 'Unknown';
+    return version.split('+').first;
+  }
+  
 }
 
 // only for testing, can be deleted
