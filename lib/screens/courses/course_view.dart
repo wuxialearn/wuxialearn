@@ -61,7 +61,7 @@ class _CourseViewState extends State<CourseView> {
                                     borderRadius: BorderRadius.circular(10),
                                     color: Theme.of(context).scaffoldBackgroundColor,
                                   ),
-                                  padding: const EdgeInsets.only(top: 10.0),
+                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
