@@ -44,16 +44,27 @@ class ManageReviewSql {
       {required int id, required String deck, required bool value}) async {
     final db = await SQLHelper.db();
     await db.transaction((txn) async {
-      await txn.rawInsert("INSERT INTO review(id, deck) VALUES($id, '$deck')");
-      await txn.rawInsert("INSERT INTO review(id, deck) VALUES($id, 'any')");
-      DateTime duration = switch (value) {
-        true => DateTime.now().add(const Duration(days: 4)),
-        false => DateTime.now().add(const Duration(minutes: 1))
-      };
-      int timeStamp = duration.toUtc().millisecondsSinceEpoch ~/ 1000;
-      txn.rawUpdate("""
-        UPDATE review SET show_next = $timeStamp WHERE id = $id
-      """);
+      int timeStamp = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
+      final existingDeck = await txn.rawQuery(
+        "SELECT * FROM review WHERE id = $id AND deck = '$deck'"
+        );
+
+      if (existingDeck.isEmpty) {
+        await txn.rawInsert("""
+          INSERT INTO review(id, deck, show_next) 
+          VALUES($id, '$deck', $timeStamp)
+        """);
+      }
+
+      final existingAny = await txn.rawQuery(
+        "SELECT * FROM review WHERE id = $id AND deck = 'any'"
+        );
+      if (existingAny.isEmpty) {
+        await txn.rawInsert("""
+          INSERT INTO review(id, deck, show_next) 
+          VALUES($id, 'any', $timeStamp)
+        """);
+      }
     });
-  }
+    }
 }
