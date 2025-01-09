@@ -21,6 +21,8 @@ jobs:
         run: |
           latest_tag=$(git tag -l --sort=-committerdate | head -n1)
           echo "LATEST_TAG=$latest_tag" >> $GITHUB_ENV
+          echo "Latest Tag: $latest_tag"
+          echo ${{ env.LATEST_TAG }} 
 
         #3 Setup Java
       - name: Set Up Java
