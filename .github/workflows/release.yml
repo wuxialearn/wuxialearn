@@ -13,7 +13,10 @@ jobs:
     steps:
         #1 Checkout Repository
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v34
+        with:
+          fetch-depth: 0
+          filter: tree:0
 
         #2 Get Latest Tag
       - name: Get Latest Tag
