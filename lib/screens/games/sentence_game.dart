@@ -311,212 +311,214 @@ class _SentenceGameState extends State<SentenceGame> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      child: Stack(
-        children: [
-          SafeArea(
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            showPinyin = !showPinyin;
-                            ShowPinyin.showPinyin = showPinyin;
-                            if (!widget.buildEnglish) {
-                              List<_WordCord> wordCords =
-                                  showPinyin ? pinyinWordCords : plainWordCords;
-                              for (_WordCord wordCord in wordCords) {
-                                wordCord.x = wordCord.initialX;
-                                wordCord.y = wordCord.initialY;
-                              }
-                              double textHeight = showPinyin
-                                  ? pinyinFontSize + this.textHeight
-                                  : this.textHeight;
-                              board = _Board(
-                                  wordCords: wordCords,
-                                  textHeight: textHeight,
-                                  maxHeight: cons.maxHeight,
-                                  screenWidth: screenWidth);
-                            }
-                          });
-                        },
-                        child: showPinyin
-                            ? const Text("Hide Pinyin")
-                            : const Text("Show Pinyin")),
-                  ],
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      child: Column(
-                        children: [
-                          Visibility(
-                              visible: widget.buildEnglish && showPinyin,
-                              child: Text(
-                                widget.currSentence["pinyin"],
-                                style: TextStyle(fontSize: pinyinFontSize),
-                              )),
-                          Text(
-                            alreadyBuiltSentence,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 23),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Visibility(
-                      maintainState: true,
-                      maintainSize: true,
-                      maintainAnimation: true,
-                      visible: widget.buildEnglish,
-                      child: IconButton(
+      child: SafeArea(
+        child: Stack(
+          children: [
+            SafeArea(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
                           onPressed: () {
-                            speak(alreadyBuiltSentence);
+                            setState(() {
+                              showPinyin = !showPinyin;
+                              ShowPinyin.showPinyin = showPinyin;
+                              if (!widget.buildEnglish) {
+                                List<_WordCord> wordCords =
+                                    showPinyin ? pinyinWordCords : plainWordCords;
+                                for (_WordCord wordCord in wordCords) {
+                                  wordCord.x = wordCord.initialX;
+                                  wordCord.y = wordCord.initialY;
+                                }
+                                double textHeight = showPinyin
+                                    ? pinyinFontSize + this.textHeight
+                                    : this.textHeight;
+                                board = _Board(
+                                    wordCords: wordCords,
+                                    textHeight: textHeight,
+                                    maxHeight: cons.maxHeight,
+                                    screenWidth: screenWidth);
+                              }
+                            });
                           },
-                          icon: const Icon(Icons.volume_up)),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-                Expanded(
-                  child: LayoutBuilder(
-                    builder:
-                        (BuildContext context, BoxConstraints constraints) {
-                      cons = constraints;
-                      screenWidth = constraints.maxWidth;
-                      buildWidths();
-                      int index = -1;
-                      List<Widget> stackWidget = [];
-                      buildWordCords(index, stackWidget);
-                      if (init == false) {
-                        List<_WordCord> wordCords =
-                            showPinyin && !widget.buildEnglish
-                                ? pinyinWordCords
-                                : plainWordCords;
-                        double textHeight = showPinyin
-                            ? pinyinFontSize + this.textHeight
-                            : this.textHeight;
-                        board = _Board(
-                            wordCords: wordCords,
-                            textHeight: textHeight,
-                            maxHeight: cons.maxHeight,
-                            screenWidth: screenWidth);
-                      }
-                      init = true;
-                      return Column(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Stack(children: stackWidget),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 8.0,
-                                top: 15.0,
-                                left: 30.0,
-                                right: 30.0),
-                            child: Row(
-                              children: [
-                                Flexible(
-                                  fit: FlexFit.tight,
-                                  child: TextButton(
-                                      onPressed: () async {
-                                        if (isNotAnswered) {
-                                          List<String> topWords = [];
-                                          for (int i = 0;
-                                              i < board.onTop.length;
-                                              i++) {
-                                            topWords.add(words[board.onTop[i]]);
-                                          }
-                                          if (topWords.join(" ") ==
-                                                  sentenceToBuild ||
-                                              topWords.join("") ==
-                                                  sentenceToBuild.replaceAll(
-                                                      " ", "")) {
-                                            isCorrect = true;
-                                            void callback(bool isCorrect) {
-                                              widget.callback(
-                                                  isCorrect,
-                                                  widget.currSentence,
-                                                  widget.buildEnglish);
-                                            }
-
-                                            setState(() {
-                                              isNotAnswered = false;
-                                              setCheckAnswerWidget(
-                                                  _CheckAnswerDialog(
-                                                      callback: callback,
-                                                      correctSentence:
-                                                          sentenceToBuild,
-                                                      constraints: cons,
-                                                      isCorrect: isCorrect));
-                                            });
-                                            await player
-                                                .setAsset('assets/correct.wav');
-                                            player.play();
-                                            //player.play(AssetSource('correct.wav'));
-                                            //player.release();
-                                          } else {
-                                            isCorrect = false;
-                                            await player
-                                                .setAsset('assets/wrong.wav');
-                                            player.play();
-                                            //player.play(AssetSource('wrong.wav'));
-                                            //player.release();
-                                            void callback(bool isCorrect) {
-                                              widget.callback(
-                                                  isCorrect,
-                                                  widget.currSentence,
-                                                  widget.buildEnglish);
-                                            }
-
-                                            setState(() {
-                                              isNotAnswered = false;
-                                              setCheckAnswerWidget(
-                                                  _CheckAnswerDialog(
-                                                callback: callback,
-                                                correctSentence:
-                                                    sentenceToBuild,
-                                                constraints: cons,
-                                                isCorrect: isCorrect,
-                                              ));
-                                            });
-                                          }
-                                        } else {
-                                          widget.callback(
-                                              isCorrect,
-                                              widget.currSentence,
-                                              widget.buildEnglish);
-                                        }
-                                      },
-                                      child: isNotAnswered
-                                          ? const Text("check answer")
-                                          : const Text("continue")),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      );
-                    },
+                          child: showPinyin
+                              ? const Text("Hide Pinyin")
+                              : const Text("Show Pinyin")),
+                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Column(
+                          children: [
+                            Visibility(
+                                visible: widget.buildEnglish && showPinyin,
+                                child: Text(
+                                  widget.currSentence["pinyin"],
+                                  style: TextStyle(fontSize: pinyinFontSize),
+                                )),
+                            Text(
+                              alreadyBuiltSentence,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 23),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Visibility(
+                        maintainState: true,
+                        maintainSize: true,
+                        maintainAnimation: true,
+                        visible: widget.buildEnglish,
+                        child: IconButton(
+                            onPressed: () {
+                              speak(alreadyBuiltSentence);
+                            },
+                            icon: const Icon(Icons.volume_up)),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Expanded(
+                    child: LayoutBuilder(
+                      builder:
+                          (BuildContext context, BoxConstraints constraints) {
+                        cons = constraints;
+                        screenWidth = constraints.maxWidth;
+                        buildWidths();
+                        int index = -1;
+                        List<Widget> stackWidget = [];
+                        buildWordCords(index, stackWidget);
+                        if (init == false) {
+                          List<_WordCord> wordCords =
+                              showPinyin && !widget.buildEnglish
+                                  ? pinyinWordCords
+                                  : plainWordCords;
+                          double textHeight = showPinyin
+                              ? pinyinFontSize + this.textHeight
+                              : this.textHeight;
+                          board = _Board(
+                              wordCords: wordCords,
+                              textHeight: textHeight,
+                              maxHeight: cons.maxHeight,
+                              screenWidth: screenWidth);
+                        }
+                        init = true;
+                        return Column(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Stack(children: stackWidget),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: 8.0,
+                                  top: 15.0,
+                                  left: 30.0,
+                                  right: 30.0),
+                              child: Row(
+                                children: [
+                                  Flexible(
+                                    fit: FlexFit.tight,
+                                    child: TextButton(
+                                        onPressed: () async {
+                                          if (isNotAnswered) {
+                                            List<String> topWords = [];
+                                            for (int i = 0;
+                                                i < board.onTop.length;
+                                                i++) {
+                                              topWords.add(words[board.onTop[i]]);
+                                            }
+                                            if (topWords.join(" ") ==
+                                                    sentenceToBuild ||
+                                                topWords.join("") ==
+                                                    sentenceToBuild.replaceAll(
+                                                        " ", "")) {
+                                              isCorrect = true;
+                                              void callback(bool isCorrect) {
+                                                widget.callback(
+                                                    isCorrect,
+                                                    widget.currSentence,
+                                                    widget.buildEnglish);
+                                              }
+        
+                                              setState(() {
+                                                isNotAnswered = false;
+                                                setCheckAnswerWidget(
+                                                    _CheckAnswerDialog(
+                                                        callback: callback,
+                                                        correctSentence:
+                                                            sentenceToBuild,
+                                                        constraints: cons,
+                                                        isCorrect: isCorrect));
+                                              });
+                                              await player
+                                                  .setAsset('assets/correct.wav');
+                                              player.play();
+                                              //player.play(AssetSource('correct.wav'));
+                                              //player.release();
+                                            } else {
+                                              isCorrect = false;
+                                              await player
+                                                  .setAsset('assets/wrong.wav');
+                                              player.play();
+                                              //player.play(AssetSource('wrong.wav'));
+                                              //player.release();
+                                              void callback(bool isCorrect) {
+                                                widget.callback(
+                                                    isCorrect,
+                                                    widget.currSentence,
+                                                    widget.buildEnglish);
+                                              }
+        
+                                              setState(() {
+                                                isNotAnswered = false;
+                                                setCheckAnswerWidget(
+                                                    _CheckAnswerDialog(
+                                                  callback: callback,
+                                                  correctSentence:
+                                                      sentenceToBuild,
+                                                  constraints: cons,
+                                                  isCorrect: isCorrect,
+                                                ));
+                                              });
+                                            }
+                                          } else {
+                                            widget.callback(
+                                                isCorrect,
+                                                widget.currSentence,
+                                                widget.buildEnglish);
+                                          }
+                                        },
+                                        child: isNotAnswered
+                                            ? const Text("check answer")
+                                            : const Text("continue")),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          checkAnswerWidget,
-        ],
+            checkAnswerWidget,
+          ],
+        ),
       ),
     );
   }

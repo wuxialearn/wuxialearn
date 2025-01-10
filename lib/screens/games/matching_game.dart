@@ -156,10 +156,10 @@ class _MatchingGameState extends State<MatchingGame> {
       }
     });
     return CupertinoPageScaffold(
-      child: Column(
-        children: [
-          SafeArea(
-            child: Row(
+      child: SafeArea(
+        child: Column(
+          children: [
+            Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
@@ -174,58 +174,58 @@ class _MatchingGameState extends State<MatchingGame> {
                         : const Text("Show Pinyin")),
               ],
             ),
-          ),
-          const SizedBox(
-            height: 50,
-          ),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Center(
-                child: Text(
-              "Match the words",
-              style: TextStyle(fontSize: 20),
-            )),
-          ),
-          const SizedBox(
-            height: 40,
-          ),
-          Expanded(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: SizedBox(
-                //width: 250.0,
-                height: 475.0,
-                child: Stack(
-                  children: stackLayers,
+            const SizedBox(
+              height: 30,
+            ),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Center(
+                  child: Text(
+                "Match the words",
+                style: TextStyle(fontSize: 20),
+              )),
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            Expanded(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: SizedBox(
+                  //width: 250.0,
+                  height: 475.0,
+                  child: Stack(
+                    children: stackLayers,
+                  ),
                 ),
               ),
             ),
-          ),
-          Visibility(
-            maintainState: true,
-            maintainAnimation: true,
-            maintainSize: true,
-            visible: isFinished,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Flexible(
-                    fit: FlexFit.tight,
-                    child: TextButton(
-                        onPressed: () async {
-                          await player.setAsset('assets/correct.wav');
-                          player.play();
-                          widget.callback(
-                              true, WordItem(LargeText.hskMap), null);
-                        },
-                        child: const Text("Continue")),
-                  ),
-                ],
+            Visibility(
+              maintainState: true,
+              maintainAnimation: true,
+              maintainSize: true,
+              visible: isFinished,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Flexible(
+                      fit: FlexFit.tight,
+                      child: TextButton(
+                          onPressed: () async {
+                            await player.setAsset('assets/correct.wav');
+                            player.play();
+                            widget.callback(
+                                true, WordItem(LargeText.hskMap), null);
+                          },
+                          child: const Text("Continue")),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
