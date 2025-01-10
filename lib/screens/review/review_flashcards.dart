@@ -230,8 +230,8 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                             .pinyin,
                                                         style: const TextStyle(
                                                             fontSize: 20,
-                                                            color:
-                                                                Colors.black54),
+                                                            color: Color(0xFF999999),
+                                                            )
                                                       )),
                                                   Row(
                                                     mainAxisAlignment:
@@ -307,8 +307,7 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                             .join(" + "),
                                                         style: const TextStyle(
                                                             fontSize: 20,
-                                                            color:
-                                                                Colors.black54),
+                                                          ),
                                                       )),
                                                 ],
                                               ),
@@ -338,8 +337,9 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                       wordList[pageIndex]
                                                           .pinyin,
                                                       style: const TextStyle(
-                                                          fontSize: 25,
-                                                          color: Colors.black),
+                                                          fontSize: 20,
+                                                          color: Color(0xFF999999),
+                                                          ),
                                                     ),
                                                     Row(
                                                       mainAxisAlignment:
@@ -414,7 +414,8 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                           .translation,
                                                       style: const TextStyle(
                                                           fontSize: 25,
-                                                          color: Colors.black),
+                                                          color: Color(0xFF999999),
+                                                          ),
                                                     ),
                                                     Visibility(
                                                         visible: showHint,
@@ -425,8 +426,8 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                           style:
                                                               const TextStyle(
                                                                   fontSize: 20,
-                                                                  color: Colors
-                                                                      .black54),
+                                                                  color: Color(0xFF999999),
+                                                                      ),
                                                         )),
                                                   ]),
                                             ),
@@ -587,14 +588,13 @@ class _Sentences extends StatelessWidget {
                                           visible: showPinyin,
                                           child: const Text("名字爱Míngzì",
                                               overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                  color: Colors.black)),
+                                              ),
                                         ),
                                         const Text(
                                           "名字爱Míngzì",
                                           style: TextStyle(
                                               fontSize: 20,
-                                              color: Colors.black),
+                                              ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         Visibility(
@@ -603,7 +603,7 @@ class _Sentences extends StatelessWidget {
                                             "名字爱Míngzì",
                                             style: TextStyle(
                                                 fontSize: 16,
-                                                color: Colors.black),
+                                                ),
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         )
@@ -622,14 +622,14 @@ class _Sentences extends StatelessWidget {
                                                 sentences[index]["pinyin"],
                                                 overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
-                                                    color: Colors.black),
+                                                    ),
                                               ),
                                             ),
                                             Text(
                                               sentences[index]["characters"],
                                               style: const TextStyle(
                                                   fontSize: 20,
-                                                  color: Colors.black),
+                                                  ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                             Visibility(
@@ -638,7 +638,7 @@ class _Sentences extends StatelessWidget {
                                                 sentences[index]["meaning"],
                                                 style: const TextStyle(
                                                     fontSize: 16,
-                                                    color: Colors.black),
+                                                    ),
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             )

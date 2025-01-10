@@ -307,26 +307,29 @@ class _ReviewPageState extends State<ReviewPage> {
                         AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                       if (snapshot.hasData) {
                         if (snapshot.data!.isNotEmpty) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0, vertical: 3),
-                            child: Row(
-                              children: [
-                                RichText(
-                                  text: TextSpan(
-                                    style: DefaultTextStyle.of(context).style,
-                                    children: <TextSpan>[
-                                      //const TextSpan(text: 'Review '),
-                                      TextSpan(
-                                          text:
-                                              snapshot.data!.length.toString(),
-                                          style: const TextStyle(
-                                              color: Colors.blue)),
-                                      const TextSpan(text: ' Words'),
-                                    ],
+                          return Container(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0, vertical: 3),
+                              child: Row(
+                                children: [
+                                  RichText(
+                                    text: TextSpan(
+                                      style: DefaultTextStyle.of(context).style,
+                                      children: <TextSpan>[
+                                        //const TextSpan(text: 'Review '),
+                                        TextSpan(
+                                            text:
+                                                snapshot.data!.length.toString(),
+                                            style: const TextStyle(
+                                                color: Colors.blue)),
+                                        const TextSpan(text: ' Words'),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           );
                         } else {
