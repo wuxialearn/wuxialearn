@@ -31,5 +31,4 @@ jobs:
       - name: Upload Test Archive
         uses: actions/upload-artifact@v4
         with:
-          name: test-archive.zip
           path: test-archive.zip
