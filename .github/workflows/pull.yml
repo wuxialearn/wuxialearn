@@ -18,7 +18,7 @@ jobs:
             artifact_path: build/app/outputs/flutter-apk/
           - target: Windows
             os: windows-latest
-            artifact_name: wuxialearn-release
+            artifact_name: wuxialearn-release #.zip
             artifact_path: build/windows/x64/runner/Release
     runs-on: ${{ matrix.os }}
 
@@ -71,6 +71,13 @@ jobs:
       - name: Build Windows
         if: matrix.target == 'Windows'
         run: flutter build windows --release
+
+      #8 Zip Windows Artifacts
+      #- name: Zip Windows Artifacts
+      #  if: matrix.target == 'Windows'
+      #  run: |
+      #    cd build/windows/x64/runner/Release
+      #    powershell Compress-Archive -Path * -DestinationPath ../wuxialearn-release.zip
 
       #9 Upload Artifacts
       - name: Upload Artifacts
