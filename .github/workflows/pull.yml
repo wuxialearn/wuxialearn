@@ -15,11 +15,11 @@ jobs:
           - target: Android
             os: ubuntu-latest
             artifact_name: app-arm64-v8a-release.apk
-            artifact_path: build/app/outputs/flutter-apk/app-release.apk
+            artifact_path: build/app/outputs/flutter-apk/
           - target: Windows
             os: windows-latest
             artifact_name: wuxialearn-release.zip
-            artifact_path: build/windows/x64/runner/wuxialearn-release.zip
+            artifact_path: build/windows/x64/runner/
     runs-on: ${{ matrix.os }}
 
     steps:
