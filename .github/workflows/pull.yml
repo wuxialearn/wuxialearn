@@ -77,7 +77,7 @@ jobs:
         if: matrix.target == 'Windows'
         run: |
           cd build/windows/x64/runner/Release
-          tar.exe -a -c -f wuxialearn.zip .
+          powershell Compress-Archive -Path . -DestinationPath wuxialearn.zip
 
       #9 Upload Artifacts
       - name: Upload Artifacts
