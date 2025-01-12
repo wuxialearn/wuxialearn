@@ -24,11 +24,11 @@ jobs:
       #3 Compress Test Files
       - name: Compress Test Files
         run: |
-          cd test-folder
-          powershell Compress-Archive -Path * -DestinationPath ../test-archive.zip
+          powershell Compress-Archive -Path test-folder\* -DestinationPath test-archive.zip
 
       #4 Upload Test Archive
       - name: Upload Test Archive
         uses: actions/upload-artifact@v4
         with:
+          name: test-archive.zip
           path: test-archive.zip
