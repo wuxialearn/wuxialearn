@@ -18,8 +18,8 @@ jobs:
             artifact_path: build/app/outputs/flutter-apk/app-release.apk
           - target: Windows
             os: windows-latest
-            artifact_name: app-windows-release.zip
-            artifact_path: build/windows/runner/Release/*.zip
+            artifact_name: app-windows-release.exe
+            artifact_path: build/windows/x64/runner/Release/wuxialearn.zip
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -68,11 +68,16 @@ jobs:
         run: flutter build apk --release --target-platform android-arm64
 
       #7 Building Windows
-      - name: Build Windows
         if: matrix.target == 'Windows'
         run: flutter build windows --release
 
-      #8 Upload Artifacts
+      #8 Zip Windows Artifacts
+        if: matrix.target == 'Windows'
+        run: |
+          cd build/windows/x64/runner/Release
+          zip -r wuxialearn.zip .
+
+      #9 Upload Artifacts
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
