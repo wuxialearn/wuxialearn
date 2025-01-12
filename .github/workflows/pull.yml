@@ -19,7 +19,7 @@ jobs:
           - target: Windows
             os: windows-latest
             artifact_name: wuxialearn-release.zip
-            artifact_path: build/windows/x64/runner/
+            artifact_path: build/windows/x64/runner/Release
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -76,8 +76,8 @@ jobs:
       - name: Zip Windows Artifacts
         if: matrix.target == 'Windows'
         run: |
-          cd build/windows/x64/runner
-          powershell Compress-Archive -Path "Release\*" -DestinationPath wuxialearn-release.zip
+          cd build/windows/x64/runner/Release
+          powershell Compress-Archive -Path * -DestinationPath wuxialearn-release.zip
 
       #9 Upload Artifacts
       - name: Upload Artifacts
