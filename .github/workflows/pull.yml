@@ -6,25 +6,37 @@ on:
       - main
   workflow_dispatch:
 
-jobs:  
-  build:      
-    name: Build Artifacts on Push
-    runs-on: ubuntu-latest
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: Android
+            os: ubuntu-latest
+            artifact_name: app-arm64-v8a-release.apk
+            artifact_path: build/app/outputs/flutter-apk/app-release.apk
+          - target: Windows
+            os: windows-latest
+            artifact_name: app-windows-release.zip
+            artifact_path: build/windows/runner/Release/*.zip
+    runs-on: ${{ matrix.os }}
 
     steps:
-        #1 Checkout Repository
+      #1 Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-        #2 Setup Java
+      #2 Setup Java
       - name: Set Up Java
+        if: matrix.target == 'Android'
         uses: actions/setup-java@v3.12.0
         with:
           distribution: 'oracle'
           java-version: '17'
           cache: gradle
 
-        #3 Setup Flutter
+      #3 Setup Flutter
       - name: Set Up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -32,29 +44,37 @@ jobs:
           channel: 'stable'
           cache: true
 
-        #4 Install Dependencies
+      #4 Install Dependencies
       - name: Install Dependencies
         run: flutter pub get
 
-        #5 Setup Keystore
+      #5 Setup Keystore
       - name: Decode Keystore
+        if: matrix.target == 'Android'
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
-          
+
       - name: Create key.properties
+        if: matrix.target == 'Android'
         run: |
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "storeFile=keystore.jks" >> android/key.properties
-        
-       #6 Building APK
+
+      #6 Building APK
       - name: Build APK
+        if: matrix.target == 'Android'
         run: flutter build apk --release --target-platform android-arm64
 
-        #9 Upload Artifacts
-      - name: Upload arm64-v8a APK
+      #7 Building Windows
+      - name: Build Windows
+        if: matrix.target == 'Windows'
+        run: flutter build windows --release
+
+      #8 Upload Artifacts
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: app-arm64-v8a-release.apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.artifact_path }}
