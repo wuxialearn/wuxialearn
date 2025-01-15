@@ -98,7 +98,7 @@ class _ReviewPageState extends State<ReviewPage> {
     "random words",
     "difficult words",
     "old words",
-    "uncategorized", // Added new option
+    "uncategorized",
   ];
   List<String> reviewTypeOptions = [
     flashCardType,
