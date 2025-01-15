@@ -98,6 +98,7 @@ class _ReviewPageState extends State<ReviewPage> {
     "random words",
     "difficult words",
     "old words",
+    "uncategorized",
   ];
   List<String> reviewTypeOptions = [
     flashCardType,
@@ -183,6 +184,10 @@ class _ReviewPageState extends State<ReviewPage> {
             sortBy: "last_seen",
             orderBy: "ASC",
             deckName: deckName);
+        break;
+      case "uncategorized": // Handle new option
+        reviewList = await ReviewSql.getUncategorizedWords(deck: deckName, deckSize: numCards);
+        break;
     }
     return reviewList;
   }
