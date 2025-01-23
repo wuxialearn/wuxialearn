@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hsk_learner/screens/stats/svg.dart';
 import 'package:hsk_learner/sql/character_view_sql.dart';
 import 'package:hsk_learner/utils/prototype.dart';
 
@@ -81,6 +82,19 @@ class _CharacterViewState extends State<CharacterView> {
                                 Text(
                                   stats[0]["hanzi"],
                                   style: const TextStyle(fontSize: 35),
+                                ),
+                                SvgCharacter(
+                                  character: stats[0]["hanzi"],
+                                  size: 200,
+                                  onClick: (String character) {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => CharacterView(
+                                          character: character,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                                 Visibility(
                                   visible: showTranslations,

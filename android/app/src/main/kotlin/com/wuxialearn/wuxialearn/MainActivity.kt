@@ -1,4 +1,4 @@
-package com.wuxialearn.wuxialearn
+package com.example.wuxialearn
 
 import io.flutter.embedding.android.FlutterActivity
 
