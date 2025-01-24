@@ -36,7 +36,7 @@ class _LoadAppState extends State<LoadApp> {
     print("currentVersion: $currentVersion");
     print("latestVersion: $latestVersion");
     if (currentVersion != latestVersion) {
-      print("backing up...");
+      //print("backing up...");
       //Backup.startBackupFromTempDir();
     }
     final bool check =
