@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hsk_learner/sql/pg_update.dart';
 import 'package:hsk_learner/sql/preferences_sql.dart';
+import '../../sql/character_stokes_sql.dart';
 import '../../utils/platform_info.dart';
 import 'backup.dart';
 import 'preferences.dart';
@@ -35,6 +36,10 @@ class _SettingsState extends State<Settings> {
   String version = '1.0.13';
   int clicks = 0;
   bool showDebugOptions = false;
+  bool isDownloading = false;
+  bool isDeleting = false;
+  bool isDataDownloaded = SharedPrefs.prefs.getBool('character_stroke_data_downloaded') ?? false;
+
   @override
   void initState() {
     super.initState();
@@ -255,6 +260,63 @@ class _SettingsState extends State<Settings> {
                   ),
                 ],
               ),
+              Column(
+                children: [
+                  const Text("Character View"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Download character stroke data (30MB)"),
+                      Row(
+                        children: [
+                          CupertinoButton(
+                            onPressed: isDataDownloaded ? null : () async {
+                              setState(() {
+                                isDownloading = true;
+                              });
+                              CharacterStokesSql.createTable().then(
+                                (value) {
+                                  SharedPrefs.prefs.setBool('character_stroke_data_downloaded', true);
+                                  setState(() {
+                                    isDataDownloaded = true;
+                                  });
+                                  showCupertinoDialog(
+                                    barrierDismissible: true,
+                                    context: context,
+                                    builder: (context) {
+                                      return const CupertinoAlertDialog(
+                                        content: Text("Download succeeded"),
+                                      );
+                                    },
+                                  );
+                                },
+                                onError: (e) {
+                                  showCupertinoDialog(
+                                    barrierDismissible: true,
+                                    context: context,
+                                    builder: (context) {
+                                      return const CupertinoAlertDialog(
+                                        content: Text("Download failed"),
+                                      );
+                                    },
+                                  );
+                                },
+                              ).whenComplete(() {
+                                setState(() {
+                                  isDownloading = false;
+                                });
+                              });
+                            },
+                            child: const Text("Download"),
+                          ),
+                          if (isDownloading)
+                            const CupertinoActivityIndicator(),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
               Visibility(
                 //disabled for ios as it is currently not working
                 visible: !PlatformInfo.isIOs(),
@@ -422,6 +484,55 @@ class _SettingsState extends State<Settings> {
                                 value: value);
                             setState(() => allowAutoComplete = value);
                           },
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Delete stroke data"),
+                        Row(
+                          children: [
+                            CupertinoButton(
+                              onPressed: () async {
+                                setState(() {
+                                  isDeleting = true;
+                                });
+                                CharacterStokesSql.dropTable().then(
+                                  (value) {
+                                    SharedPrefs.prefs.setBool('character_stroke_data_downloaded', false);
+                                    showCupertinoDialog(
+                                      barrierDismissible: true,
+                                      context: context,
+                                      builder: (context) {
+                                        return const CupertinoAlertDialog(
+                                          content: Text("Deletion succeeded"),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  onError: (e) {
+                                    showCupertinoDialog(
+                                      barrierDismissible: true,
+                                      context: context,
+                                      builder: (context) {
+                                        return const CupertinoAlertDialog(
+                                          content: Text("Deletion failed"),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ).whenComplete(() {
+                                  setState(() {
+                                    isDeleting = false;
+                                  });
+                                });
+                              },
+                              child: const Text("Delete"),
+                            ),
+                            if (isDeleting)
+                              const CupertinoActivityIndicator(),
+                          ],
                         ),
                       ],
                     ),
