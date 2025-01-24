@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
-import 'package:csv/csv.dart';
+import 'package:hsk_learner/sql/sql_helper.dart';
 
 const ids = ['⿰', '⿱', '⿲', '⿳', '⿴', '⿵', '⿶', '⿷', '󰃿', '󰃰', '⿻'];
 
@@ -20,36 +20,25 @@ class SvgCharacter extends StatefulWidget {
 class _SvgCharacterState extends State<SvgCharacter> {
 
   Future<Map<String, dynamic>> getCharacterData(String character) async {
-  final csvFile = await rootBundle.loadString('assets/dictionary.csv');
-  final graphicsCsv = await rootBundle.loadString('assets/graphics.csv');
+    final db = await SQLHelper.db();
+    final result = await db.rawQuery(
+      'select * from stroke_info where character = ?', [character]
+    );
+    print(result);
+    if (result.isEmpty) {
+      throw Exception('Character not found');
+    }
 
-  //final csvContent = csvFile.readAsStringSync();
-  const csvConverter =  CsvToListConverter();
-  final csvData = csvConverter.convert(csvFile);
+    final characterData = Map<String, dynamic>.from(result.first); // Make a copy of the result
+    characterData['matches'] = _parseMatches(characterData['matches']);
+    characterData['strokes'] = (jsonDecode(characterData['strokes'] as String) as List).cast<String>();
+    characterData['medians'] = (jsonDecode(characterData['medians'] as String) as List).cast<List<dynamic>>();
 
-  final keys = (csvData.first).cast<String>();
-  final characterData = csvData.skip(1).map((values) {
-    final map = Map<String, dynamic>.fromIterables(keys, values.cast<dynamic>());
-    // Correctly parse 'matches' field
-    map['matches'] = _parseMatches(map['matches']);
-    return map;
-  }).firstWhere((element) => element['character'] == character);
-
-  //final graphicsContent = graphicsCsv.readAsStringSync();
-  final graphicsData = csvConverter.convert(graphicsCsv);
-  final graphicsKeys = (graphicsData.first as List).cast<String>();
-  final graphicsCharacterData = graphicsData.skip(1).map((values) {
-    final map = Map<String, dynamic>.fromIterables(graphicsKeys, values.cast<dynamic>());
-    map['strokes'] = (jsonDecode(map['strokes'] as String) as List).cast<String>();
-    map['medians'] = (jsonDecode(map['medians'] as String) as List).cast<List<dynamic>>();
-    return map;
-  }).firstWhere((element) => element['character'] == character);
-
-  return {
-    'dictionary': characterData,
-    'graphics': graphicsCharacterData,
-  };
-}
+    return {
+      'dictionary': characterData,
+      'graphics': characterData,
+    };
+  }
 
   List<List<int>?> _parseMatches(dynamic matches) {
     assert(matches != null);
