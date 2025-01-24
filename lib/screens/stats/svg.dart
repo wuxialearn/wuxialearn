@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 import 'package:hsk_learner/sql/sql_helper.dart';
 
@@ -90,7 +89,6 @@ class _DisplaySvgCharacter extends StatefulWidget {
 }
 
 class _DisplaySvgCharacterState extends State<_DisplaySvgCharacter> {
-  int? _selectedStrokeIndex;
   late Map<String, dynamic> _dictData;
   late List<String> _decomposedChars;
 
@@ -142,17 +140,10 @@ class _DisplaySvgCharacterState extends State<_DisplaySvgCharacter> {
         final Offset localPosition = renderBox.globalToLocal(details.globalPosition);
         final strokeInfo = _findClickedStroke(localPosition);
         if (strokeInfo != null) {
-          setState(() {
-            _selectedStrokeIndex = strokeInfo.index;
-          });
-          print('Clicked Stroke Index: ${strokeInfo.index}, Component: ${strokeInfo.component}');
-          if (strokeInfo.component != null){
-            widget.onClick(strokeInfo.component!);
+          print('Clicked Stroke Index: ${strokeInfo.index}, Component: ${strokeInfo._component}');
+          if (strokeInfo._component != null){
+            widget.onClick(strokeInfo._component);
           }
-        } else {
-          setState(() {
-            _selectedStrokeIndex = null;
-          });
         }
       },
       child: SizedBox(
@@ -162,7 +153,6 @@ class _DisplaySvgCharacterState extends State<_DisplaySvgCharacter> {
           painter: CharacterPainter(
             strokes: widget.characterData["strokes"],
             matches: widget.characterData['matches'],
-            selectedStrokeIndex: _selectedStrokeIndex,
           ),
         ),
       ),
@@ -231,9 +221,8 @@ class _DisplaySvgCharacterState extends State<_DisplaySvgCharacter> {
 class CharacterPainter extends CustomPainter {
   final List<String> strokes;
   final List<List<int>?> matches;
-  final int? selectedStrokeIndex;
 
-  CharacterPainter({required this.strokes, required this.matches, this.selectedStrokeIndex});
+  CharacterPainter({required this.strokes, required this.matches});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -281,7 +270,7 @@ class CharacterPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CharacterPainter oldDelegate) {
-    return oldDelegate.strokes != strokes || oldDelegate.matches != matches || oldDelegate.selectedStrokeIndex != selectedStrokeIndex;
+    return oldDelegate.strokes != strokes || oldDelegate.matches != matches;
   }
 
   Path parseSvgPathData(String pathData) {
@@ -337,7 +326,7 @@ class CharacterPainter extends CustomPainter {
 
 class _StrokeInfo {
   final int index;
-  final String? component;
+  final String? _component;
 
-  _StrokeInfo(this.index, this.component);
+  _StrokeInfo(this.index, this._component);
 }
