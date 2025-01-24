@@ -31,6 +31,35 @@ class ReviewSql {
     return a;
   }
 
+  static Future<List<Map<String, dynamic>>> getUncategorizedWords({required String deck, required int deckSize}) async {
+    final db = await SQLHelper.db();
+    String limit = "limit $deckSize";
+    if (deckSize < 0) {
+      limit = "";
+    }
+    final a = await db.rawQuery("""
+        SELECT t1.id, t1.hanzi, t1.pinyin, translations0, subunit,
+        a_tl.translation as char_one, b_tl.translation as char_two, c_tl.translation as char_three, d_tl.translation as char_four
+            from(
+              SELECT
+                id, hanzi, pinyin, translations0, subunit, unit,
+                SUBSTR(hanzi, 1, 1) a, SUBSTR(hanzi, 2, 1) b,
+                SUBSTR(hanzi, 3, 1) c, SUBSTR(hanzi, 4, 1) d
+              FROM courses
+            ) as t1
+        left join unihan a_tl on t1.a = a_tl.hanzi
+        left join unihan b_tl on t1.b = b_tl.hanzi  
+        left join unihan c_tl on t1.c = c_tl.hanzi
+        left join unihan d_tl on t1.d = d_tl.hanzi 
+        join review on review.id = t1.id
+        WHERE deck = '$deck' AND rating_id IS NULL
+        GROUP BY t1.id
+        ORDER BY t1.id ASC
+        $limit
+      """);
+    return a;
+  }
+
   static Future<List<Map<String, dynamic>>> getReview({
     required int deckSize,
     required String sortBy,
@@ -158,4 +187,7 @@ class ReviewSql {
     update review set rating_id = null where rating_id = $id
     """);
   }
+
+
+    
 }
