@@ -26,7 +26,6 @@ class _SvgCharacterState extends State<SvgCharacter> {
     final result = await db.rawQuery(
       'select * from stroke_info where character = ?', [character]
     );
-    print(result);
     if (result.isEmpty) {
       throw Exception('Character not found');
     }

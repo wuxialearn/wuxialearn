@@ -78,7 +78,6 @@ class CharacterStokesSql {
         ''', [graphicsTable[i][1], graphicsTable[i][2], graphicsTable[i][0]]);
       }
       await batch.commit();
-      print(await txn.rawQuery('SELECT * FROM stroke_info limit 1'));
     });
     await db.close();
   }
