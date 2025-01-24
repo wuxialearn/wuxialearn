@@ -55,7 +55,7 @@ class _MyAppState extends State<MyApp> {
           final brightness = switch (prefs.getString('theme')) {
             "dark" => Brightness.dark,
             "light" => Brightness.light,
-            _ => MediaQuery.platformBrightnessOf(context)
+            _ => Brightness.light,
           };
           return Theme(
         data: ThemeData(
