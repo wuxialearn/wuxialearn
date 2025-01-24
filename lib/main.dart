@@ -52,10 +52,15 @@ class _MyAppState extends State<MyApp> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           final SharedPreferences prefs = SharedPrefs.prefs;
+          //set theme to light if not set
+          if (prefs.getString('theme') == null) {
+            prefs.setString('theme', 'light');
+          }
           final brightness = switch (prefs.getString('theme')) {
             "dark" => Brightness.dark,
             "light" => Brightness.light,
-            _ => MediaQuery.platformBrightnessOf(context)
+            "system" => MediaQuery.platformBrightnessOf(context),
+            _ => Brightness.light,
           };
           return Theme(
         data: ThemeData(

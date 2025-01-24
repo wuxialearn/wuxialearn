@@ -113,6 +113,47 @@ class _SettingsState extends State<Settings> {
     );
   }
 
+  _showThemeSelectionDialog(BuildContext context) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: const Text('Select Theme'),
+        actions: [
+          CupertinoActionSheetAction(
+            onPressed: () {
+              SharedPrefs.prefs.setString('theme', 'light');
+              Navigator.pop(context);
+              setState(() {});
+            },
+            child: const Text('Light'),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              SharedPrefs.prefs.setString('theme', 'dark');
+              Navigator.pop(context);
+              setState(() {});
+            },
+            child: const Text('Dark'),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              SharedPrefs.prefs.setString('theme', 'system');
+              Navigator.pop(context);
+              setState(() {});
+            },
+            child: const Text('System'),
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Cancel'),
+        ),
+      ),
+    );
+  }
+
   static const String backupFailedMessage =
       "backup failed  (Folder may be protected. Try using the documents directory)";
   @override
@@ -242,19 +283,17 @@ class _SettingsState extends State<Settings> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Dark mode (requires app restart)"),
-                      CupertinoSwitch(
-                        value: switch (SharedPrefs.prefs.getString('theme')) {
-                          "dark" => true,
-                          "light" => false,
-                          _ => MediaQuery.platformBrightnessOf(context) ==
-                              Brightness.dark
+                      CupertinoButton(
+                        onPressed: () {
+                          _showThemeSelectionDialog(context);
                         },
-                        activeTrackColor: CupertinoColors.activeBlue,
-                        onChanged: (bool value) {
-                          SharedPrefs.prefs.setString(
-                              'theme', value ? 'dark' : 'light');
-                          setState(() {});
-                        },
+                        child: Text(
+                          switch (SharedPrefs.prefs.getString('theme')) {
+                            "dark" => "Dark",
+                            "light" => "Light",
+                            _ => "System",
+                          },
+                        ),
                       ),
                     ],
                   ),
