@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 import 'package:hsk_learner/sql/sql_helper.dart';
 
+import '../../widgets/delayed_progress_indecator.dart';
+
 const ids = ['⿰', '⿱', '⿲', '⿳', '⿴', '⿵', '⿶', '⿷', '󰃿', '󰃰', '⿻'];
 
 class SvgCharacter extends StatefulWidget {
@@ -59,7 +61,11 @@ class _SvgCharacterState extends State<SvgCharacter> {
       future: getCharacterData(widget.character),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+          return SizedBox(
+              width: widget.size,
+              height: widget.size,
+              child: const DelayedProgressIndicator()
+            );
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else if (!snapshot.hasData) {
