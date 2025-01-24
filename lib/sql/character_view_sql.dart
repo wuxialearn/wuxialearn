@@ -14,7 +14,6 @@ class CharacterViewSql {
 
   static Future<List<Map<String, dynamic>>> getCharInfo(String char) async {
     final db = await SQLHelper.db();
-    print("we are hjere");
     final a = db.rawQuery("""
      SELECT
      id, hanzi, pinyin, translation
@@ -22,7 +21,6 @@ class CharacterViewSql {
      where hanzi = '$char'
      limit 1
     """);
-    print(await a);
     return a;
   }
 }

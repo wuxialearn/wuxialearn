@@ -6,7 +6,7 @@ import 'package:hsk_learner/sql/sql_helper.dart';
 import 'package:hsk_learner/utils/platform_info.dart';
 import 'package:http/http.dart' as http;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 
 
 void main(List<String> args) {
@@ -17,7 +17,7 @@ void main(List<String> args) {
     databaseFactory = databaseFactoryFfi;
   }
   WidgetsFlutterBinding.ensureInitialized();
-  if(1==2){
+  if(1==1){
     CharacterStokesSql.createTable();
   }else{
     // testArchive();
@@ -43,7 +43,7 @@ class CharacterStokesSql {
     if (graphicsResponse.statusCode != 200) {
       throw Exception('Failed to load graphics CSV');
     }
-    final Uint8List archive = BZip2Decoder().decodeBytes(graphicsResponse.bodyBytes);
+    final Uint8List archive = await compute(decodeBZip2, graphicsResponse.bodyBytes);
     final graphicsCsvString = utf8.decode(archive);
 
     final List<List<
@@ -52,9 +52,7 @@ class CharacterStokesSql {
 
     await db.transaction((txn) async {
       final batch = txn.batch();
-      // Delete the table if it already exists
       batch.execute('DROP TABLE IF EXISTS stroke_info');
-      // Create table named strokes with all the columns from both files
       batch.execute('''
       CREATE TABLE stroke_info(
         character TEXT PRIMARY KEY,
@@ -66,14 +64,12 @@ class CharacterStokesSql {
         matches TEXT
       )
       ''');
-      // Insert all the data from the dictionary.csv file into the table
       for (int i = 1; i < csvTable.length; i++) {
         batch.rawInsert('''
         INSERT INTO stroke_info(character, decomposition, etymology, radical, matches)
         VALUES(?, ?, ?, ?, ?)
         ''', csvTable[i]);
       }
-      // Update the strokes and medians columns with the data from the graphics.csv file
       for (int i = 1; i < graphicsTable.length; i++) {
         batch.rawUpdate('''
         UPDATE stroke_info
@@ -86,6 +82,11 @@ class CharacterStokesSql {
     });
     await db.close();
   }
+
+  static Uint8List decodeBZip2(Uint8List data) {
+    return BZip2Decoder().decodeBytes(data);
+  }
+
   static Future<void> dropTable() async {
     final db = await SQLHelper.db();
     await db.execute('DROP TABLE IF EXISTS stroke_info');
