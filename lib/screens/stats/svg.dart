@@ -35,10 +35,7 @@ class _SvgCharacterState extends State<SvgCharacter> {
     characterData['strokes'] = (jsonDecode(characterData['strokes'] as String) as List).cast<String>();
     characterData['medians'] = (jsonDecode(characterData['medians'] as String) as List).cast<List<dynamic>>();
 
-    return {
-      'dictionary': characterData,
-      'graphics': characterData,
-    };
+    return characterData;
   }
 
   List<List<int>?> _parseMatches(dynamic matches) {
@@ -100,7 +97,7 @@ class _DisplaySvgCharacterState extends State<_DisplaySvgCharacter> {
   @override
   void initState() {
     super.initState();
-    _dictData = widget.characterData['dictionary'];
+    _dictData = widget.characterData;
     _decomposedChars = _decomposeCharacter();
   }
 
@@ -163,8 +160,8 @@ class _DisplaySvgCharacterState extends State<_DisplaySvgCharacter> {
         height: widget.size,
         child: CustomPaint(
           painter: CharacterPainter(
-            strokes: widget.characterData["graphics"]["strokes"],
-            matches: widget.characterData['dictionary']['matches'],
+            strokes: widget.characterData["strokes"],
+            matches: widget.characterData['matches'],
             selectedStrokeIndex: _selectedStrokeIndex,
           ),
         ),
@@ -174,8 +171,8 @@ class _DisplaySvgCharacterState extends State<_DisplaySvgCharacter> {
 
   _StrokeInfo? _findClickedStroke(Offset position) {
     final painter = CharacterPainter(
-      strokes: widget.characterData['graphics']['strokes'],
-      matches: widget.characterData['dictionary']['matches'],
+      strokes: widget.characterData['strokes'],
+      matches: widget.characterData['matches'],
     );
 
     double scaleFactor = widget.size / 1024;
