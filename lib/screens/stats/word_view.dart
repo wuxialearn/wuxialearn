@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hsk_learner/screens/stats/character_view.dart';
 import 'package:hsk_learner/utils/prototype.dart';
 import 'package:intl/intl.dart';
 
@@ -63,9 +64,29 @@ class _WordViewState extends State<WordView> {
                                   stats[0]["pinyin"],
                                   style: const TextStyle(fontSize: 14),
                                 ),
-                                Text(
-                                  stats[0]["hanzi"],
-                                  style: const TextStyle(fontSize: 28),
+                                Row(
+                                  children:
+                                  List.generate(stats[0]["hanzi"].length, (index) => 
+                                      GestureDetector(
+                                        onTap: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                CharacterView(
+                                                  character: stats[0]["hanzi"][index]
+                                                )
+                                          ),
+                                        ),
+                                        child: Text(
+                                          stats[0]["hanzi"][index],
+                                          style: const TextStyle(
+                                              fontSize: 30,
+                                              color: Colors.blue,
+                                            ),
+                                        )
+                                      )
+                            
+                                    ),
                                 ),
                                 Text(
                                   stats[0]["translations0"],
