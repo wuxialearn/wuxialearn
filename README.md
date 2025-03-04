@@ -33,5 +33,6 @@ Wuxia Learn is a free and open source Chinese language learning app.
 <img src="https://github.com/wuxialearn/assets/blob/main/sentence%20game%20screen.png?raw=true" alt='sentence game screen' width="33%">
 
 </p>
-      
+
+See also https://github.com/wuxialearn/Chinese-English-Frequency-Dictionary (WIP)
       
