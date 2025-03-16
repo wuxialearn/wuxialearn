@@ -15,6 +15,8 @@
 .history
 .svn/
 migrate_working_dir/
+android/keystore.properties
+
 
 # IntelliJ related
 *.iml
@@ -37,6 +39,12 @@ migrate_working_dir/
 .pub/
 /build/
 
+windows/flutter/generated_plugin_registrant.*
+windows/flutter/generated_plugins.*
+macos/Flutter/GeneratedPluginRegistrant.swift
+linux/flutter/generated_plugin_registrant.*
+linux/flutter/generated_plugins.*
+
 # Symbolication related
 app.*.symbols
 
@@ -47,3 +55,4 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/app/.cxx/

@@ -176,8 +176,8 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
   }
 
   return SideTitleWidget(
-    axisSide: meta.axisSide,
-    child: text,
+    meta: meta,
+    child: text
   );
 }
 
