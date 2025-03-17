@@ -50,7 +50,12 @@ class _SentenceGameState extends State<SentenceGame> {
     //now that we have tokenized we can just do one for both
     //words = widget.buildEnglish ? sentenceToBuild.split(" ") : sentenceToBuild.replaceAll(" ", "").split("");
     //words = sentenceToBuild.split(" ");
-    words = sentenceToBuild.replaceAll('，', '， ').split(" ");
+    words = sentenceToBuild
+      .replaceAll('，', '， ')
+      .replaceAll('.', ' .')
+      .replaceAll("! ", " !")
+      .replaceAll("? ", " ?")
+      .split(" ");
     words.removeWhere((element) => element == " ");
     words.removeWhere((element) => element == "");
     pinyin = [];

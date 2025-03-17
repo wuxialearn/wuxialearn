@@ -31,6 +31,12 @@ class SQLHelper {
     return sql.openDatabase(path);
   }
 
+  /// Refresh the database from the asset file
+  static Future<void> refreshDB() async {
+    final path = await getDbPath();
+    await loadDbFromFile(path);
+  }
+
   static Future<String> getDbPath() async {
     if (PlatformInfo.isDesktop()) {
       final databasesPath =

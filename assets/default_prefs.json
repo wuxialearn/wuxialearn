@@ -54,5 +54,9 @@
   "default_home_page": {
     "value": "home",
     "type": "string"
+  },
+  "app_version": {
+    "value": "0.0.1",
+    "type": "string"
   }
 }

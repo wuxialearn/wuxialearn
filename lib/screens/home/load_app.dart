@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:hsk_learner/screens/home/home_page.dart';
 import 'package:hsk_learner/sql/load_app_sql.dart';
 import 'package:hsk_learner/sql/schema_migration.dart';
+import 'package:hsk_learner/sql/sql_helper.dart';
+import 'package:pubspec_parse/pubspec_parse.dart';
+import 'package:version/version.dart';
 import '../../sql/preferences_sql.dart';
 import '../settings/preferences.dart';
 import 'package:http/http.dart' as http;
@@ -24,9 +28,56 @@ class _LoadAppState extends State<LoadApp> {
   }
 
   void getPreferences() async {
-    await SchemaMigration.run();
+    //this could cause issues if Preferences should be changed after the
+    //schema migration.
     await Preferences.initPreferences();
+    await SchemaMigration.run();
+    showUpdateChangesModal();
     init();
+  }
+
+  Future<String> _getAppVersion() async {
+    final content = await rootBundle.loadString('pubspec.yaml');
+    final pubspec = Pubspec.parse(content);
+    final version = pubspec.version?.toString() ?? 'Unknown';
+    return version.split('+').first;
+  }
+
+  void showUpdateChangesModal() async{
+    final Version appVersion = Version.parse(Preferences.getPreference("app_version"));
+    final Version latestVersion = Version.parse(await _getAppVersion());
+    print(appVersion);
+    print(latestVersion);
+    if(appVersion <= Version.parse("1.3.3")){
+      final bool isFirstRun = Preferences.getPreference("isFirstRun");
+      if(!isFirstRun) {
+        showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: const Text("What's new"),
+          content: const Column(
+            children: [
+              SizedBox(height: 10),
+              Text(" Sentences have been rewritten for all units from HSK 1 - 3. "),
+              Text("Some units have been reordered."),
+              Text("Some words have moved to different units."),
+            ],
+          ),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text("Close"),
+              onPressed: (){
+                Navigator.pop(context);
+              },
+            )
+          ]
+        )
+      );
+      }
+    }
+    if(appVersion < latestVersion){
+      Preferences.setPreference(name: "app_version", value: latestVersion);
+    }
   }
 
   void init() {
@@ -143,7 +194,8 @@ class _LoadAppState extends State<LoadApp> {
         'https://cdn.jsdelivr.net/gh/wuxialearn/data@main/version';
     final req = await http.get(Uri.parse(versionUrl));
     final String version = req.body.trim();
-    if (version != lastVersion) {
+    //disable for this release as we will update sqlite file directly
+    if (version != lastVersion && 1 == 0) {
       await LoadAppSql.updateSqliteFromCsv();
       Preferences.setPreference(name: dbPref, value: version);
       PreferencesSql.setPreference(

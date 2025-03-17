@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hsk_learner/sql/pg_update.dart';
 import 'package:hsk_learner/sql/preferences_sql.dart';
+import 'package:hsk_learner/sql/sql_helper.dart';
 import '../../sql/character_stokes_sql.dart';
 import '../../utils/platform_info.dart';
 import 'backup.dart';
@@ -623,6 +624,24 @@ class _SettingsState extends State<Settings> {
                             ),
                             if (isDeleting) const CupertinoActivityIndicator(),
                           ],
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Refresh DB (lose all data)"),
+                        TextButton(
+                            onPressed: isDeleting ? null : () async {
+                            setState(() {
+                              isDeleting = true;
+                            });
+                            await SQLHelper.refreshDB();
+                            setState(() {
+                              isDeleting = false;
+                            });
+                            },
+                            child: const Text("Refresh"),
                         ),
                       ],
                     ),

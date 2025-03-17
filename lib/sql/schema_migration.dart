@@ -1,9 +1,12 @@
+import 'package:hsk_learner/screens/settings/backup.dart';
 import 'package:hsk_learner/sql/sql_helper.dart';
 
 class SchemaMigration {
   static run() async {
-    await checkReviewTable();
-    checkReviewRating();
+    //versions after 1.3.3 have review and review_rating tables
+    //in the default .db file. Instead just loadnew db and backup
+    //user data
+    await Backup.startBackupFromTempDir();
   }
 
   static Future<void> checkReviewTable() async {
