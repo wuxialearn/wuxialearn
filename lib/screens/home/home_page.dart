@@ -28,7 +28,12 @@ class MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    tabsIndex = switch (s) { "home" => 0, "review" => 1, "stats" => 2, _ => 0 };
+    tabsIndex = switch (s) {
+      "home" => 0,
+      "review" => 1,
+      "stats" => 2,
+      _ => 0,
+    };
     super.initState();
     if (widget.tab != null) {
       tabsIndex = widget.tab!;
@@ -44,7 +49,10 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   void sentenceGameCallBack(
-      bool value, Map<String, dynamic> currSentence, bool buildEnglish) {}
+    bool value,
+    Map<String, dynamic> currSentence,
+    bool buildEnglish,
+  ) {}
   Map<String, dynamic> currSentence() {
     //return  {"characters": "她叫什么名字", "pinyin": "tā jiào shénme míngzì", "meaning": "what's her name"};
     //return {"characters": "我的弟弟想长高", "pinyin": "Wǒ de dìdi xiǎng zhǎng gāo", "meaning": "my younger brother wants to grow taller",};
@@ -52,7 +60,7 @@ class MyHomePageState extends State<MyHomePage> {
       "characters": "我 爱 我 的 国家，它 有 很多 美丽 的 河流 和 公园",
       "pinyin": "wǒ ài wǒ de guójiā, tā yǒu hěnduō měilì de héliú hé gōngyuán",
       "meaning":
-          "I love my country, it has many beautiful rivers and parks and more words"
+          "I love my country, it has many beautiful rivers and parks and more words",
     };
   }
 
@@ -84,11 +92,17 @@ class MyHomePageState extends State<MyHomePage> {
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.auto_stories), label: "Review"),
+              icon: Icon(Icons.auto_stories),
+              label: "Review",
+            ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.query_stats_sharp), label: "Stats"),
+              icon: Icon(Icons.query_stats_sharp),
+              label: "Stats",
+            ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.settings), label: "Settings"),
+              icon: Icon(Icons.settings),
+              label: "Settings",
+            ),
             //BottomNavigationBarItem(icon: Icon(Icons.construction), label: "testing"),
           ],
         ),

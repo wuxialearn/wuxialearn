@@ -27,134 +27,125 @@ class _WordViewState extends State<WordView> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        navigationBar: const CupertinoNavigationBar(
-          middle: Text("Word Stats"),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              FutureBuilder<List<Map<String, dynamic>>>(
-                future: literalMeaning,
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-                  if (snapshot.hasData) {
-                    final List<Map<String, dynamic>> stats = snapshot.data!;
-                    String? literal;
-                    if (stats[0]["char_two"] != null) {
-                      literal =
-                          "${stats[0]["char_one"]} + ${stats[0]["char_two"]}";
-                      if (stats[0]["char_three"] != null) {
-                        literal += " + ${stats[0]["char_three"]}}";
-                        if (stats[0]["char_four"] != null) {
-                          literal = " + ${stats[0]["char_four"]}";
-                        }
+      navigationBar: const CupertinoNavigationBar(middle: Text("Word Stats")),
+      child: SafeArea(
+        child: Column(
+          children: [
+            FutureBuilder<List<Map<String, dynamic>>>(
+              future: literalMeaning,
+              builder: (
+                BuildContext context,
+                AsyncSnapshot<List<Map<String, dynamic>>> snapshot,
+              ) {
+                if (snapshot.hasData) {
+                  final List<Map<String, dynamic>> stats = snapshot.data!;
+                  String? literal;
+                  if (stats[0]["char_two"] != null) {
+                    literal =
+                        "${stats[0]["char_one"]} + ${stats[0]["char_two"]}";
+                    if (stats[0]["char_three"] != null) {
+                      literal += " + ${stats[0]["char_three"]}}";
+                      if (stats[0]["char_four"] != null) {
+                        literal = " + ${stats[0]["char_four"]}";
                       }
                     }
-                    return Column(
-                      children: [
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Column(
-                              children: [
-                                Text(
-                                  stats[0]["pinyin"],
-                                  style: const TextStyle(fontSize: 14),
-                                ),
-                                Row(
-                                  children:
-                                  List.generate(stats[0]["hanzi"].length, (index) => 
-                                      GestureDetector(
-                                        onTap: () => Navigator.push(
+                  }
+                  return Column(
+                    children: [
+                      const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                stats[0]["pinyin"],
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                              Row(
+                                children: List.generate(
+                                  stats[0]["hanzi"].length,
+                                  (index) => GestureDetector(
+                                    onTap:
+                                        () => Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                                CharacterView(
-                                                  character: stats[0]["hanzi"][index]
-                                                )
+                                            builder:
+                                                (context) => CharacterView(
+                                                  character:
+                                                      stats[0]["hanzi"][index],
+                                                ),
                                           ),
                                         ),
-                                        child: Text(
-                                          stats[0]["hanzi"][index],
-                                          style: const TextStyle(
-                                              fontSize: 30,
-                                              color: Colors.blue,
-                                            ),
-                                        )
-                                      )
-                            
+                                    child: Text(
+                                      stats[0]["hanzi"][index],
+                                      style: const TextStyle(
+                                        fontSize: 30,
+                                        color: Colors.blue,
+                                      ),
                                     ),
+                                  ),
                                 ),
-                                Text(
-                                  stats[0]["translations0"],
-                                  style: const TextStyle(fontSize: 14),
-                                ),
-                                literal != null
-                                    ? Row(
-                                        children: [Text(literal)],
-                                      )
-                                    : const SizedBox()
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        const Text(
-                          "Info",
-                          style: TextStyle(fontSize: 15),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Wrap(
-                          spacing: 13,
-                          children: [
-                            Text(
-                                "${stats[0]["course"]} ${stats[0]["hsk"]} unit ${stats[0]["unit"]}"),
-                            Text(
-                                """first seen: ${DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(stats[0]["first_seen"] * 1000))}"""),
-                            Text(
-                                """last seen: ${DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(stats[0]["last_seen"] * 1000))}
-                          """),
-                            Text(
-                                "seen ${stats[0]["total_seen"]} time${stats[0]["total_seen"] != 1 ? "s" : ""}"),
-                            Text(
-                                "correct percentage: ${stats[0]["total_correct"]}%"),
-                            Text(
-                                """next review: ${DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(stats[0]["show_next"] * 1000))}
-                          """),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 3,
-                        ),
-                        const Divider(
-                          height: 6,
-                          thickness: 1.5,
-                          indent: 10,
-                          endIndent: 10,
-                          color: Color.fromRGBO(227, 227, 227, 1.0),
-                        ),
-                      ],
-                    );
-                  } else {
-                    return const SizedBox();
-                  }
-                },
-              ),
-              Expanded(
-                child: _Sentences(
-                  sentencesFuture: sentencesFuture,
-                ),
-              )
-            ],
-          ),
-        ));
+                              ),
+                              Text(
+                                stats[0]["translations0"],
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                              literal != null
+                                  ? Row(children: [Text(literal)])
+                                  : const SizedBox(),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      const Text("Info", style: TextStyle(fontSize: 15)),
+                      const SizedBox(height: 15),
+                      Wrap(
+                        spacing: 13,
+                        children: [
+                          Text(
+                            "${stats[0]["course"]} ${stats[0]["hsk"]} unit ${stats[0]["unit"]}",
+                          ),
+                          Text(
+                            """first seen: ${DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(stats[0]["first_seen"] * 1000))}""",
+                          ),
+                          Text(
+                            """last seen: ${DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(stats[0]["last_seen"] * 1000))}
+                          """,
+                          ),
+                          Text(
+                            "seen ${stats[0]["total_seen"]} time${stats[0]["total_seen"] != 1 ? "s" : ""}",
+                          ),
+                          Text(
+                            "correct percentage: ${stats[0]["total_correct"]}%",
+                          ),
+                          Text(
+                            """next review: ${DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(stats[0]["show_next"] * 1000))}
+                          """,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 3),
+                      const Divider(
+                        height: 6,
+                        thickness: 1.5,
+                        indent: 10,
+                        endIndent: 10,
+                        color: Color.fromRGBO(227, 227, 227, 1.0),
+                      ),
+                    ],
+                  );
+                } else {
+                  return const SizedBox();
+                }
+              },
+            ),
+            Expanded(child: _Sentences(sentencesFuture: sentencesFuture)),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -164,40 +155,36 @@ class _Sentences extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Map<String, dynamic>>>(
-        future: sentencesFuture,
-        builder: (BuildContext context,
-            AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-          if (snapshot.hasData) {
-            List<Map<String, dynamic>> sentences = snapshot.data!;
-            if (sentences.isEmpty) {
-              return const Column(
-                children: [
-                  SizedBox(
-                    height: 20,
+      future: sentencesFuture,
+      builder: (
+        BuildContext context,
+        AsyncSnapshot<List<Map<String, dynamic>>> snapshot,
+      ) {
+        if (snapshot.hasData) {
+          List<Map<String, dynamic>> sentences = snapshot.data!;
+          if (sentences.isEmpty) {
+            return const Column(
+              children: [
+                SizedBox(height: 20),
+                Text(
+                  "There are no sentences yet for this word",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ],
+            );
+          } else {
+            return CustomScrollView(
+              slivers: [
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(children: [Text("Sentences")]),
                   ),
-                  Text(
-                    "There are no sentences yet for this word",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ],
-              );
-            } else {
-              return CustomScrollView(
-                slivers: [
-                  const SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Text("Sentences"),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SliverList(
-                    delegate:
-                        SliverChildBuilderDelegate(childCount: sentences.length,
-                            (BuildContext context, int index) {
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    childCount: sentences.length,
+                    (BuildContext context, int index) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8.0,
@@ -244,14 +231,16 @@ class _Sentences extends StatelessWidget {
                                             ),
                                             Text(
                                               sentences[index]["characters"],
-                                              style:
-                                                  const TextStyle(fontSize: 20),
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                              ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                             Text(
                                               sentences[index]["meaning"],
-                                              style:
-                                                  const TextStyle(fontSize: 16),
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                              ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ],
@@ -265,15 +254,17 @@ class _Sentences extends StatelessWidget {
                           ],
                         ),
                       );
-                    }),
+                    },
                   ),
-                ],
-              );
-            }
-          } else {
-            return const SizedBox();
+                ),
+              ],
+            );
           }
-        });
+        } else {
+          return const SizedBox();
+        }
+      },
+    );
   }
 }
 

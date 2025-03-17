@@ -1,8 +1,9 @@
 import 'package:hsk_learner/sql/sql_helper.dart';
 
 class ReviewSql {
-  static Future<List<Map<String, dynamic>>> getSrsReview(
-      {required int deckSize}) async {
+  static Future<List<Map<String, dynamic>>> getSrsReview({
+    required int deckSize,
+  }) async {
     final db = await SQLHelper.db();
     String limit = "limit $deckSize";
     if (deckSize < 0) {
@@ -31,7 +32,10 @@ class ReviewSql {
     return a;
   }
 
-  static Future<List<Map<String, dynamic>>> getUncategorizedWords({required String deck, required int deckSize}) async {
+  static Future<List<Map<String, dynamic>>> getUncategorizedWords({
+    required String deck,
+    required int deckSize,
+  }) async {
     final db = await SQLHelper.db();
     String limit = "limit $deckSize";
     if (deckSize < 0) {
@@ -120,11 +124,12 @@ class ReviewSql {
     return a;
   }
 
-  static Future<void> setReviewRating(
-      {required int id,
-      required String name,
-      required int start,
-      required int end}) async {
+  static Future<void> setReviewRating({
+    required int id,
+    required String name,
+    required int start,
+    required int end,
+  }) async {
     final db = await SQLHelper.db();
     db.rawUpdate("""
       update review_rating set rating_name = '$name', 
@@ -143,8 +148,9 @@ class ReviewSql {
     return a;
   }
 
-  static Future<List<Map<String, dynamic>>> getProgress(
-      {required String deck}) async {
+  static Future<List<Map<String, dynamic>>> getProgress({
+    required String deck,
+  }) async {
     final db = await SQLHelper.db();
     final a = await db.rawQuery("""
         SELECT review_rating.rating_id, count(1) as count, rating_name, 1 as rs 
@@ -169,8 +175,11 @@ class ReviewSql {
     return a;
   }
 
-  static Future<void> insertRating(
-      {required String name, required int start, required int end}) async {
+  static Future<void> insertRating({
+    required String name,
+    required int start,
+    required int end,
+  }) async {
     final db = await SQLHelper.db();
     await db.rawInsert("""
       insert into review_rating (rating_name, rating_duration_start, rating_duration_end)
@@ -187,7 +196,4 @@ class ReviewSql {
     update review set rating_id = null where rating_id = $id
     """);
   }
-
-
-    
 }

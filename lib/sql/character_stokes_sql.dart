@@ -8,7 +8,6 @@ import 'package:http/http.dart' as http;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:flutter/foundation.dart';
 
-
 void main(List<String> args) {
   //useful for testing
   if (PlatformInfo.isDesktop()) {
@@ -17,9 +16,9 @@ void main(List<String> args) {
     databaseFactory = databaseFactoryFfi;
   }
   WidgetsFlutterBinding.ensureInitialized();
-  if(1==1){
+  if (1 == 1) {
     CharacterStokesSql.createTable();
-  }else{
+  } else {
     // testArchive();
   }
 }
@@ -36,19 +35,22 @@ class CharacterStokesSql {
     if (dictionaryResponse.statusCode != 200) {
       throw Exception('Failed to load dictionary CSV');
     }
-    final List<List<dynamic>> csvTable =
-        const CsvToListConverter().convert(dictionaryResponse.body);
+    final List<List<dynamic>> csvTable = const CsvToListConverter().convert(
+      dictionaryResponse.body,
+    );
 
     final graphicsResponse = await http.get(Uri.parse(graphicsUrl));
     if (graphicsResponse.statusCode != 200) {
       throw Exception('Failed to load graphics CSV');
     }
-    final Uint8List archive = await compute(decodeBZip2, graphicsResponse.bodyBytes);
+    final Uint8List archive = await compute(
+      decodeBZip2,
+      graphicsResponse.bodyBytes,
+    );
     final graphicsCsvString = utf8.decode(archive);
 
-    final List<List<
-    dynamic>> graphicsTable =
-        const CsvToListConverter().convert(graphicsCsvString);
+    final List<List<dynamic>> graphicsTable = const CsvToListConverter()
+        .convert(graphicsCsvString);
 
     await db.transaction((txn) async {
       final batch = txn.batch();
@@ -71,11 +73,14 @@ class CharacterStokesSql {
         ''', csvTable[i]);
       }
       for (int i = 1; i < graphicsTable.length; i++) {
-        batch.rawUpdate('''
+        batch.rawUpdate(
+          '''
         UPDATE stroke_info
         SET strokes = ?, medians = ?
         WHERE character = ?
-        ''', [graphicsTable[i][1], graphicsTable[i][2], graphicsTable[i][0]]);
+        ''',
+          [graphicsTable[i][1], graphicsTable[i][2], graphicsTable[i][0]],
+        );
       }
       await batch.commit();
     });

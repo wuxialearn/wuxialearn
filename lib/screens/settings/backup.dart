@@ -64,7 +64,7 @@ final class Backup {
     stats,
     review,
     reviewRating,
-    preferences
+    preferences,
   ];
 
   static Future<bool> startBackupWithFileSelection() async {
@@ -119,21 +119,24 @@ final class Backup {
 
     var entries = [
       TarEntry.data(
-          TarHeader(
-            name: backupFileFormatVersionName,
-            mode: int.parse('644', radix: 8),
-          ),
-          utf8.encode(backupFileFormatVersion.toString()))
+        TarHeader(
+          name: backupFileFormatVersionName,
+          mode: int.parse('644', radix: 8),
+        ),
+        utf8.encode(backupFileFormatVersion.toString()),
+      ),
     ];
-    entries.addAll(await Future.wait(backupItems.map((item) async {
-      final bytes = utf8.encode(csvFormat(await item.source()));
-      return TarEntry.data(
-          TarHeader(
-            name: item.name,
-            mode: int.parse('644', radix: 8),
-          ),
-          bytes);
-    })));
+    entries.addAll(
+      await Future.wait(
+        backupItems.map((item) async {
+          final bytes = utf8.encode(csvFormat(await item.source()));
+          return TarEntry.data(
+            TarHeader(name: item.name, mode: int.parse('644', radix: 8)),
+            bytes,
+          );
+        }),
+      ),
+    );
 
     final tarEntries = Stream<TarEntry>.fromIterable(entries);
 
@@ -195,7 +198,8 @@ final class Backup {
           final table = csvParse(item.content!).$1;
           for (final row in table) {
             final entry = row.map(
-                (key, value) => MapEntry(key, value.isEmpty ? null : value));
+              (key, value) => MapEntry(key, value.isEmpty ? null : value),
+            );
             batch.insert(item.tableName, entry);
           }
         }
@@ -222,11 +226,15 @@ final class Backup {
     if (!isBackupRestored) {
       return false;
     }
-    final latestVersion =
-        Preferences.getPreference("latest_db_version_constant");
+    final latestVersion = Preferences.getPreference(
+      "latest_db_version_constant",
+    );
     Preferences.setPreference(name: "db_version", value: latestVersion);
     PreferencesSql.setPreference(
-        name: "db_version", value: latestVersion, type: "string");
+      name: "db_version",
+      value: latestVersion,
+      type: "string",
+    );
     final currVersion = Preferences.getPreference("db_version");
     print(latestVersion);
     print(currVersion);

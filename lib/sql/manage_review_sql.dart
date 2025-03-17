@@ -1,19 +1,22 @@
 import 'package:hsk_learner/sql/sql_helper.dart';
 
 class ManageReviewSql {
-  static Future<void> removeFromDeck(
-      {required int id, required String deck}) async {
+  static Future<void> removeFromDeck({
+    required int id,
+    required String deck,
+  }) async {
     final db = await SQLHelper.db();
     db.rawDelete("""
       delete from review where deck = '$deck' and id = $id
     """);
   }
 
-  static Future<List<Map<String, dynamic>>> getManageReview(
-      {required int deckSize,
-      required String sortBy,
-      required String orderBy,
-      required String deck}) async {
+  static Future<List<Map<String, dynamic>>> getManageReview({
+    required int deckSize,
+    required String sortBy,
+    required String orderBy,
+    required String deck,
+  }) async {
     final db = await SQLHelper.db();
     return db.rawQuery("""
     SELECT courses.id, right_occurrence, wrong_occurrence, 
@@ -40,14 +43,17 @@ class ManageReviewSql {
     """);
   }
 
-  static void addToReviewDeck(
-      {required int id, required String deck, required bool value}) async {
+  static void addToReviewDeck({
+    required int id,
+    required String deck,
+    required bool value,
+  }) async {
     final db = await SQLHelper.db();
     await db.transaction((txn) async {
       int timeStamp = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
       final existingDeck = await txn.rawQuery(
-        "SELECT * FROM review WHERE id = $id AND deck = '$deck'"
-        );
+        "SELECT * FROM review WHERE id = $id AND deck = '$deck'",
+      );
 
       if (existingDeck.isEmpty) {
         await txn.rawInsert("""
@@ -57,8 +63,8 @@ class ManageReviewSql {
       }
 
       final existingAny = await txn.rawQuery(
-        "SELECT * FROM review WHERE id = $id AND deck = 'any'"
-        );
+        "SELECT * FROM review WHERE id = $id AND deck = 'any'",
+      );
       if (existingAny.isEmpty) {
         await txn.rawInsert("""
           INSERT INTO review(id, deck, show_next) 
@@ -66,5 +72,5 @@ class ManageReviewSql {
         """);
       }
     });
-    }
+  }
 }

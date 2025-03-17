@@ -13,17 +13,17 @@ import '../../widgets/fixed_align.dart';
 class SentenceGame extends StatefulWidget {
   final Map<String, dynamic> currSentence;
   final Function(bool value, Map<String, dynamic> currWord, bool buildEnglish)
-      callback;
+  callback;
   final int index;
   final bool buildEnglish;
 
-  const SentenceGame(
-      {Key? key,
-      required this.callback,
-      required this.currSentence,
-      required this.index,
-      required this.buildEnglish})
-      : super(key: key);
+  const SentenceGame({
+    Key? key,
+    required this.callback,
+    required this.currSentence,
+    required this.index,
+    required this.buildEnglish,
+  }) : super(key: key);
 
   @override
   State<SentenceGame> createState() => _SentenceGameState();
@@ -38,12 +38,14 @@ class _SentenceGameState extends State<SentenceGame> {
   @override
   void initState() {
     setLanguage();
-    alreadyBuiltSentence = widget.buildEnglish
-        ? widget.currSentence["characters"]
-        : widget.currSentence["meaning"];
-    sentenceToBuild = widget.buildEnglish
-        ? widget.currSentence["meaning"]
-        : widget.currSentence["characters"];
+    alreadyBuiltSentence =
+        widget.buildEnglish
+            ? widget.currSentence["characters"]
+            : widget.currSentence["meaning"];
+    sentenceToBuild =
+        widget.buildEnglish
+            ? widget.currSentence["meaning"]
+            : widget.currSentence["characters"];
     speak(widget.currSentence["characters"]);
     //now that we have tokenized we can just do one for both
     //words = widget.buildEnglish ? sentenceToBuild.split(" ") : sentenceToBuild.replaceAll(" ", "").split("");
@@ -53,8 +55,14 @@ class _SentenceGameState extends State<SentenceGame> {
     words.removeWhere((element) => element == "");
     pinyin = [];
     for (int i = 0; i < words.length; i++) {
-      pinyin.add(PinyinHelper.getPinyinE(words[i],
-          separator: " ", defPinyin: '#', format: PinyinFormat.WITH_TONE_MARK));
+      pinyin.add(
+        PinyinHelper.getPinyinE(
+          words[i],
+          separator: " ",
+          defPinyin: '#',
+          format: PinyinFormat.WITH_TONE_MARK,
+        ),
+      );
     }
     //pinyin = widget.currSentence["pinyin"].split(" ");
     showPinyin = ShowPinyin.showPinyin;
@@ -131,7 +139,7 @@ class _SentenceGameState extends State<SentenceGame> {
             " ， ",
             " 、",
             " 、",
-            " , "
+            " , ",
           ];
           if (!specialChars.contains(word)) {
             speak(words[index]);
@@ -153,23 +161,26 @@ class _SentenceGameState extends State<SentenceGame> {
       List<double> wordSizes = [];
       List<double> pinyinWordSizes = [];
       for (int i = 0; i < words.length; i++) {
-        final Size size = (TextPainter(
-                text: TextSpan(
-                    text: words[i], style: TextStyle(fontSize: fontSize)),
-                maxLines: 1,
-                textScaleFactor: MediaQuery.of(context).textScaleFactor,
-                textDirection: TextDirection.ltr)
-              ..layout())
-            .size;
-        final Size pinyinSize = (TextPainter(
-                text: TextSpan(
-                    text: pinyin.length > i ? pinyin[i] : "missing",
-                    style: TextStyle(fontSize: pinyinFontSize)),
-                maxLines: 1,
-                textScaleFactor: MediaQuery.of(context).textScaleFactor,
-                textDirection: TextDirection.ltr)
-              ..layout())
-            .size;
+        final Size size =
+            (TextPainter(
+              text: TextSpan(
+                text: words[i],
+                style: TextStyle(fontSize: fontSize),
+              ),
+              maxLines: 1,
+              textScaleFactor: MediaQuery.of(context).textScaleFactor,
+              textDirection: TextDirection.ltr,
+            )..layout()).size;
+        final Size pinyinSize =
+            (TextPainter(
+              text: TextSpan(
+                text: pinyin.length > i ? pinyin[i] : "missing",
+                style: TextStyle(fontSize: pinyinFontSize),
+              ),
+              maxLines: 1,
+              textScaleFactor: MediaQuery.of(context).textScaleFactor,
+              textDirection: TextDirection.ltr,
+            )..layout()).size;
         double sizeWithPadding = size.width + padding;
         wordSizes.add(sizeWithPadding);
         double pinyinSizeWithPadding =
@@ -217,12 +228,15 @@ class _SentenceGameState extends State<SentenceGame> {
           double xCord = 0 - middleOffset[i] + normalizedWidth;
           double yCord = 1 - normalizedHeight;
           bottomLength[i] += wordSizes[j];
-          plainWordCords.add(_WordCord(
+          plainWordCords.add(
+            _WordCord(
               x: xCord,
               y: yCord,
               size: wordSizes[j],
               initialX: xCord,
-              initialY: yCord));
+              initialY: yCord,
+            ),
+          );
         }
       }
       for (int i = 0; i < pinyinNumRows; i++) {
@@ -240,12 +254,15 @@ class _SentenceGameState extends State<SentenceGame> {
           double xCord = 0 - pinyinMiddleOffset[i] + pinyinNormalizedWidth;
           double yCord = 1 - pinyinNormalizedHeight;
           pinyinBottomLength[i] += pinyinWordSizes[j];
-          pinyinWordCords.add(_WordCord(
+          pinyinWordCords.add(
+            _WordCord(
               x: xCord,
               y: yCord,
               size: pinyinWordSizes[j],
               initialX: xCord,
-              initialY: yCord));
+              initialY: yCord,
+            ),
+          );
         }
       }
     }
@@ -254,51 +271,59 @@ class _SentenceGameState extends State<SentenceGame> {
   void buildWordCords(int index, List<Widget> stackWidget) {
     for (int i = 0; i < plainWordCords.length; i++) {
       index++;
-      double x = showPinyin && !widget.buildEnglish
-          ? pinyinWordCords[i].x
-          : plainWordCords[i].x;
-      double y = showPinyin && !widget.buildEnglish
-          ? pinyinWordCords[i].y
-          : plainWordCords[i].y;
-      stackWidget.add(FixedAnimatedAlign(
+      double x =
+          showPinyin && !widget.buildEnglish
+              ? pinyinWordCords[i].x
+              : plainWordCords[i].x;
+      double y =
+          showPinyin && !widget.buildEnglish
+              ? pinyinWordCords[i].y
+              : plainWordCords[i].y;
+      stackWidget.add(
+        FixedAnimatedAlign(
           alignment: Alignment(x, y),
           duration: const Duration(milliseconds: 500),
           curve: Curves.easeInOut,
           child: GestureDetector(
-              onTap: changeRow(i),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: padding / 4),
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: padding / 4, vertical: padding / 4),
-                  decoration: BoxDecoration(
-                    color: Colors.lightBlueAccent,
-                    borderRadius: const BorderRadius.all(Radius.circular(3)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 2,
-                        offset:
-                            const Offset(0, 3), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  //color: Colors.grey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Visibility(
-                          visible: !widget.buildEnglish && showPinyin,
-                          child: Text(pinyin.length > index
-                              ? pinyin[index]
-                              : "missing")),
-                      Text(words[index], style: TextStyle(fontSize: fontSize)),
-                    ],
-                  ),
+            onTap: changeRow(i),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: padding / 4),
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: padding / 4,
+                  vertical: padding / 4,
                 ),
-              ))));
+                decoration: BoxDecoration(
+                  color: Colors.lightBlueAccent,
+                  borderRadius: const BorderRadius.all(Radius.circular(3)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 1,
+                      blurRadius: 2,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
+                //color: Colors.grey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Visibility(
+                      visible: !widget.buildEnglish && showPinyin,
+                      child: Text(
+                        pinyin.length > index ? pinyin[index] : "missing",
+                      ),
+                    ),
+                    Text(words[index], style: TextStyle(fontSize: fontSize)),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
     }
   }
 
@@ -320,36 +345,38 @@ class _SentenceGameState extends State<SentenceGame> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                        onPressed: () {
-                          setState(() {
-                            showPinyin = !showPinyin;
-                            ShowPinyin.showPinyin = showPinyin;
-                            if (!widget.buildEnglish) {
-                              List<_WordCord> wordCords =
-                                  showPinyin ? pinyinWordCords : plainWordCords;
-                              for (_WordCord wordCord in wordCords) {
-                                wordCord.x = wordCord.initialX;
-                                wordCord.y = wordCord.initialY;
-                              }
-                              double textHeight = showPinyin
-                                  ? pinyinFontSize + this.textHeight
-                                  : this.textHeight;
-                              board = _Board(
-                                  wordCords: wordCords,
-                                  textHeight: textHeight,
-                                  maxHeight: cons.maxHeight,
-                                  screenWidth: screenWidth);
+                      onPressed: () {
+                        setState(() {
+                          showPinyin = !showPinyin;
+                          ShowPinyin.showPinyin = showPinyin;
+                          if (!widget.buildEnglish) {
+                            List<_WordCord> wordCords =
+                                showPinyin ? pinyinWordCords : plainWordCords;
+                            for (_WordCord wordCord in wordCords) {
+                              wordCord.x = wordCord.initialX;
+                              wordCord.y = wordCord.initialY;
                             }
-                          });
-                        },
-                        child: showPinyin
-                            ? const Text("Hide Pinyin")
-                            : const Text("Show Pinyin")),
+                            double textHeight =
+                                showPinyin
+                                    ? pinyinFontSize + this.textHeight
+                                    : this.textHeight;
+                            board = _Board(
+                              wordCords: wordCords,
+                              textHeight: textHeight,
+                              maxHeight: cons.maxHeight,
+                              screenWidth: screenWidth,
+                            );
+                          }
+                        });
+                      },
+                      child:
+                          showPinyin
+                              ? const Text("Hide Pinyin")
+                              : const Text("Show Pinyin"),
+                    ),
                   ],
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
+                const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -357,11 +384,12 @@ class _SentenceGameState extends State<SentenceGame> {
                       child: Column(
                         children: [
                           Visibility(
-                              visible: widget.buildEnglish && showPinyin,
-                              child: Text(
-                                widget.currSentence["pinyin"],
-                                style: TextStyle(fontSize: pinyinFontSize),
-                              )),
+                            visible: widget.buildEnglish && showPinyin,
+                            child: Text(
+                              widget.currSentence["pinyin"],
+                              style: TextStyle(fontSize: pinyinFontSize),
+                            ),
+                          ),
                           Text(
                             alreadyBuiltSentence,
                             textAlign: TextAlign.center,
@@ -376,20 +404,21 @@ class _SentenceGameState extends State<SentenceGame> {
                       maintainAnimation: true,
                       visible: widget.buildEnglish,
                       child: IconButton(
-                          onPressed: () {
-                            speak(alreadyBuiltSentence);
-                          },
-                          icon: const Icon(Icons.volume_up)),
+                        onPressed: () {
+                          speak(alreadyBuiltSentence);
+                        },
+                        icon: const Icon(Icons.volume_up),
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 40,
-                ),
+                const SizedBox(height: 40),
                 Expanded(
                   child: LayoutBuilder(
-                    builder:
-                        (BuildContext context, BoxConstraints constraints) {
+                    builder: (
+                      BuildContext context,
+                      BoxConstraints constraints,
+                    ) {
                       cons = constraints;
                       screenWidth = constraints.maxWidth;
                       buildWidths();
@@ -401,112 +430,130 @@ class _SentenceGameState extends State<SentenceGame> {
                             showPinyin && !widget.buildEnglish
                                 ? pinyinWordCords
                                 : plainWordCords;
-                        double textHeight = showPinyin
-                            ? pinyinFontSize + this.textHeight
-                            : this.textHeight;
+                        double textHeight =
+                            showPinyin
+                                ? pinyinFontSize + this.textHeight
+                                : this.textHeight;
                         board = _Board(
-                            wordCords: wordCords,
-                            textHeight: textHeight,
-                            maxHeight: cons.maxHeight,
-                            screenWidth: screenWidth);
+                          wordCords: wordCords,
+                          textHeight: textHeight,
+                          maxHeight: cons.maxHeight,
+                          screenWidth: screenWidth,
+                        );
                       }
                       init = true;
                       return Column(
                         children: [
                           Expanded(
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                              ),
                               child: Stack(children: stackWidget),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
-                                bottom: 8.0,
-                                top: 15.0,
-                                left: 30.0,
-                                right: 30.0),
+                              bottom: 8.0,
+                              top: 15.0,
+                              left: 30.0,
+                              right: 30.0,
+                            ),
                             child: Row(
                               children: [
                                 Flexible(
                                   fit: FlexFit.tight,
                                   child: TextButton(
-                                      onPressed: () async {
-                                        if (isNotAnswered) {
-                                          List<String> topWords = [];
-                                          for (int i = 0;
-                                              i < board.onTop.length;
-                                              i++) {
-                                            topWords.add(words[board.onTop[i]]);
+                                    onPressed: () async {
+                                      if (isNotAnswered) {
+                                        List<String> topWords = [];
+                                        for (
+                                          int i = 0;
+                                          i < board.onTop.length;
+                                          i++
+                                        ) {
+                                          topWords.add(words[board.onTop[i]]);
+                                        }
+                                        if (topWords.join(" ") ==
+                                                sentenceToBuild ||
+                                            topWords.join("") ==
+                                                sentenceToBuild.replaceAll(
+                                                  " ",
+                                                  "",
+                                                )) {
+                                          isCorrect = true;
+                                          void callback(bool isCorrect) {
+                                            widget.callback(
+                                              isCorrect,
+                                              widget.currSentence,
+                                              widget.buildEnglish,
+                                            );
                                           }
-                                          if (topWords.join(" ") ==
-                                                  sentenceToBuild ||
-                                              topWords.join("") ==
-                                                  sentenceToBuild.replaceAll(
-                                                      " ", "")) {
-                                            isCorrect = true;
-                                            void callback(bool isCorrect) {
-                                              widget.callback(
-                                                  isCorrect,
-                                                  widget.currSentence,
-                                                  widget.buildEnglish);
-                                            }
-                    
-                                            setState(() {
-                                              isNotAnswered = false;
-                                              setCheckAnswerWidget(
-                                                  _CheckAnswerDialog(
-                                                      callback: callback,
-                                                      correctSentence:
-                                                          sentenceToBuild,
-                                                      constraints: cons,
-                                                      isCorrect: isCorrect));
-                                            });
-                                            await player
-                                                .setAsset('assets/correct.wav');
-                                            player.play();
-                                            //player.play(AssetSource('correct.wav'));
-                                            //player.release();
-                                          } else {
-                                            isCorrect = false;
-                                            await player
-                                                .setAsset('assets/wrong.wav');
-                                            player.play();
-                                            //player.play(AssetSource('wrong.wav'));
-                                            //player.release();
-                                            void callback(bool isCorrect) {
-                                              widget.callback(
-                                                  isCorrect,
-                                                  widget.currSentence,
-                                                  widget.buildEnglish);
-                                            }
-                    
-                                            setState(() {
-                                              isNotAnswered = false;
-                                              setCheckAnswerWidget(
-                                                  _CheckAnswerDialog(
+
+                                          setState(() {
+                                            isNotAnswered = false;
+                                            setCheckAnswerWidget(
+                                              _CheckAnswerDialog(
                                                 callback: callback,
                                                 correctSentence:
                                                     sentenceToBuild,
                                                 constraints: cons,
                                                 isCorrect: isCorrect,
-                                              ));
-                                            });
-                                          }
+                                              ),
+                                            );
+                                          });
+                                          await player.setAsset(
+                                            'assets/correct.wav',
+                                          );
+                                          player.play();
+                                          //player.play(AssetSource('correct.wav'));
+                                          //player.release();
                                         } else {
-                                          widget.callback(
+                                          isCorrect = false;
+                                          await player.setAsset(
+                                            'assets/wrong.wav',
+                                          );
+                                          player.play();
+                                          //player.play(AssetSource('wrong.wav'));
+                                          //player.release();
+                                          void callback(bool isCorrect) {
+                                            widget.callback(
                                               isCorrect,
                                               widget.currSentence,
-                                              widget.buildEnglish);
+                                              widget.buildEnglish,
+                                            );
+                                          }
+
+                                          setState(() {
+                                            isNotAnswered = false;
+                                            setCheckAnswerWidget(
+                                              _CheckAnswerDialog(
+                                                callback: callback,
+                                                correctSentence:
+                                                    sentenceToBuild,
+                                                constraints: cons,
+                                                isCorrect: isCorrect,
+                                              ),
+                                            );
+                                          });
                                         }
-                                      },
-                                      child: isNotAnswered
-                                          ? const Text("check answer")
-                                          : const Text("continue")),
+                                      } else {
+                                        widget.callback(
+                                          isCorrect,
+                                          widget.currSentence,
+                                          widget.buildEnglish,
+                                        );
+                                      }
+                                    },
+                                    child:
+                                        isNotAnswered
+                                            ? const Text("check answer")
+                                            : const Text("continue"),
+                                  ),
                                 ),
                               ],
                             ),
-                          )
+                          ),
                         ],
                       );
                     },
@@ -542,10 +589,9 @@ class CheckAnswerBottomSheet extends StatelessWidget {
       builder: (BuildContext context, ScrollController scrollController) {
         return Container(
           decoration: const BoxDecoration(
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(20),
-              ),
-              color: Colors.blue),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            color: Colors.blue,
+          ),
           child: SingleChildScrollView(
             controller: scrollController,
             child: Column(
@@ -556,8 +602,9 @@ class CheckAnswerBottomSheet extends StatelessWidget {
                     height: 5,
                     width: 30,
                     decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(16)),
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
                 ),
                 Padding(
@@ -662,14 +709,17 @@ class _CheckAnswerDialogState extends State<_CheckAnswerDialog> {
                   decoration: BoxDecoration(
                     color: Theme.of(context).scaffoldBackgroundColor,
                     borderRadius: const BorderRadius.vertical(
-                        bottom: Radius.circular(20)),
+                      bottom: Radius.circular(20),
+                    ),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.5),
                         spreadRadius: 3,
                         blurRadius: 5,
-                        offset:
-                            const Offset(0, 3), // changes position of shadow
+                        offset: const Offset(
+                          0,
+                          3,
+                        ), // changes position of shadow
                       ),
                     ],
                   ),
@@ -680,13 +730,14 @@ class _CheckAnswerDialogState extends State<_CheckAnswerDialog> {
                       Flexible(
                         fit: FlexFit.tight,
                         child: TextButton(
-                            onPressed: () {
-                              widget.callback(widget.isCorrect);
-                            },
-                            child: const Text(
-                              "Continue",
-                              style: TextStyle(fontSize: 18),
-                            )),
+                          onPressed: () {
+                            widget.callback(widget.isCorrect);
+                          },
+                          child: const Text(
+                            "Continue",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
                       ),
                       if (!widget.isCorrect)
                         Flexible(
@@ -738,11 +789,12 @@ class _Board {
   final double textHeight;
   final double maxHeight;
 
-  _Board(
-      {required this.maxHeight,
-      required this.screenWidth,
-      required this.wordCords,
-      required this.textHeight});
+  _Board({
+    required this.maxHeight,
+    required this.screenWidth,
+    required this.wordCords,
+    required this.textHeight,
+  });
   bool isOnTop(int index) {
     return onTop.contains(index);
   }

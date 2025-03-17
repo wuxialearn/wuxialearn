@@ -1,13 +1,11 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
 
-enum PrototypeHeightSlot {
-  prototypeItem,
-  child,
-}
+enum PrototypeHeightSlot { prototypeItem, child }
 
-class PrototypeHeight extends SlottedMultiChildRenderObjectWidget<
-    PrototypeHeightSlot, RenderBox> {
+class PrototypeHeight
+    extends
+        SlottedMultiChildRenderObjectWidget<PrototypeHeightSlot, RenderBox> {
   const PrototypeHeight({
     super.key,
     required this.prototype,
@@ -34,19 +32,15 @@ class PrototypeHeight extends SlottedMultiChildRenderObjectWidget<
 
   @override
   SlottedContainerRenderObjectMixin<PrototypeHeightSlot, RenderBox>
-      createRenderObject(
-    BuildContext context,
-  ) {
-    return RenderPrototypeHeight(
-      backgroundColor: backgroundColor,
-    );
+  createRenderObject(BuildContext context) {
+    return RenderPrototypeHeight(backgroundColor: backgroundColor);
   }
 
   @override
   void updateRenderObject(
     BuildContext context,
     SlottedContainerRenderObjectMixin<PrototypeHeightSlot, RenderBox>
-        renderObject,
+    renderObject,
   ) {
     (renderObject as RenderPrototypeHeight).backgroundColor = backgroundColor;
   }
@@ -57,7 +51,7 @@ class RenderPrototypeHeight extends RenderBox
         SlottedContainerRenderObjectMixin<PrototypeHeightSlot, RenderBox>,
         DebugOverflowIndicatorMixin {
   RenderPrototypeHeight({Color? backgroundColor})
-      : _backgroundColor = backgroundColor;
+    : _backgroundColor = backgroundColor;
 
   Color? get backgroundColor => _backgroundColor;
   Color? _backgroundColor;
@@ -108,10 +102,7 @@ class RenderPrototypeHeight extends RenderBox
       childSize = child.size;
     }
 
-    _childrenSize = Size(
-      childSize.width,
-      prototypeSize.height,
-    );
+    _childrenSize = Size(childSize.width, prototypeSize.height);
     size = constraints.constrain(_childrenSize);
   }
 
@@ -125,10 +116,7 @@ class RenderPrototypeHeight extends RenderBox
   void paint(PaintingContext context, Offset offset) {
     // Paint the background.
     if (backgroundColor != null) {
-      context.canvas.drawRect(
-        offset & size,
-        Paint()..color = backgroundColor!,
-      );
+      context.canvas.drawRect(offset & size, Paint()..color = backgroundColor!);
     }
 
     void paintChild(RenderBox child, PaintingContext context, Offset offset) {
@@ -223,9 +211,11 @@ class RenderPrototypeHeight extends RenderBox
         _prototype?.computeDryLayout(childConstraints) ?? Size.zero;
     final Size childSize =
         _child?.computeDryLayout(childConstraints) ?? Size.zero;
-    return constraints.constrain(Size(
-      prototypeSize.width + childSize.width,
-      prototypeSize.height + childSize.height,
-    ));
+    return constraints.constrain(
+      Size(
+        prototypeSize.width + childSize.width,
+        prototypeSize.height + childSize.height,
+      ),
+    );
   }
 }

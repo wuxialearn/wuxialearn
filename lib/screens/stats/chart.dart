@@ -5,7 +5,7 @@ class HskChart extends StatelessWidget {
   final List<Map<String, dynamic>>? timelineList;
   final int numDays;
   const HskChart({Key? key, this.timelineList, required this.numDays})
-      : super(key: key);
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,13 +13,12 @@ class HskChart extends StatelessWidget {
   }
 }
 
-List<Color> gradientColors = [
-  Colors.cyan,
-  Colors.blue,
-];
+List<Color> gradientColors = [Colors.cyan, Colors.blue];
 
-LineChartData mainData(
-    {List<Map<String, dynamic>>? timelineList, required int numDays}) {
+LineChartData mainData({
+  List<Map<String, dynamic>>? timelineList,
+  required int numDays,
+}) {
   List<FlSpot> flSpots = [];
   double maxY = 0;
   int timelineListIndex = 0;
@@ -28,8 +27,9 @@ LineChartData mainData(
     for (int i = 1; i < numDays + 1; i++) {
       double x = -1;
       if (timelineListIndex < timelineList.length) {
-        DateTime date =
-            DateTime.parse(timelineList[timelineListIndex]["string_date"]);
+        DateTime date = DateTime.parse(
+          timelineList[timelineListIndex]["string_date"],
+        );
         x = numDays - daysBetween(date, today);
       }
       if (x == i) {
@@ -51,17 +51,11 @@ LineChartData mainData(
     }
   }
   return LineChartData(
-    gridData: const FlGridData(
-      show: false,
-    ),
+    gridData: const FlGridData(show: false),
     titlesData: const FlTitlesData(
       show: true,
-      rightTitles: AxisTitles(
-        sideTitles: SideTitles(showTitles: false),
-      ),
-      topTitles: AxisTitles(
-        sideTitles: SideTitles(showTitles: false),
-      ),
+      rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+      topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
       bottomTitles: AxisTitles(
         sideTitles: SideTitles(
           showTitles: true,
@@ -91,14 +85,10 @@ LineChartData mainData(
       LineChartBarData(
         spots: flSpots,
         isCurved: false,
-        gradient: LinearGradient(
-          colors: gradientColors,
-        ),
+        gradient: LinearGradient(colors: gradientColors),
         barWidth: 5,
         isStrokeCapRound: true,
-        dotData: const FlDotData(
-          show: false,
-        ),
+        dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(
           show: true,
           gradient: LinearGradient(
@@ -119,8 +109,11 @@ Widget leftTitleWidgets(double value, TitleMeta meta) {
   );
   String text;
   if (max < 1) {
-    return const Text("10",
-        style: TextStyle(color: Colors.transparent), textAlign: TextAlign.left);
+    return const Text(
+      "10",
+      style: TextStyle(color: Colors.transparent),
+      textAlign: TextAlign.left,
+    );
   } else if (value == max) {
     text = "${max.toInt()}";
   } else if (value == max * 2 ~/ 3) {
@@ -175,10 +168,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
       break;
   }
 
-  return SideTitleWidget(
-    axisSide: meta.axisSide,
-    child: text,
-  );
+  return SideTitleWidget(axisSide: meta.axisSide, child: text);
 }
 
 double daysBetween(DateTime from, DateTime to) {

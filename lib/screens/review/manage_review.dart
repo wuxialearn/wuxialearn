@@ -28,12 +28,17 @@ class _ManageReviewState extends State<ManageReview> {
     refresh();
   }
 
-  Future<List<Map<String, dynamic>>> getManageReview(
-      {required String sortBy,
-      required String orderBy,
-      required String deck}) async {
+  Future<List<Map<String, dynamic>>> getManageReview({
+    required String sortBy,
+    required String orderBy,
+    required String deck,
+  }) async {
     final data = await ManageReviewSql.getManageReview(
-        sortBy: sortBy, orderBy: orderBy, deckSize: -1, deck: deck);
+      sortBy: sortBy,
+      orderBy: orderBy,
+      deckSize: -1,
+      deck: deck,
+    );
     return data;
   }
 
@@ -66,8 +71,11 @@ class _ManageReviewState extends State<ManageReview> {
         break;
     }
     setState(() {
-      statsListFuture =
-          getManageReview(sortBy: sortSQl, orderBy: orderSQL, deck: deck);
+      statsListFuture = getManageReview(
+        sortBy: sortSQl,
+        orderBy: orderSQL,
+        deck: deck,
+      );
     });
   }
 
@@ -82,48 +90,51 @@ class _ManageReviewState extends State<ManageReview> {
       ManageReviewSql.removeFromDeck(id: id, deck: deckName);
     } else {
       showCupertinoDialog(
-          barrierDismissible: true,
-          context: context,
-          builder: (context) {
-            return Dialog(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                ),
+        barrierDismissible: true,
+        context: context,
+        builder: (context) {
+          return Dialog(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            shadowColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Column(
+                    children: List.generate(options.length, (index) {
+                      return TextButton(
+                        onPressed: () {
+                          ManageReviewSql.addToReviewDeck(
+                            id: id,
+                            deck: options[index],
+                            value: true,
+                          );
+                          Navigator.pop(context);
+                        },
+                        child: Text(options[index]),
+                      );
+                    }),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("Cancel"),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              shadowColor: Colors.transparent,
-              surfaceTintColor: Colors.transparent,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Column(
-                      children: List.generate(options.length, (index) {
-                        return TextButton(
-                            onPressed: () {
-                              ManageReviewSql.addToReviewDeck(
-                                  id: id, deck: options[index], value: true);
-                              Navigator.pop(context);
-                            },
-                            child: Text(options[index]));
-                      }),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text("Cancel"),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            );
-          });
+            ),
+          );
+        },
+      );
     }
     refresh();
   }
@@ -135,8 +146,10 @@ class _ManageReviewState extends State<ManageReview> {
         Column(
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10.0,
+                vertical: 5.0,
+              ),
               child: Wrap(
                 children: [
                   Row(
@@ -144,10 +157,11 @@ class _ManageReviewState extends State<ManageReview> {
                     children: [
                       const Text("Deck:"),
                       TextButton(
-                          onPressed: () {
-                            _showReviewDeckActionSheet(context);
-                          },
-                          child: Text(deckName))
+                        onPressed: () {
+                          _showReviewDeckActionSheet(context);
+                        },
+                        child: Text(deckName),
+                      ),
                     ],
                   ),
                   Row(
@@ -155,10 +169,11 @@ class _ManageReviewState extends State<ManageReview> {
                     children: [
                       const Text("Sort by:"),
                       TextButton(
-                          onPressed: () {
-                            _showSortByActionSheet(context);
-                          },
-                          child: Text(sortValue))
+                        onPressed: () {
+                          _showSortByActionSheet(context);
+                        },
+                        child: Text(sortValue),
+                      ),
                     ],
                   ),
                   Row(
@@ -166,10 +181,11 @@ class _ManageReviewState extends State<ManageReview> {
                     children: [
                       const Text("Order By:"),
                       TextButton(
-                          onPressed: () {
-                            _showOrderByActionSheet(context);
-                          },
-                          child: Text(orderValue))
+                        onPressed: () {
+                          _showOrderByActionSheet(context);
+                        },
+                        child: Text(orderValue),
+                      ),
                     ],
                   ),
                 ],
@@ -185,7 +201,7 @@ class _ManageReviewState extends State<ManageReview> {
           scrollAxis: Axis.vertical,
           onClick: onClick,
           showRemove: showRemove(),
-        )
+        ),
       ],
     );
   }
@@ -193,67 +209,76 @@ class _ManageReviewState extends State<ManageReview> {
   _showSortByActionSheet<bool>(BuildContext context) {
     showCupertinoModalPopup<bool>(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text('Sort by'),
-        actions: List<CupertinoActionSheetAction>.generate(sortOptions.length,
-            (index) {
-          return CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context, true);
-              setState(() {
-                sortValue = sortOptions[index];
-              });
-              refresh();
-            },
-            child: Text(sortOptions[index]),
-          );
-        }),
-      ),
+      builder:
+          (BuildContext context) => CupertinoActionSheet(
+            title: const Text('Sort by'),
+            actions: List<CupertinoActionSheetAction>.generate(
+              sortOptions.length,
+              (index) {
+                return CupertinoActionSheetAction(
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                    setState(() {
+                      sortValue = sortOptions[index];
+                    });
+                    refresh();
+                  },
+                  child: Text(sortOptions[index]),
+                );
+              },
+            ),
+          ),
     );
   }
 
   _showOrderByActionSheet<bool>(BuildContext context) {
     showCupertinoModalPopup<bool>(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text('Order by'),
-        actions: List<CupertinoActionSheetAction>.generate(orderOption.length,
-            (index) {
-          return CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context, true);
-              setState(() {
-                orderValue = orderOption[index];
-              });
-              refresh();
-            },
-            child: Text(orderOption[index]),
-          );
-        }),
-      ),
+      builder:
+          (BuildContext context) => CupertinoActionSheet(
+            title: const Text('Order by'),
+            actions: List<CupertinoActionSheetAction>.generate(
+              orderOption.length,
+              (index) {
+                return CupertinoActionSheetAction(
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                    setState(() {
+                      orderValue = orderOption[index];
+                    });
+                    refresh();
+                  },
+                  child: Text(orderOption[index]),
+                );
+              },
+            ),
+          ),
     );
   }
 
   _showReviewDeckActionSheet<bool>(BuildContext context) {
     showCupertinoModalPopup<bool>(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text('Select a deck'),
-        actions: List<CupertinoActionSheetAction>.generate(deckNames.length,
-            (index) {
-          return CupertinoActionSheetAction(
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.pop(context, true);
-              setState(() {
-                deckName = deckNames[index];
-              });
-              refresh();
-            },
-            child: Text(deckNames[index]),
-          );
-        }),
-      ),
+      builder:
+          (BuildContext context) => CupertinoActionSheet(
+            title: const Text('Select a deck'),
+            actions: List<CupertinoActionSheetAction>.generate(
+              deckNames.length,
+              (index) {
+                return CupertinoActionSheetAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                    setState(() {
+                      deckName = deckNames[index];
+                    });
+                    refresh();
+                  },
+                  child: Text(deckNames[index]),
+                );
+              },
+            ),
+          ),
     );
   }
 }
@@ -267,16 +292,16 @@ class _HskListview extends StatelessWidget {
   final Function onClick;
   final bool showRemove;
 
-  const _HskListview(
-      {Key? key,
-      required this.statsListFuture,
-      required this.showTranslation,
-      required this.connectTop,
-      required this.color,
-      required this.scrollAxis,
-      required this.onClick,
-      required this.showRemove})
-      : super(key: key);
+  const _HskListview({
+    Key? key,
+    required this.statsListFuture,
+    required this.showTranslation,
+    required this.connectTop,
+    required this.color,
+    required this.scrollAxis,
+    required this.onClick,
+    required this.showRemove,
+  }) : super(key: key);
 
   playCallback(int i) {
     onClick(i);
@@ -285,55 +310,59 @@ class _HskListview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Map<String, dynamic>>>(
-        future: statsListFuture,
-        builder: (BuildContext context,
-            AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-          if (snapshot.hasData) {
-            List<WordItem> wordList = createWordList(snapshot.data!);
-            return Expanded(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: connectTop
-                        ? const BorderRadius.vertical(
-                            bottom: Radius.circular(10))
-                        : BorderRadius.circular(10),
-                    color: color,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: ListView.builder(
-                            physics: const ScrollPhysics(),
-                            padding: EdgeInsets.zero,
-                            scrollDirection: scrollAxis,
-                            itemCount: wordList.length,
-                            itemBuilder: (context, index) {
-                              return _HskListviewItem(
-                                wordItem: wordList[index],
-                                showTranslation: showTranslation,
-                                separator: true,
-                                callback: playCallback,
-                                showRemove: showRemove,
-                              );
-                            },
-                          ),
+      future: statsListFuture,
+      builder: (
+        BuildContext context,
+        AsyncSnapshot<List<Map<String, dynamic>>> snapshot,
+      ) {
+        if (snapshot.hasData) {
+          List<WordItem> wordList = createWordList(snapshot.data!);
+          return Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius:
+                      connectTop
+                          ? const BorderRadius.vertical(
+                            bottom: Radius.circular(10),
+                          )
+                          : BorderRadius.circular(10),
+                  color: color,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          physics: const ScrollPhysics(),
+                          padding: EdgeInsets.zero,
+                          scrollDirection: scrollAxis,
+                          itemCount: wordList.length,
+                          itemBuilder: (context, index) {
+                            return _HskListviewItem(
+                              wordItem: wordList[index],
+                              showTranslation: showTranslation,
+                              separator: true,
+                              callback: playCallback,
+                              showRemove: showRemove,
+                            );
+                          },
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            );
-          } else {
-            return const Center(child: DelayedProgressIndicator());
-          }
-        });
+            ),
+          );
+        } else {
+          return const Center(child: DelayedProgressIndicator());
+        }
+      },
+    );
   }
 }
 
@@ -359,11 +388,12 @@ class _HskListviewItem extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          border: separator
-              ? const Border(
-                  bottom: BorderSide(width: 1.5, color: Color(0xFFECECEC)),
-                )
-              : const Border(),
+          border:
+              separator
+                  ? const Border(
+                    bottom: BorderSide(width: 1.5, color: Color(0xFFECECEC)),
+                  )
+                  : const Border(),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -371,27 +401,26 @@ class _HskListviewItem extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(children: [
-                  Text(
-                    wordItem.pinyin,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                  TextButton(
-                    style: Styles.blankButtonNoPadding,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => WordView(wordId: wordItem.id),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      wordItem.hanzi,
-                      style: const TextStyle(fontSize: 25),
+                Column(
+                  children: [
+                    Text(wordItem.pinyin, style: const TextStyle(fontSize: 14)),
+                    TextButton(
+                      style: Styles.blankButtonNoPadding,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WordView(wordId: wordItem.id),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        wordItem.hanzi,
+                        style: const TextStyle(fontSize: 25),
+                      ),
                     ),
-                  ),
-                ]),
+                  ],
+                ),
                 Visibility(
                   visible: showTranslation,
                   child: Text(
@@ -401,7 +430,7 @@ class _HskListviewItem extends StatelessWidget {
                       color: Color(0xFF999EA3),
                     ),
                   ),
-                )
+                ),
               ],
             ),
             Row(
@@ -409,21 +438,23 @@ class _HskListviewItem extends StatelessWidget {
                 Visibility(
                   visible: showRemove,
                   child: IconButton(
-                      onPressed: () {
-                        callback(wordItem.id);
-                      },
-                      icon: const Icon(CupertinoIcons.minus_circle)),
+                    onPressed: () {
+                      callback(wordItem.id);
+                    },
+                    icon: const Icon(CupertinoIcons.minus_circle),
+                  ),
                 ),
                 Visibility(
                   visible: !showRemove,
                   child: IconButton(
-                      onPressed: () {
-                        callback(wordItem.id);
-                      },
-                      icon: const Icon(CupertinoIcons.add)),
+                    onPressed: () {
+                      callback(wordItem.id);
+                    },
+                    icon: const Icon(CupertinoIcons.add),
+                  ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),

@@ -18,15 +18,14 @@ class _DelayedProgressIndicatorState extends State<DelayedProgressIndicator> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: duration,
-        builder: (BuildContext context, AsyncSnapshot<void> data) {
-          if (data.hasData) {
-            return const CircularProgressIndicator();
-          } else {
-            return const SizedBox(
-              height: 1,
-            );
-          }
-        });
+      future: duration,
+      builder: (BuildContext context, AsyncSnapshot<void> data) {
+        if (data.hasData) {
+          return const CircularProgressIndicator();
+        } else {
+          return const SizedBox(height: 1);
+        }
+      },
+    );
   }
 }

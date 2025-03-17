@@ -12,8 +12,10 @@ class PageOne extends StatelessWidget {
         color: Theme.of(context).scaffoldBackgroundColor,
         child: TextButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const PageTwo()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const PageTwo()),
+            );
           },
           child: const Text("go to page 2"),
         ),
@@ -38,13 +40,13 @@ class PageTwo extends StatelessWidget {
                 onPressed: () {
                   //Navigator.push(context, MaterialPageRoute(builder: (context) =>  const PageThree()));
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SizedBox()));
+                    context,
+                    MaterialPageRoute(builder: (context) => const SizedBox()),
+                  );
                   Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PageThree()));
+                    context,
+                    MaterialPageRoute(builder: (context) => const PageThree()),
+                  );
                 },
                 child: const Text("go to page 3"),
               ),
@@ -65,11 +67,12 @@ class PageThree extends StatelessWidget {
       child: Container(
         color: Theme.of(context).scaffoldBackgroundColor,
         child: TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-            },
-            child: const Text("this is page 3")),
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.pop(context);
+          },
+          child: const Text("this is page 3"),
+        ),
       ),
     );
   }

@@ -9,16 +9,17 @@ import '../games/unit_game.dart';
 import '../settings/preferences.dart';
 
 class SubunitView extends StatefulWidget {
-  const SubunitView(
-      {super.key,
-      required this.wordList,
-      required this.unit,
-      required this.subunit,
-      required this.lastSubunit,
-      required this.name,
-      required this.completed,
-      required this.updateUnits,
-      required this.courseName});
+  const SubunitView({
+    super.key,
+    required this.wordList,
+    required this.unit,
+    required this.subunit,
+    required this.lastSubunit,
+    required this.name,
+    required this.completed,
+    required this.updateUnits,
+    required this.courseName,
+  });
   final List<WordItem> wordList;
   final int unit;
   final int subunit;
@@ -84,23 +85,26 @@ class _SubunitViewState extends State<SubunitView> {
               ),
             ),
             FutureBuilder<List<Map<String, dynamic>>>(
-                future: sentenceList,
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-                  if (snapshot.hasData) {
-                    List<Map<String, dynamic>> sentenceList = snapshot.data!;
-                    return Row(
-                      children: [
-                        Flexible(
-                          fit: FlexFit.tight,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextButton(
-                              onPressed: () {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => UnitLearn(
+              future: sentenceList,
+              builder: (
+                BuildContext context,
+                AsyncSnapshot<List<Map<String, dynamic>>> snapshot,
+              ) {
+                if (snapshot.hasData) {
+                  List<Map<String, dynamic>> sentenceList = snapshot.data!;
+                  return Row(
+                    children: [
+                      Flexible(
+                        fit: FlexFit.tight,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => UnitLearn(
                                         courseName: widget.courseName,
                                         wordList: widget.wordList,
                                         unit: widget.unit,
@@ -109,62 +113,66 @@ class _SubunitViewState extends State<SubunitView> {
                                         name: widget.name,
                                         updateUnits: widget.updateUnits,
                                       ),
-                                    )).then((_) {
-                                  Navigator.pop(context);
-                                });
-                              },
-                              child: const Text(
-                                "Learn",
-                                style:
-                                    TextStyle(color: Colors.blue, fontSize: 25),
+                                ),
+                              ).then((_) {
+                                Navigator.pop(context);
+                              });
+                            },
+                            child: const Text(
+                              "Learn",
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: 25,
                               ),
                             ),
                           ),
                         ),
-                        widget.completed || debug || allowSkipUnits
-                            ? Flexible(
-                                fit: FlexFit.tight,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: TextButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => UnitGame(
-                                              wordList: widget.wordList,
-                                              unit: widget.unit,
-                                              sentenceList: sentenceList,
-                                              subunit: widget.subunit,
-                                              lastSubunit: widget.lastSubunit,
-                                              name: "",
-                                              updateUnits: widget.updateUnits,
-                                              courseName: widget.courseName,
-                                            ),
-                                          )).then((_) {
-                                        widget.updateUnits();
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    child: const Text(
-                                      "Quiz",
-                                      style: TextStyle(
-                                          color: Colors.blue, fontSize: 25),
+                      ),
+                      widget.completed || debug || allowSkipUnits
+                          ? Flexible(
+                            fit: FlexFit.tight,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => UnitGame(
+                                            wordList: widget.wordList,
+                                            unit: widget.unit,
+                                            sentenceList: sentenceList,
+                                            subunit: widget.subunit,
+                                            lastSubunit: widget.lastSubunit,
+                                            name: "",
+                                            updateUnits: widget.updateUnits,
+                                            courseName: widget.courseName,
+                                          ),
                                     ),
+                                  ).then((_) {
+                                    widget.updateUnits();
+                                    Navigator.pop(context);
+                                  });
+                                },
+                                child: const Text(
+                                  "Quiz",
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontSize: 25,
                                   ),
                                 ),
-                              )
-                            : const SizedBox(
-                                height: 0,
                               ),
-                      ],
-                    );
-                  } else {
-                    return const SizedBox(
-                      height: 0,
-                    );
-                  }
-                }),
+                            ),
+                          )
+                          : const SizedBox(height: 0),
+                    ],
+                  );
+                } else {
+                  return const SizedBox(height: 0);
+                }
+              },
+            ),
           ],
         ),
       ),

@@ -15,8 +15,9 @@ class LearnSql {
     """);
   }
 
-  static Future<List<Map<String, dynamic>>> count2(
-      {required String courseName}) async {
+  static Future<List<Map<String, dynamic>>> count2({
+    required String courseName,
+  }) async {
     final db = await SQLHelper.db();
     var result = db.rawQuery("""
       SELECT
@@ -52,7 +53,8 @@ class LearnSql {
   }
 
   static Future<List<Map<String, dynamic>>> getUnitWithLiteralMeaning(
-      int unit) async {
+    int unit,
+  ) async {
     final db = await SQLHelper.db();
     return db.rawQuery("""
         SELECT t1.id, t1.hanzi, t1.pinyin, translations0, subunit,
@@ -98,7 +100,9 @@ class LearnSql {
   }
 
   static Future<List<Map<String, dynamic>>> getSentencesForSubunit(
-      int unit, int subunit) async {
+    int unit,
+    int subunit,
+  ) async {
     final db = await SQLHelper.db();
     return db.rawQuery("""
       SELECT
@@ -110,12 +114,11 @@ class LearnSql {
     """);
   }
 
-  static void completeUnit({
-    required int unit,
-  }) async {
+  static void completeUnit({required int unit}) async {
     final db = await SQLHelper.db();
-    await db
-        .rawInsert('UPDATE unit_info SET completed = 1 WHERE unit_id = $unit ');
+    await db.rawInsert(
+      'UPDATE unit_info SET completed = 1 WHERE unit_id = $unit ',
+    );
   }
 
   static void completeSubUnit({required int unit, required int subUnit}) async {
@@ -144,7 +147,8 @@ class LearnSql {
   }
 
   static Future<List<Map<String, dynamic>>> getKnownSentences(
-      List<Map<String, dynamic>> words) async {
+    List<Map<String, dynamic>> words,
+  ) async {
     final db = await SQLHelper.db();
     String sql = "SELECT * from sentences where characters REGEXP";
     sql += "'^(?:(?: ，|。";

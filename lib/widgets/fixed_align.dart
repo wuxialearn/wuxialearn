@@ -7,9 +7,9 @@ abstract class RenderFixedAligningShiftedBox extends RenderShiftedBox {
     AlignmentGeometry alignment = Alignment.center,
     required TextDirection? textDirection,
     RenderBox? child,
-  })  : _alignment = alignment,
-        _textDirection = textDirection,
-        super(child);
+  }) : _alignment = alignment,
+       _textDirection = textDirection,
+       super(child);
   Alignment? _resolvedAlignment;
   void _resolve() {
     if (_resolvedAlignment != null) {
@@ -54,17 +54,23 @@ abstract class RenderFixedAligningShiftedBox extends RenderShiftedBox {
     final BoxParentData childParentData = child!.parentData! as BoxParentData;
     Size blankSize = Size(0, child!.size.height);
     childParentData.offset = _resolvedAlignment!.alongOffset(
-        Size(size.width, size.height) - blankSize
-            as Offset); //- child!.size as Offset);
+      Size(size.width, size.height) - blankSize as Offset,
+    ); //- child!.size as Offset);
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties
-        .add(DiagnosticsProperty<AlignmentGeometry>('alignment', alignment));
-    properties.add(EnumProperty<TextDirection>('textDirection', textDirection,
-        defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<AlignmentGeometry>('alignment', alignment),
+    );
+    properties.add(
+      EnumProperty<TextDirection>(
+        'textDirection',
+        textDirection,
+        defaultValue: null,
+      ),
+    );
   }
 }
 
@@ -76,10 +82,10 @@ class RenderFixedPositionedBox extends RenderFixedAligningShiftedBox {
     double? heightFactor,
     super.alignment,
     super.textDirection,
-  })  : assert(widthFactor == null || widthFactor >= 0.0),
-        assert(heightFactor == null || heightFactor >= 0.0),
-        _widthFactor = widthFactor,
-        _heightFactor = heightFactor;
+  }) : assert(widthFactor == null || widthFactor >= 0.0),
+       assert(heightFactor == null || heightFactor >= 0.0),
+       _widthFactor = widthFactor,
+       _heightFactor = heightFactor;
 
   /// If non-null, sets its width to the child's width multiplied by this factor.
   ///
@@ -117,19 +123,23 @@ class RenderFixedPositionedBox extends RenderFixedAligningShiftedBox {
         _heightFactor != null || constraints.maxHeight == double.infinity;
     if (child != null) {
       final Size childSize = child!.getDryLayout(constraints.loosen());
-      return constraints.constrain(Size(
-        shrinkWrapWidth
-            ? childSize.width * (_widthFactor ?? 1.0)
-            : double.infinity,
-        shrinkWrapHeight
-            ? childSize.height * (_heightFactor ?? 1.0)
-            : double.infinity,
-      ));
+      return constraints.constrain(
+        Size(
+          shrinkWrapWidth
+              ? childSize.width * (_widthFactor ?? 1.0)
+              : double.infinity,
+          shrinkWrapHeight
+              ? childSize.height * (_heightFactor ?? 1.0)
+              : double.infinity,
+        ),
+      );
     }
-    return constraints.constrain(Size(
-      shrinkWrapWidth ? 0.0 : double.infinity,
-      shrinkWrapHeight ? 0.0 : double.infinity,
-    ));
+    return constraints.constrain(
+      Size(
+        shrinkWrapWidth ? 0.0 : double.infinity,
+        shrinkWrapHeight ? 0.0 : double.infinity,
+      ),
+    );
   }
 
   @override
@@ -142,20 +152,24 @@ class RenderFixedPositionedBox extends RenderFixedAligningShiftedBox {
 
     if (child != null) {
       child!.layout(constraints.loosen(), parentUsesSize: true);
-      size = constraints.constrain(Size(
-        shrinkWrapWidth
-            ? child!.size.width * (_widthFactor ?? 1.0)
-            : double.infinity,
-        shrinkWrapHeight
-            ? child!.size.height * (_heightFactor ?? 1.0)
-            : double.infinity,
-      ));
+      size = constraints.constrain(
+        Size(
+          shrinkWrapWidth
+              ? child!.size.width * (_widthFactor ?? 1.0)
+              : double.infinity,
+          shrinkWrapHeight
+              ? child!.size.height * (_heightFactor ?? 1.0)
+              : double.infinity,
+        ),
+      );
       alignChild();
     } else {
-      size = constraints.constrain(Size(
-        shrinkWrapWidth ? 0.0 : double.infinity,
-        shrinkWrapHeight ? 0.0 : double.infinity,
-      ));
+      size = constraints.constrain(
+        Size(
+          shrinkWrapWidth ? 0.0 : double.infinity,
+          shrinkWrapHeight ? 0.0 : double.infinity,
+        ),
+      );
     }
   }
 
@@ -166,17 +180,20 @@ class RenderFixedPositionedBox extends RenderFixedAligningShiftedBox {
       final Paint paint;
       if (child != null && !child!.size.isEmpty) {
         final Path path;
-        paint = Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.0
-          ..color = const Color(0xFFFFFF00);
+        paint =
+            Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 1.0
+              ..color = const Color(0xFFFFFF00);
         path = Path();
         final BoxParentData childParentData =
             child!.parentData! as BoxParentData;
         if (childParentData.offset.dy > 0.0) {
           // vertical alignment arrows
-          final double headSize =
-              math.min(childParentData.offset.dy * 0.2, 10.0);
+          final double headSize = math.min(
+            childParentData.offset.dy * 0.2,
+            10.0,
+          );
           path
             ..moveTo(offset.dx + size.width / 2.0, offset.dy)
             ..relativeLineTo(0.0, childParentData.offset.dy - headSize)
@@ -194,8 +211,10 @@ class RenderFixedPositionedBox extends RenderFixedAligningShiftedBox {
         }
         if (childParentData.offset.dx > 0.0) {
           // horizontal alignment arrows
-          final double headSize =
-              math.min(childParentData.offset.dx * 0.2, 10.0);
+          final double headSize = math.min(
+            childParentData.offset.dx * 0.2,
+            10.0,
+          );
           path
             ..moveTo(offset.dx, offset.dy + size.height / 2.0)
             ..relativeLineTo(childParentData.offset.dx - headSize, 0.0)
@@ -222,10 +241,12 @@ class RenderFixedPositionedBox extends RenderFixedAligningShiftedBox {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties
-        .add(DoubleProperty('widthFactor', _widthFactor, ifNull: 'expand'));
-    properties
-        .add(DoubleProperty('heightFactor', _heightFactor, ifNull: 'expand'));
+    properties.add(
+      DoubleProperty('widthFactor', _widthFactor, ifNull: 'expand'),
+    );
+    properties.add(
+      DoubleProperty('heightFactor', _heightFactor, ifNull: 'expand'),
+    );
   }
 }
 
@@ -239,8 +260,8 @@ class FixedAlign extends SingleChildRenderObjectWidget {
     this.widthFactor,
     this.heightFactor,
     super.child,
-  })  : assert(widthFactor == null || widthFactor >= 0.0),
-        assert(heightFactor == null || heightFactor >= 0.0);
+  }) : assert(widthFactor == null || widthFactor >= 0.0),
+       assert(heightFactor == null || heightFactor >= 0.0);
 
   final AlignmentGeometry alignment;
   final double? widthFactor;
@@ -258,7 +279,9 @@ class FixedAlign extends SingleChildRenderObjectWidget {
 
   @override
   void updateRenderObject(
-      BuildContext context, RenderFixedPositionedBox renderObject) {
+    BuildContext context,
+    RenderFixedPositionedBox renderObject,
+  ) {
     renderObject
       ..alignment = alignment
       ..widthFactor = widthFactor
@@ -269,12 +292,15 @@ class FixedAlign extends SingleChildRenderObjectWidget {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties
-        .add(DiagnosticsProperty<AlignmentGeometry>('alignment', alignment));
-    properties
-        .add(DoubleProperty('widthFactor', widthFactor, defaultValue: null));
-    properties
-        .add(DoubleProperty('heightFactor', heightFactor, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<AlignmentGeometry>('alignment', alignment),
+    );
+    properties.add(
+      DoubleProperty('widthFactor', widthFactor, defaultValue: null),
+    );
+    properties.add(
+      DoubleProperty('heightFactor', heightFactor, defaultValue: null),
+    );
   }
 }
 
@@ -288,8 +314,8 @@ class FixedAnimatedAlign extends ImplicitlyAnimatedWidget {
     super.curve,
     required super.duration,
     super.onEnd,
-  })  : assert(widthFactor == null || widthFactor >= 0.0),
-        assert(heightFactor == null || heightFactor >= 0.0);
+  }) : assert(widthFactor == null || widthFactor >= 0.0),
+       assert(heightFactor == null || heightFactor >= 0.0);
 
   final AlignmentGeometry alignment;
 
@@ -305,8 +331,9 @@ class FixedAnimatedAlign extends ImplicitlyAnimatedWidget {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties
-        .add(DiagnosticsProperty<AlignmentGeometry>('alignment', alignment));
+    properties.add(
+      DiagnosticsProperty<AlignmentGeometry>('alignment', alignment),
+    );
   }
 }
 
@@ -318,21 +345,31 @@ class _FixedAnimatedAlignState
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
-    _alignment = visitor(
-            _alignment,
-            widget.alignment,
-            (dynamic value) =>
-                AlignmentGeometryTween(begin: value as AlignmentGeometry))
-        as AlignmentGeometryTween?;
+    _alignment =
+        visitor(
+              _alignment,
+              widget.alignment,
+              (dynamic value) =>
+                  AlignmentGeometryTween(begin: value as AlignmentGeometry),
+            )
+            as AlignmentGeometryTween?;
     if (widget.heightFactor != null) {
-      _heightFactorTween = visitor(_heightFactorTween, widget.heightFactor,
-              (dynamic value) => Tween<double>(begin: value as double))
-          as Tween<double>?;
+      _heightFactorTween =
+          visitor(
+                _heightFactorTween,
+                widget.heightFactor,
+                (dynamic value) => Tween<double>(begin: value as double),
+              )
+              as Tween<double>?;
     }
     if (widget.widthFactor != null) {
-      _widthFactorTween = visitor(_widthFactorTween, widget.widthFactor,
-              (dynamic value) => Tween<double>(begin: value as double))
-          as Tween<double>?;
+      _widthFactorTween =
+          visitor(
+                _widthFactorTween,
+                widget.widthFactor,
+                (dynamic value) => Tween<double>(begin: value as double),
+              )
+              as Tween<double>?;
     }
   }
 
@@ -349,14 +386,26 @@ class _FixedAnimatedAlignState
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder description) {
     super.debugFillProperties(description);
-    description.add(DiagnosticsProperty<AlignmentGeometryTween>(
-        'alignment', _alignment,
-        defaultValue: null));
-    description.add(DiagnosticsProperty<Tween<double>>(
-        'widthFactor', _widthFactorTween,
-        defaultValue: null));
-    description.add(DiagnosticsProperty<Tween<double>>(
-        'heightFactor', _heightFactorTween,
-        defaultValue: null));
+    description.add(
+      DiagnosticsProperty<AlignmentGeometryTween>(
+        'alignment',
+        _alignment,
+        defaultValue: null,
+      ),
+    );
+    description.add(
+      DiagnosticsProperty<Tween<double>>(
+        'widthFactor',
+        _widthFactorTween,
+        defaultValue: null,
+      ),
+    );
+    description.add(
+      DiagnosticsProperty<Tween<double>>(
+        'heightFactor',
+        _heightFactorTween,
+        defaultValue: null,
+      ),
+    );
   }
 }

@@ -6,10 +6,7 @@ import 'course_view.dart';
 
 class HSKCourseView extends StatefulWidget {
   final void Function(String courseName) changeCourse;
-  const HSKCourseView({
-    Key? key,
-    required this.changeCourse,
-  }) : super(key: key);
+  const HSKCourseView({Key? key, required this.changeCourse}) : super(key: key);
 
   @override
   State<HSKCourseView> createState() => _HSKCourseViewState();
@@ -58,24 +55,28 @@ class _HSKCourseViewState extends State<HSKCourseView> {
         }
       }
       for (int i = 0; i < hskListOffset.length; i++) {
-        widgets.add(SliverPadding(
-          padding: const EdgeInsets.symmetric(vertical: 15),
-          sliver: SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Visibility(
+        widgets.add(
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(vertical: 15),
+            sliver: SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Visibility(
                       maintainAnimation: true,
                       maintainState: true,
                       maintainSize: true,
                       visible: false,
                       child: TextButton(
-                          onPressed: () {}, child: const Text("Test Out"))),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    child: Container(
+                        onPressed: () {},
+                        child: const Text("Test Out"),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Container(
                         decoration: BoxDecoration(
                           color: Theme.of(context).scaffoldBackgroundColor,
                           borderRadius: BorderRadius.circular(7.0),
@@ -85,25 +86,30 @@ class _HSKCourseViewState extends State<HSKCourseView> {
                               spreadRadius: 3,
                               blurRadius: 5,
                               offset: const Offset(
-                                  0, 3), // changes position of shadow
+                                0,
+                                3,
+                              ), // changes position of shadow
                             ),
                           ],
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                              vertical: 8.0, horizontal: 20.0),
+                            vertical: 8.0,
+                            horizontal: 20.0,
+                          ),
                           child: Text(
                             "hsk ${i + 2}",
                             style: const TextStyle(fontSize: 20),
                           ),
-                        )),
-                  ),
-                  Visibility(
-                    maintainAnimation: true,
-                    maintainState: true,
-                    maintainSize: true,
-                    visible: !hskIsCompletedList[i],
-                    child: TextButton(
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      maintainAnimation: true,
+                      maintainState: true,
+                      maintainSize: true,
+                      visible: !hskIsCompletedList[i],
+                      child: TextButton(
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -116,13 +122,15 @@ class _HSKCourseViewState extends State<HSKCourseView> {
                             });
                           });
                         },
-                        child: const Text("Test Out")),
-                  )
-                ],
+                        child: const Text("Test Out"),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ));
+        );
         widgets.add(
           SliverGrid(
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -131,18 +139,18 @@ class _HSKCourseViewState extends State<HSKCourseView> {
               crossAxisSpacing: 30.0,
               childAspectRatio: 1,
             ),
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return GridItem(
-                  index: index + hskListOffset[i],
-                  unitList: hskList,
-                  updateUnits: updateUnits,
-                  courseName: "hsk",
-                  allowSkipUnits: allowSkipUnits,
-                );
-              },
-              childCount: hskListUnitLengths[i],
-            ),
+            delegate: SliverChildBuilderDelegate((
+              BuildContext context,
+              int index,
+            ) {
+              return GridItem(
+                index: index + hskListOffset[i],
+                unitList: hskList,
+                updateUnits: updateUnits,
+                courseName: "hsk",
+                allowSkipUnits: allowSkipUnits,
+              );
+            }, childCount: hskListUnitLengths[i]),
           ),
         );
       }

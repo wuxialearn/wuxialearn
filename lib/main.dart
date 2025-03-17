@@ -19,11 +19,13 @@ void initSettings() {
     databaseFactory = databaseFactoryFfi;
   }
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    systemStatusBarContrastEnforced: false,
-    statusBarIconBrightness: Brightness.dark,
-  ));
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemStatusBarContrastEnforced: false,
+      statusBarIconBrightness: Brightness.dark,
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -35,7 +37,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   late Future<void> initPrefs;
 
   @override
@@ -46,7 +47,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-	
     return FutureBuilder(
       future: initPrefs,
       builder: (context, snapshot) {
@@ -63,38 +63,73 @@ class _MyAppState extends State<MyApp> {
             _ => Brightness.light,
           };
           return Theme(
-        data: ThemeData(
-            brightness: brightness,
-            fontFamily: '.SF UI Text',
-            colorScheme: ColorScheme.fromSwatch(
+            data: ThemeData(
               brightness: brightness,
-            primarySwatch: Colors.blue,
-            )),
-        child: CupertinoApp(
-          theme: CupertinoThemeData(
-            brightness: brightness,
-              primaryColor: Colors.blue,
-              textTheme: CupertinoTextThemeData(
-                textStyle: TextStyle(fontFamily: 'Roboto', color: brightness == Brightness.dark ? Colors.white : Colors.black),
-                actionTextStyle:
-                    TextStyle(fontFamily: 'Roboto', color: brightness == Brightness.dark ? Colors.white : Colors.black),
-                navActionTextStyle:
-                    const TextStyle(fontFamily: 'Roboto', color: Colors.blue),
-                navLargeTitleTextStyle:
-                    TextStyle(fontFamily: 'Roboto', color: brightness == Brightness.dark ? Colors.white : Colors.black),
-                navTitleTextStyle:
-                    TextStyle(fontFamily: 'Roboto', color: brightness == Brightness.dark ? Colors.white : Colors.black),
-                pickerTextStyle:
-                    TextStyle(fontFamily: 'Roboto', color: brightness == Brightness.dark ? Colors.white : Colors.black),
-                dateTimePickerTextStyle:
-                    TextStyle(fontFamily: 'Roboto', color: brightness == Brightness.dark ? Colors.white : Colors.black),
-              )),
-          scrollBehavior: const CupertinoScrollBehavior(),
-          title: 'Wuxia Learn',
-          home: LoadApp(fdroid: widget.fdroid),
-          //home: const MyStatefulWidget(),
-        ),
-      );
+              fontFamily: '.SF UI Text',
+              colorScheme: ColorScheme.fromSwatch(
+                brightness: brightness,
+                primarySwatch: Colors.blue,
+              ),
+            ),
+            child: CupertinoApp(
+              theme: CupertinoThemeData(
+                brightness: brightness,
+                primaryColor: Colors.blue,
+                textTheme: CupertinoTextThemeData(
+                  textStyle: TextStyle(
+                    fontFamily: 'Roboto',
+                    color:
+                        brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                  ),
+                  actionTextStyle: TextStyle(
+                    fontFamily: 'Roboto',
+                    color:
+                        brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                  ),
+                  navActionTextStyle: const TextStyle(
+                    fontFamily: 'Roboto',
+                    color: Colors.blue,
+                  ),
+                  navLargeTitleTextStyle: TextStyle(
+                    fontFamily: 'Roboto',
+                    color:
+                        brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                  ),
+                  navTitleTextStyle: TextStyle(
+                    fontFamily: 'Roboto',
+                    color:
+                        brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                  ),
+                  pickerTextStyle: TextStyle(
+                    fontFamily: 'Roboto',
+                    color:
+                        brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                  ),
+                  dateTimePickerTextStyle: TextStyle(
+                    fontFamily: 'Roboto',
+                    color:
+                        brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                  ),
+                ),
+              ),
+              scrollBehavior: const CupertinoScrollBehavior(),
+              title: 'Wuxia Learn',
+              home: LoadApp(fdroid: widget.fdroid),
+              //home: const MyStatefulWidget(),
+            ),
+          );
         } else {
           return const SizedBox();
         }
@@ -111,8 +146,8 @@ class MyApp2 extends StatelessWidget {
     return MaterialApp(
       scrollBehavior: const CupertinoScrollBehavior(),
       theme: ThemeData.light(useMaterial3: false),
-	    darkTheme: ThemeData.dark(useMaterial3: false),
-	    themeMode: ThemeMode.system,
+      darkTheme: ThemeData.dark(useMaterial3: false),
+      themeMode: ThemeMode.system,
       title: 'Wuxia Learn',
       home: const LoadApp(fdroid: true),
       //home: const MyStatefulWidget(),

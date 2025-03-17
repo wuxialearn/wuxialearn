@@ -12,17 +12,17 @@ class ChineseToEnglishGame extends StatefulWidget {
   final WordItem currWord;
   final List<WordItem> wordList;
   final Function(bool value, WordItem currWord, bool? chineseToEnglish)
-      callback;
+  callback;
   final int index;
   final bool? chineseToEnglish;
-  const ChineseToEnglishGame(
-      {Key? key,
-      required this.currWord,
-      required this.wordList,
-      required this.callback,
-      required this.index,
-      required this.chineseToEnglish})
-      : super(key: key);
+  const ChineseToEnglishGame({
+    Key? key,
+    required this.currWord,
+    required this.wordList,
+    required this.callback,
+    required this.index,
+    required this.chineseToEnglish,
+  }) : super(key: key);
 
   @override
   State<ChineseToEnglishGame> createState() => _ChineseToEnglishGameState();
@@ -46,9 +46,10 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
   void initState() {
     super.initState();
     showPinyin = ShowPinyin.showPinyin;
-    wordToTranslate = widget.chineseToEnglish!
-        ? widget.currWord.hanzi
-        : widget.currWord.translation;
+    wordToTranslate =
+        widget.chineseToEnglish!
+            ? widget.currWord.hanzi
+            : widget.currWord.translation;
     if (widget.chineseToEnglish!) {
       speak(wordToTranslate);
     }
@@ -73,25 +74,29 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
                 Visibility(
                   visible: widget.currWord.hanzi.length > 1,
                   child: TextButton(
-                      onPressed: () {
-                        setState(() {
-                          showHint ? showHint = false : showHint = true;
-                        });
-                      },
-                      child: showHint
-                          ? const Text("Hide Hint")
-                          : const Text("Show Hint")),
-                ),
-                TextButton(
                     onPressed: () {
                       setState(() {
-                        showPinyin = !showPinyin;
-                        ShowPinyin.showPinyin = showPinyin;
+                        showHint ? showHint = false : showHint = true;
                       });
                     },
-                    child: showPinyin
-                        ? const Text("Hide Pinyin")
-                        : const Text("Show Pinyin"))
+                    child:
+                        showHint
+                            ? const Text("Hide Hint")
+                            : const Text("Show Hint"),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      showPinyin = !showPinyin;
+                      ShowPinyin.showPinyin = showPinyin;
+                    });
+                  },
+                  child:
+                      showPinyin
+                          ? const Text("Hide Pinyin")
+                          : const Text("Show Pinyin"),
+                ),
               ],
             ),
             Expanded(
@@ -99,17 +104,17 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Visibility(
-                      maintainSize: true,
-                      maintainInteractivity: false,
-                      maintainAnimation: true,
-                      maintainState: true,
-                      visible:
-                          clicked || widget.chineseToEnglish! && showPinyin,
-                      child: Text(
-                        widget.currWord.pinyin,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 20),
-                      )),
+                    maintainSize: true,
+                    maintainInteractivity: false,
+                    maintainAnimation: true,
+                    maintainState: true,
+                    visible: clicked || widget.chineseToEnglish! && showPinyin,
+                    child: Text(
+                      widget.currWord.pinyin,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -119,10 +124,11 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
                         maintainAnimation: true,
                         visible: false,
                         child: IconButton(
-                            onPressed: () {
-                              speak(wordToTranslate);
-                            },
-                            icon: const Icon(Icons.volume_up)),
+                          onPressed: () {
+                            speak(wordToTranslate);
+                          },
+                          icon: const Icon(Icons.volume_up),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 3.0),
@@ -138,15 +144,17 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
                         maintainAnimation: true,
                         visible: widget.chineseToEnglish!,
                         child: IconButton(
-                            onPressed: () {
-                              speak(wordToTranslate);
-                            },
-                            icon: const Icon(Icons.volume_up)),
+                          onPressed: () {
+                            speak(wordToTranslate);
+                          },
+                          icon: const Icon(Icons.volume_up),
+                        ),
                       ),
                     ],
                   ),
                   Visibility(
-                    visible: (showHint || clicked) &&
+                    visible:
+                        (showHint || clicked) &&
                         widget.currWord.hanzi.length > 1,
                     child: Text(
                       widget.currWord.literal.join(" + "),
@@ -158,8 +166,10 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
               ),
             ),
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8.0,
+                vertical: 8.0,
+              ),
               child: AnswersList(
                 chineseToEnglish: widget.chineseToEnglish!,
                 currWord: widget.currWord,
@@ -169,7 +179,7 @@ class _ChineseToEnglishGameState extends State<ChineseToEnglishGame> {
                 showPinyin: showPinyin,
                 onClick: onClick,
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -181,20 +191,21 @@ class AnswersList extends StatefulWidget {
   final WordItem currWord;
   final List<WordItem> wordList;
   final Function(bool value, WordItem currWord, bool? chineseToEnglish)
-      callback;
+  callback;
   final int index;
   final bool chineseToEnglish;
   final bool showPinyin;
   final Function onClick;
-  const AnswersList(
-      {super.key,
-      required this.currWord,
-      required this.wordList,
-      required this.callback,
-      required this.index,
-      required this.chineseToEnglish,
-      required this.showPinyin,
-      required this.onClick});
+  const AnswersList({
+    super.key,
+    required this.currWord,
+    required this.wordList,
+    required this.callback,
+    required this.index,
+    required this.chineseToEnglish,
+    required this.showPinyin,
+    required this.onClick,
+  });
 
   @override
   State<AnswersList> createState() => _AnswersListState();
@@ -209,15 +220,21 @@ class _AnswersListState extends State<AnswersList> {
     setLanguage();
     bool debug = Preferences.getPreference("debug");
     final groupWordsCopy = List.generate(
-        widget.wordList.length, (index) => widget.wordList[index]);
+      widget.wordList.length,
+      (index) => widget.wordList[index],
+    );
     groupWordsCopy.removeWhere((element) => element.id == widget.currWord.id);
     groupWordsCopy.shuffle();
     buttonSelectionWords = List.generate(
-        min(groupWordsCopy.length, 4), (index) => groupWordsCopy[index]);
+      min(groupWordsCopy.length, 4),
+      (index) => groupWordsCopy[index],
+    );
     buttonSelectionWords.insert(0, widget.currWord);
     if (!debug) buttonSelectionWords.shuffle();
     colorsList = List.generate(
-        buttonSelectionWords.length, (int index) => const Color(0xFFB0B0B0));
+      buttonSelectionWords.length,
+      (int index) => const Color(0xFFB0B0B0),
+    );
   }
 
   final player = AudioPlayer();
@@ -244,54 +261,59 @@ class _AnswersListState extends State<AnswersList> {
           isCorrect = false;
         }
         return TextButton(
-            style: Styles.createButton(colorsList[i]),
-            onPressed: () async {
-              widget.onClick();
-              if (!clicked) {
+          style: Styles.createButton(colorsList[i]),
+          onPressed: () async {
+            widget.onClick();
+            if (!clicked) {
+              setState(() {
+                clicked = true;
+              });
+              if (isCorrect) {
                 setState(() {
-                  clicked = true;
+                  colorsList[i] = const Color(0xFF00FF00);
                 });
-                if (isCorrect) {
-                  setState(() {
-                    colorsList[i] = const Color(0xFF00FF00);
-                  });
-                  try {
-                    //await player.play(AssetSource('correct.wav'));
-                    await player.setAsset('assets/correct.wav');
-                    await player.load();
-                    player.play();
-                  } catch (e) {
-                    print(e);
-                  }
-                  speak(buttonSelectionWords[i].hanzi);
-                } else {
-                  setState(() {
-                    colorsList[i] = const Color(0xFFFF0000);
-                  });
-                  await player.setAsset('assets/wrong.wav');
+                try {
+                  //await player.play(AssetSource('correct.wav'));
+                  await player.setAsset('assets/correct.wav');
                   await player.load();
                   player.play();
-                  //await player.play(AssetSource('wrong.wav'));
+                } catch (e) {
+                  print(e);
                 }
-                Future.delayed(const Duration(milliseconds: 500), () {
-                  widget.callback(
-                      isCorrect, widget.currWord, widget.chineseToEnglish);
+                speak(buttonSelectionWords[i].hanzi);
+              } else {
+                setState(() {
+                  colorsList[i] = const Color(0xFFFF0000);
                 });
+                await player.setAsset('assets/wrong.wav');
+                await player.load();
+                player.play();
+                //await player.play(AssetSource('wrong.wav'));
               }
-            },
-            child: Column(
-              children: [
-                Visibility(
-                    visible: widget.showPinyin && !widget.chineseToEnglish,
-                    child: Text(buttonSelectionWords[i].pinyin)),
-                Text(
-                  widget.chineseToEnglish
-                      ? buttonSelectionWords[i].translation
-                      : buttonSelectionWords[i].hanzi,
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ],
-            ));
+              Future.delayed(const Duration(milliseconds: 500), () {
+                widget.callback(
+                  isCorrect,
+                  widget.currWord,
+                  widget.chineseToEnglish,
+                );
+              });
+            }
+          },
+          child: Column(
+            children: [
+              Visibility(
+                visible: widget.showPinyin && !widget.chineseToEnglish,
+                child: Text(buttonSelectionWords[i].pinyin),
+              ),
+              Text(
+                widget.chineseToEnglish
+                    ? buttonSelectionWords[i].translation
+                    : buttonSelectionWords[i].hanzi,
+                style: const TextStyle(fontSize: 18),
+              ),
+            ],
+          ),
+        );
       }),
     );
   }

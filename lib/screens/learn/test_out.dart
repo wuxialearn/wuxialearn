@@ -30,19 +30,19 @@ class _TestOutState extends State<TestOut> {
         middle: Text("Test Out"),
       ),
       child: FutureBuilder<List<Map<String, dynamic>>>(
-          future: reviewWordsListFuture,
-          builder: (BuildContext context,
-              AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-            if (snapshot.hasData) {
-              List<WordItem> wordList = createWordList(snapshot.data!);
-              return _TestOutController(
-                wordList: wordList,
-                hsk: widget.hsk,
-              );
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          }),
+        future: reviewWordsListFuture,
+        builder: (
+          BuildContext context,
+          AsyncSnapshot<List<Map<String, dynamic>>> snapshot,
+        ) {
+          if (snapshot.hasData) {
+            List<WordItem> wordList = createWordList(snapshot.data!);
+            return _TestOutController(wordList: wordList, hsk: widget.hsk);
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
     );
   }
 }
@@ -79,20 +79,26 @@ class _TestOutControllerState extends State<_TestOutController> {
     if (numIncorrect == 2) {
       setState(() {
         gamesList[gameIndex + 1] = (Scaffold(
-            body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Center(child: Text("Try Again")),
-            Center(
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Center(child: Text("Try Again")),
+              Center(
                 child: TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Close")))
-          ],
-        )));
-        _pageController.animateToPage(gameIndex + 1,
-            duration: const Duration(milliseconds: 300), curve: Curves.linear);
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Close"),
+                ),
+              ),
+            ],
+          ),
+        ));
+        _pageController.animateToPage(
+          gameIndex + 1,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.linear,
+        );
       });
     } else {
       updatePage();
@@ -105,8 +111,11 @@ class _TestOutControllerState extends State<_TestOutController> {
       TestOutSql.completeHSKLevel(widget.hsk);
       Navigator.pop(context);
     } else {
-      _pageController.animateToPage(gameIndex + 1,
-          duration: const Duration(milliseconds: 300), curve: Curves.linear);
+      _pageController.animateToPage(
+        gameIndex + 1,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.linear,
+      );
       gameIndex++;
     }
   }
@@ -114,21 +123,25 @@ class _TestOutControllerState extends State<_TestOutController> {
   void createGamesListForGroup(List<WordItem> wordList) {
     for (int i = 0; i < wordList.length; i++) {
       if (i % 2 == 0) {
-        gamesList.add(ChineseToEnglishGame(
-          chineseToEnglish: false,
-          currWord: wordList[i],
-          wordList: wordList,
-          callback: callback,
-          index: gameIndex,
-        ));
+        gamesList.add(
+          ChineseToEnglishGame(
+            chineseToEnglish: false,
+            currWord: wordList[i],
+            wordList: wordList,
+            callback: callback,
+            index: gameIndex,
+          ),
+        );
       } else {
-        gamesList.add(ChineseToEnglishGame(
-          chineseToEnglish: true,
-          currWord: wordList[i],
-          wordList: wordList,
-          callback: callback,
-          index: gameIndex,
-        ));
+        gamesList.add(
+          ChineseToEnglishGame(
+            chineseToEnglish: true,
+            currWord: wordList[i],
+            wordList: wordList,
+            callback: callback,
+            index: gameIndex,
+          ),
+        );
       }
     }
   }
@@ -139,8 +152,10 @@ class _TestOutControllerState extends State<_TestOutController> {
     final groupNum = min(widget.wordList.length, 5);
     for (int i = 0; i < (widget.wordList.length ~/ groupNum); i++) {
       createGamesListForGroup(
-        widget.wordList.sublist(i * groupNum,
-            min((i * groupNum) + groupNum, widget.wordList.length)),
+        widget.wordList.sublist(
+          i * groupNum,
+          min((i * groupNum) + groupNum, widget.wordList.length),
+        ),
       );
     }
   }

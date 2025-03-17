@@ -12,27 +12,37 @@ class SvgCharacter extends StatefulWidget {
   final String character;
   final void Function(String character) onClick;
   final double size;
-  const SvgCharacter({super.key, required this.character, required this.onClick, required this.size});
+  const SvgCharacter({
+    super.key,
+    required this.character,
+    required this.onClick,
+    required this.size,
+  });
 
   @override
   State<SvgCharacter> createState() => _SvgCharacterState();
 }
 
 class _SvgCharacterState extends State<SvgCharacter> {
-
   Future<Map<String, dynamic>> getCharacterData(String character) async {
     final db = await SQLHelper.db();
     final result = await db.rawQuery(
-      'select * from stroke_info where character = ?', [character]
+      'select * from stroke_info where character = ?',
+      [character],
     );
     if (result.isEmpty) {
       throw Exception('Character not found');
     }
 
-    final characterData = Map<String, dynamic>.from(result.first); // Make a copy of the result
+    final characterData = Map<String, dynamic>.from(
+      result.first,
+    ); // Make a copy of the result
     characterData['matches'] = _parseMatches(characterData['matches']);
-    characterData['strokes'] = (jsonDecode(characterData['strokes'] as String) as List).cast<String>();
-    characterData['medians'] = (jsonDecode(characterData['medians'] as String) as List).cast<List<dynamic>>();
+    characterData['strokes'] =
+        (jsonDecode(characterData['strokes'] as String) as List).cast<String>();
+    characterData['medians'] =
+        (jsonDecode(characterData['medians'] as String) as List)
+            .cast<List<dynamic>>();
 
     return characterData;
   }
@@ -40,7 +50,8 @@ class _SvgCharacterState extends State<SvgCharacter> {
   List<List<int>?> _parseMatches(dynamic matches) {
     assert(matches != null);
 
-    List<dynamic> decodedMatches = jsonDecode(matches as String) as List<dynamic>;
+    List<dynamic> decodedMatches =
+        jsonDecode(matches as String) as List<dynamic>;
 
     return decodedMatches.map<List<int>?>((e) {
       if (e == null) {
@@ -57,10 +68,10 @@ class _SvgCharacterState extends State<SvgCharacter> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return SizedBox(
-              width: widget.size,
-              height: widget.size,
-              child: const DelayedProgressIndicator()
-            );
+            width: widget.size,
+            height: widget.size,
+            child: const DelayedProgressIndicator(),
+          );
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else if (!snapshot.hasData) {
@@ -69,7 +80,7 @@ class _SvgCharacterState extends State<SvgCharacter> {
           return _DisplaySvgCharacter(
             characterData: snapshot.data!,
             size: widget.size,
-            onClick: widget.onClick
+            onClick: widget.onClick,
           );
         }
       },
@@ -82,7 +93,12 @@ class _DisplaySvgCharacter extends StatefulWidget {
   final double size;
   final void Function(String character) onClick;
 
-  const _DisplaySvgCharacter({Key? key, required this.characterData, required this.size, required this.onClick}) : super(key: key);
+  const _DisplaySvgCharacter({
+    Key? key,
+    required this.characterData,
+    required this.size,
+    required this.onClick,
+  }) : super(key: key);
 
   @override
   _DisplaySvgCharacterState createState() => _DisplaySvgCharacterState();
@@ -137,11 +153,15 @@ class _DisplaySvgCharacterState extends State<_DisplaySvgCharacter> {
     return GestureDetector(
       onTapDown: (details) {
         final RenderBox renderBox = context.findRenderObject() as RenderBox;
-        final Offset localPosition = renderBox.globalToLocal(details.globalPosition);
+        final Offset localPosition = renderBox.globalToLocal(
+          details.globalPosition,
+        );
         final strokeInfo = _findClickedStroke(localPosition);
         if (strokeInfo != null) {
-          print('Clicked Stroke Index: ${strokeInfo.index}, Component: ${strokeInfo._component}');
-          if (strokeInfo._component != null){
+          print(
+            'Clicked Stroke Index: ${strokeInfo.index}, Component: ${strokeInfo._component}',
+          );
+          if (strokeInfo._component != null) {
             widget.onClick(strokeInfo._component);
           }
         }
@@ -171,7 +191,9 @@ class _DisplaySvgCharacterState extends State<_DisplaySvgCharacter> {
     matrix.translate(Vector3(0.0, 900.0, 0.0));
     matrix.scale(1.0, -1.0, 1.0);
     matrix.invert();
-    Vector3 localPoint = matrix.transform3(Vector3(position.dx, position.dy, 0));
+    Vector3 localPoint = matrix.transform3(
+      Vector3(position.dx, position.dy, 0),
+    );
     Offset localOffset = Offset(localPoint.x, localPoint.y);
 
     for (int i = 0; i < painter.strokes.length; i++) {
@@ -181,7 +203,10 @@ class _DisplaySvgCharacterState extends State<_DisplaySvgCharacter> {
         if (componentIndex == null) {
           return _StrokeInfo(i, null);
         }
-        return _StrokeInfo(i, _decomposedChars[componentIndex[0]][componentIndex[1]]);
+        return _StrokeInfo(
+          i,
+          _decomposedChars[componentIndex[0]][componentIndex[1]],
+        );
       }
     }
     return null;
@@ -189,7 +214,9 @@ class _DisplaySvgCharacterState extends State<_DisplaySvgCharacter> {
 
   List<int>? _getComponentIndex(int strokeIndex) {
     final matches = _dictData['matches'];
-    if (matches == null || strokeIndex >= matches.length || matches[strokeIndex] == null) {
+    if (matches == null ||
+        strokeIndex >= matches.length ||
+        matches[strokeIndex] == null) {
       return null;
     }
     final match = matches[strokeIndex];
@@ -200,7 +227,7 @@ class _DisplaySvgCharacterState extends State<_DisplaySvgCharacter> {
     if (match == null || match.isEmpty) {
       return null;
     }
-    int componentIndex = 1; 
+    int componentIndex = 1;
     int step = match[0];
     int count = 0;
     for (int j = 1; j < _decomposedChars.length; j++) {
@@ -226,7 +253,6 @@ class CharacterPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-
     canvas.save();
     double scaleFactor = size.height / 1024;
     canvas.scale(scaleFactor);
@@ -239,13 +265,14 @@ class CharacterPainter extends CustomPainter {
     for (int i = 0; i < matches.length; i++) {
       final match = matches[i];
       if (match != null) {
-      final keyHash = match.toString();
-      if (!componentColors.containsKey(keyHash)) {
-        componentColors[keyHash] = fixedColors[componentColors.length % fixedColors.length];
-      }
+        final keyHash = match.toString();
+        if (!componentColors.containsKey(keyHash)) {
+          componentColors[keyHash] =
+              fixedColors[componentColors.length % fixedColors.length];
+        }
       }
     }
-  
+
     for (int i = 0; i < strokes.length; i++) {
       final pathData = strokes[i];
       final path = parseSvgPathData(pathData);
@@ -257,12 +284,13 @@ class CharacterPainter extends CustomPainter {
         final keyHash = match.toString();
         strokeColor = componentColors[keyHash] ?? Colors.black;
       }
-    
-      final pathPaint = Paint()
-        ..color = strokeColor
-        ..strokeWidth = 2
-        ..style = PaintingStyle.stroke
-        ..strokeCap = StrokeCap.round;
+
+      final pathPaint =
+          Paint()
+            ..color = strokeColor
+            ..strokeWidth = 2
+            ..style = PaintingStyle.stroke
+            ..strokeCap = StrokeCap.round;
       canvas.drawPath(path, pathPaint);
     }
     canvas.restore();
@@ -282,7 +310,10 @@ class CharacterPainter extends CustomPainter {
 
     for (int i = 0; i < commands.length; i++) {
       final command = commands.elementAt(i).group(0);
-      if (command == 'M' || command == 'L' || command == 'Q' || command == 'C' ||
+      if (command == 'M' ||
+          command == 'L' ||
+          command == 'Q' ||
+          command == 'C' ||
           command == 'Z') {
         currentCommand = command;
       } else if (currentCommand != null) {

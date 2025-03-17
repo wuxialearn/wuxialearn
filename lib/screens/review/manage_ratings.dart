@@ -25,8 +25,10 @@ class _ManageRatingsState extends State<ManageRatings> {
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: ratingsFuture,
-      builder: (BuildContext context,
-          AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+      builder: (
+        BuildContext context,
+        AsyncSnapshot<List<Map<String, dynamic>>> snapshot,
+      ) {
         if (snapshot.hasData) {
           final ratings = createReviewRating(snapshot.data!);
           return Column(
@@ -39,66 +41,67 @@ class _ManageRatingsState extends State<ManageRatings> {
                 child: Table(
                   columnWidths: const <int, TableColumnWidth>{
                     //0: IntrinsicColumnWidth(),
-
                     2: IntrinsicColumnWidth(),
                   },
                   children: List.generate(ratings.length, (int index) {
                     final rating = ratings[index];
-                    return TableRow(children: [
-                      TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Text(
-                          rating.name,
+                    return TableRow(
+                      children: [
+                        TableCell(
+                          verticalAlignment: TableCellVerticalAlignment.middle,
+                          child: Text(rating.name),
                         ),
-                      ),
-                      TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Text(rating.interval()),
-                      ),
-                      TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Row(
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                showCupertinoDialog<String>(
-                                  barrierDismissible: true,
-                                  context: context,
-                                  builder: (BuildContext context) => Dialog(
-                                      child: _EditReviewRatingForm(
-                                    rating: rating,
-                                    update: update,
-                                  )),
-                                );
-                              },
-                              child: const Text("edit"),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                ReviewSql.deleteRating(id: rating.id);
-                                update();
-                              },
-                              child: const Text("delete"),
-                            )
-                          ],
+                        TableCell(
+                          verticalAlignment: TableCellVerticalAlignment.middle,
+                          child: Text(rating.interval()),
                         ),
-                      )
-                    ]);
+                        TableCell(
+                          verticalAlignment: TableCellVerticalAlignment.middle,
+                          child: Row(
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  showCupertinoDialog<String>(
+                                    barrierDismissible: true,
+                                    context: context,
+                                    builder:
+                                        (BuildContext context) => Dialog(
+                                          child: _EditReviewRatingForm(
+                                            rating: rating,
+                                            update: update,
+                                          ),
+                                        ),
+                                  );
+                                },
+                                child: const Text("edit"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  ReviewSql.deleteRating(id: rating.id);
+                                  update();
+                                },
+                                child: const Text("delete"),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
                   }),
                 ),
               ),
               TextButton(
-                  onPressed: () {
-                    showCupertinoDialog<String>(
-                      barrierDismissible: true,
-                      context: context,
-                      builder: (BuildContext context) => Dialog(
-                          child: _AddReviewRatingForm(
-                        update: update,
-                      )),
-                    );
-                  },
-                  child: const Text("add")),
+                onPressed: () {
+                  showCupertinoDialog<String>(
+                    barrierDismissible: true,
+                    context: context,
+                    builder:
+                        (BuildContext context) =>
+                            Dialog(child: _AddReviewRatingForm(update: update)),
+                  );
+                },
+                child: const Text("add"),
+              ),
             ],
           );
         } else {
@@ -126,10 +129,7 @@ class _AddReviewRatingFormState extends State<_AddReviewRatingForm> {
 
   @override
   Widget build(BuildContext context) {
-    return _RatingsForm(
-      formKey: key,
-      update: update,
-    );
+    return _RatingsForm(formKey: key, update: update);
   }
 }
 
@@ -151,7 +151,11 @@ class _EditReviewRatingFormState extends State<_EditReviewRatingForm> {
   late String endInterval;
   void update(String name, int start, int end) {
     ReviewSql.setReviewRating(
-        id: widget.rating.id, name: name, start: start, end: end);
+      id: widget.rating.id,
+      name: name,
+      start: start,
+      end: end,
+    );
     widget.update();
   }
 
@@ -185,14 +189,15 @@ class _RatingsForm extends StatefulWidget {
   final String? initialEndIntervalValue;
   final GlobalKey<FormState> formKey;
   final Function(String name, int start, int end) update;
-  const _RatingsForm(
-      {this.initialName,
-      this.initialStart,
-      this.initialEnd,
-      required this.formKey,
-      this.initialStartIntervalValue,
-      this.initialEndIntervalValue,
-      required this.update});
+  const _RatingsForm({
+    this.initialName,
+    this.initialStart,
+    this.initialEnd,
+    required this.formKey,
+    this.initialStartIntervalValue,
+    this.initialEndIntervalValue,
+    required this.update,
+  });
 
   @override
   State<_RatingsForm> createState() => _RatingsFormState();
@@ -264,10 +269,11 @@ class _RatingsFormState extends State<_RatingsForm> {
                   ),
                 ),
                 TextButton(
-                    onPressed: () {
-                      _showStartIntervalActionSheet(context);
-                    },
-                    child: Text(startInterval))
+                  onPressed: () {
+                    _showStartIntervalActionSheet(context);
+                  },
+                  child: Text(startInterval),
+                ),
               ],
             ),
             Row(
@@ -290,10 +296,11 @@ class _RatingsFormState extends State<_RatingsForm> {
                   ),
                 ),
                 TextButton(
-                    onPressed: () {
-                      _showEndIntervalActionSheet(context);
-                    },
-                    child: Text(endInterval))
+                  onPressed: () {
+                    _showEndIntervalActionSheet(context);
+                  },
+                  child: Text(endInterval),
+                ),
               ],
             ),
             Padding(
@@ -306,13 +313,13 @@ class _RatingsFormState extends State<_RatingsForm> {
                       "min" => Duration(minutes: int.parse(startIntervalValue)),
                       "hrs" => Duration(hours: int.parse(startIntervalValue)),
                       "days" => Duration(days: int.parse(startIntervalValue)),
-                      _ => const Duration(minutes: 1)
+                      _ => const Duration(minutes: 1),
                     };
                     Duration endDuration = switch (endInterval) {
                       "min" => Duration(minutes: int.parse(endIntervalValue)),
                       "hrs" => Duration(hours: int.parse(endIntervalValue)),
                       "days" => Duration(days: int.parse(endIntervalValue)),
-                      _ => const Duration(minutes: 1)
+                      _ => const Duration(minutes: 1),
                     };
                     int start = startDuration.inSeconds;
                     int end = endDuration.inSeconds;
@@ -332,42 +339,48 @@ class _RatingsFormState extends State<_RatingsForm> {
   _showStartIntervalActionSheet<bool>(BuildContext context) {
     showCupertinoModalPopup<bool>(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        actions: List<CupertinoActionSheetAction>.generate(intervals.length,
-            (index) {
-          return CupertinoActionSheetAction(
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.pop(context, true);
-              setState(() {
-                startInterval = intervals[index];
-              });
-            },
-            child: Text(intervals[index]),
-          );
-        }),
-      ),
+      builder:
+          (BuildContext context) => CupertinoActionSheet(
+            actions: List<CupertinoActionSheetAction>.generate(
+              intervals.length,
+              (index) {
+                return CupertinoActionSheetAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                    setState(() {
+                      startInterval = intervals[index];
+                    });
+                  },
+                  child: Text(intervals[index]),
+                );
+              },
+            ),
+          ),
     );
   }
 
   _showEndIntervalActionSheet<bool>(BuildContext context) {
     showCupertinoModalPopup<bool>(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        actions: List<CupertinoActionSheetAction>.generate(intervals.length,
-            (index) {
-          return CupertinoActionSheetAction(
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.pop(context, true);
-              setState(() {
-                endInterval = intervals[index];
-              });
-            },
-            child: Text(intervals[index]),
-          );
-        }),
-      ),
+      builder:
+          (BuildContext context) => CupertinoActionSheet(
+            actions: List<CupertinoActionSheetAction>.generate(
+              intervals.length,
+              (index) {
+                return CupertinoActionSheetAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                    setState(() {
+                      endInterval = intervals[index];
+                    });
+                  },
+                  child: Text(intervals[index]),
+                );
+              },
+            ),
+          ),
     );
   }
 }

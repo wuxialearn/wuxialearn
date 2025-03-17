@@ -8,16 +8,16 @@ import '../../sql/learn_sql.dart';
 import '../stats/character_view.dart';
 
 class UnitLearn extends StatefulWidget {
-  const UnitLearn(
-      {Key? key,
-      required this.wordList,
-      required this.unit,
-      required this.subunit,
-      required this.lastSubunit,
-      required this.name,
-      required this.updateUnits,
-      required this.courseName})
-      : super(key: key);
+  const UnitLearn({
+    Key? key,
+    required this.wordList,
+    required this.unit,
+    required this.subunit,
+    required this.lastSubunit,
+    required this.name,
+    required this.updateUnits,
+    required this.courseName,
+  }) : super(key: key);
   final List<WordItem> wordList;
   final int unit;
   final int subunit;
@@ -60,8 +60,10 @@ class _UnitLearnState extends State<UnitLearn> {
   }
 
   getSentenceList() async {
-    sentenceList =
-        await LearnSql.getSentencesForSubunit(widget.unit, widget.subunit);
+    sentenceList = await LearnSql.getSentencesForSubunit(
+      widget.unit,
+      widget.subunit,
+    );
   }
 
   late bool showExampleSentences;
@@ -77,8 +79,9 @@ class _UnitLearnState extends State<UnitLearn> {
     futureList = List.generate(widget.wordList.length, (i) => getUnits(i));
     getSentenceList();
     setLanguage();
-    showLiteralPref =
-        Preferences.getPreference("show_literal_meaning_in_unit_learn");
+    showLiteralPref = Preferences.getPreference(
+      "show_literal_meaning_in_unit_learn",
+    );
     showExampleSentences = Preferences.getPreference("show_sentences");
     speak(widget.wordList[0].hanzi);
   }
@@ -89,23 +92,23 @@ class _UnitLearnState extends State<UnitLearn> {
       child: SafeArea(
         child: Column(
           children: [
-            const SizedBox(
-              height: 3,
-            ),
+            const SizedBox(height: 3),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(CupertinoIcons.back)),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(CupertinoIcons.back),
+                ),
                 Row(
                   children: [
                     TextButton(
-                      child: showPinyin
-                          ? const Text("Hide Pinyin")
-                          : const Text("Show Pinyin"),
+                      child:
+                          showPinyin
+                              ? const Text("Hide Pinyin")
+                              : const Text("Show Pinyin"),
                       onPressed: () {
                         setState(() {
                           showPinyin = !showPinyin;
@@ -113,7 +116,7 @@ class _UnitLearnState extends State<UnitLearn> {
                       },
                     ),
                   ],
-                )
+                ),
               ],
             ),
             Expanded(
@@ -133,9 +136,7 @@ class _UnitLearnState extends State<UnitLearn> {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(
-                        height: 50,
-                      ),
+                      const SizedBox(height: 50),
                       Flexible(
                         flex: 1, //showExampleSentences?1:0,
                         child: Column(
@@ -159,38 +160,48 @@ class _UnitLearnState extends State<UnitLearn> {
                                   maintainAnimation: true,
                                   visible: false,
                                   child: IconButton(
-                                      onPressed: () {
-                                        speak(widget.wordList[pageIndex].hanzi);
-                                      },
-                                      icon: const Icon(Icons.volume_up)),
-                                ),
-                                Row(
-                                    children: List.generate(
-                                        widget.wordList[pageIndex].hanzi.length,
-                                        (e) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => CharacterView(
-                                                character: widget
-                                                    .wordList[pageIndex]
-                                                    .hanzi[e])),
-                                      );
-                                    },
-                                    child: Text(
-                                      widget.wordList[pageIndex].hanzi[e],
-                                      style: const TextStyle(
-                                          fontSize: 40, color: Colors.blue),
-                                    ),
-                                  );
-                                })),
-                                IconButton(
                                     onPressed: () {
                                       speak(widget.wordList[pageIndex].hanzi);
                                     },
-                                    icon: const Icon(Icons.volume_up)),
+                                    icon: const Icon(Icons.volume_up),
+                                  ),
+                                ),
+                                Row(
+                                  children: List.generate(
+                                    widget.wordList[pageIndex].hanzi.length,
+                                    (e) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (context) => CharacterView(
+                                                    character:
+                                                        widget
+                                                            .wordList[pageIndex]
+                                                            .hanzi[e],
+                                                  ),
+                                            ),
+                                          );
+                                        },
+                                        child: Text(
+                                          widget.wordList[pageIndex].hanzi[e],
+                                          style: const TextStyle(
+                                            fontSize: 40,
+                                            color: Colors.blue,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    speak(widget.wordList[pageIndex].hanzi);
+                                  },
+                                  icon: const Icon(Icons.volume_up),
+                                ),
                               ],
                             ),
                             Expanded(
@@ -207,9 +218,7 @@ class _UnitLearnState extends State<UnitLearn> {
                                     ),
                                     showLiteralPref && wordItem.hanzi.length > 1
                                         ? Expanded(child: Text(literal))
-                                        : const SizedBox(
-                                            height: 0,
-                                          ),
+                                        : const SizedBox(height: 0),
                                   ],
                                 ),
                               ),
@@ -217,58 +226,61 @@ class _UnitLearnState extends State<UnitLearn> {
                           ],
                         ),
                       ),
-                      const SizedBox(
-                        height: 25,
-                      ),
+                      const SizedBox(height: 25),
 
                       Visibility(
                         visible: showExampleSentences,
-                        child: Row(children: [
-                          Expanded(
-                            child: Container(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
                                 margin: const EdgeInsets.only(
-                                    left: 10.0, right: 20.0),
-                                child: const Divider(
-                                  thickness: 2,
-                                )),
-                          ),
-                          const Text(
-                            "Sentences",
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          Expanded(
-                            child: Container(
+                                  left: 10.0,
+                                  right: 20.0,
+                                ),
+                                child: const Divider(thickness: 2),
+                              ),
+                            ),
+                            const Text(
+                              "Sentences",
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            Expanded(
+                              child: Container(
                                 margin: const EdgeInsets.only(
-                                    left: 20.0, right: 10.0),
-                                child: const Divider(
-                                  thickness: 2,
-                                )),
-                          ),
-                        ]),
+                                  left: 20.0,
+                                  right: 10.0,
+                                ),
+                                child: const Divider(thickness: 2),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(
-                        height: 25,
-                      ),
+                      const SizedBox(height: 25),
 
                       //sentences
                       Visibility(
                         visible: showExampleSentences,
                         child: FutureBuilder<List<Map<String, dynamic>>>(
-                            future: futureList[pageIndex],
-                            builder: (BuildContext context,
-                                AsyncSnapshot<List<Map<String, dynamic>>>
-                                    snapshot) {
-                              if (snapshot.hasData) {
-                                List<Map<String, dynamic>>? exampleList =
-                                    snapshot.data;
-                                return Column(children: [
+                          future: futureList[pageIndex],
+                          builder: (
+                            BuildContext context,
+                            AsyncSnapshot<List<Map<String, dynamic>>> snapshot,
+                          ) {
+                            if (snapshot.hasData) {
+                              List<Map<String, dynamic>>? exampleList =
+                                  snapshot.data;
+                              return Column(
+                                children: [
                                   ListView.builder(
                                     physics: const ScrollPhysics(),
                                     scrollDirection: Axis.vertical,
                                     shrinkWrap: true,
-                                    itemCount: exampleList!.length > 3
-                                        ? 3
-                                        : exampleList.length,
+                                    itemCount:
+                                        exampleList!.length > 3
+                                            ? 3
+                                            : exampleList.length,
                                     itemBuilder: (context, examplesIndex) {
                                       return Column(
                                         crossAxisAlignment:
@@ -276,7 +288,9 @@ class _UnitLearnState extends State<UnitLearn> {
                                         children: [
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
-                                                horizontal: 8, vertical: 5),
+                                              horizontal: 8,
+                                              vertical: 5,
+                                            ),
                                             child: Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -290,22 +304,19 @@ class _UnitLearnState extends State<UnitLearn> {
                                                             .start,
                                                     children: [
                                                       Visibility(
-                                                        visible: showPinyin ||
+                                                        visible:
+                                                            showPinyin ||
                                                             wasClicked,
                                                         child: Text(
-                                                          exampleList[
-                                                                  examplesIndex]
-                                                              ["pinyin"],
+                                                          exampleList[examplesIndex]["pinyin"],
                                                           style:
                                                               const TextStyle(
-                                                            fontSize: 14,
-                                                          ),
+                                                                fontSize: 14,
+                                                              ),
                                                         ),
                                                       ),
                                                       Text(
-                                                        exampleList[
-                                                                examplesIndex]
-                                                            ["characters"],
+                                                        exampleList[examplesIndex]["characters"],
                                                         style: const TextStyle(
                                                           fontSize: 18,
                                                         ),
@@ -316,108 +327,122 @@ class _UnitLearnState extends State<UnitLearn> {
                                                         maintainState: true,
                                                         visible: wasClicked,
                                                         child: Text(
-                                                          exampleList[
-                                                                  examplesIndex]
-                                                              ["meaning"],
+                                                          exampleList[examplesIndex]["meaning"],
                                                           style:
                                                               const TextStyle(
-                                                            fontSize: 16,
-                                                          ),
+                                                                fontSize: 16,
+                                                              ),
                                                         ),
                                                       ),
                                                     ],
                                                   ),
                                                 ),
                                                 IconButton(
-                                                    onPressed: () {
-                                                      speak(exampleList[
-                                                              examplesIndex]
-                                                          ["characters"]);
-                                                    },
-                                                    icon: const Icon(
-                                                        Icons.volume_up))
+                                                  onPressed: () {
+                                                    speak(
+                                                      exampleList[examplesIndex]["characters"],
+                                                    );
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons.volume_up,
+                                                  ),
+                                                ),
                                               ],
                                             ),
-                                          )
+                                          ),
                                         ],
                                       );
                                     },
                                   ),
-                                ]);
-                              } else {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              }
-                            }),
+                                ],
+                              );
+                            } else {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                          },
+                        ),
                       ),
                       Expanded(
                         child: Align(
                           alignment: FractionalOffset.bottomCenter,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0, vertical: 10),
+                              horizontal: 8.0,
+                              vertical: 10,
+                            ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Flexible(
                                   fit: FlexFit.tight,
                                   child: TextButton(
-                                    onPressed: () => {
-                                      if (_pageController.hasClients &&
-                                          wasClicked)
-                                        {
-                                          if (lastPage)
+                                    onPressed:
+                                        () => {
+                                          if (_pageController.hasClients &&
+                                              wasClicked)
                                             {
-                                              Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      UnitGame(
-                                                    courseName:
-                                                        widget.courseName,
-                                                    wordList: widget.wordList,
-                                                    sentenceList: sentenceList,
-                                                    unit: widget.unit,
-                                                    subunit: widget.subunit,
-                                                    lastSubunit:
-                                                        widget.lastSubunit,
-                                                    name: widget.name,
-                                                    updateUnits:
-                                                        widget.updateUnits,
+                                              if (lastPage)
+                                                {
+                                                  Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder:
+                                                          (context) => UnitGame(
+                                                            courseName:
+                                                                widget
+                                                                    .courseName,
+                                                            wordList:
+                                                                widget.wordList,
+                                                            sentenceList:
+                                                                sentenceList,
+                                                            unit: widget.unit,
+                                                            subunit:
+                                                                widget.subunit,
+                                                            lastSubunit:
+                                                                widget
+                                                                    .lastSubunit,
+                                                            name: widget.name,
+                                                            updateUnits:
+                                                                widget
+                                                                    .updateUnits,
+                                                          ),
+                                                    ),
+                                                  ).then((_) {
+                                                    Navigator.pop(context);
+                                                  }),
+                                                }
+                                              else
+                                                {
+                                                  setState(() {
+                                                    wasClicked = false;
+                                                  }),
+                                                  _pageController.nextPage(
+                                                    duration: const Duration(
+                                                      milliseconds: 400,
+                                                    ),
+                                                    curve: Curves.easeInOut,
                                                   ),
-                                                ),
-                                              ).then((_) {
-                                                Navigator.pop(context);
-                                              })
+                                                },
                                             }
                                           else
                                             {
                                               setState(() {
-                                                wasClicked = false;
+                                                wasClicked = true;
                                               }),
-                                              _pageController.nextPage(
-                                                duration: const Duration(
-                                                    milliseconds: 400),
-                                                curve: Curves.easeInOut,
-                                              )
-                                            }
-                                        }
-                                      else
-                                        {
-                                          setState(() {
-                                            wasClicked = true;
-                                          })
-                                        }
-                                    },
-                                    child: wasClicked
-                                        ? const Text(
-                                            "Continue",
-                                            style: TextStyle(fontSize: 16),
-                                          )
-                                        : const Text(
-                                            "Show Meaning",
-                                            style: TextStyle(fontSize: 16),
-                                          ),
+                                            },
+                                        },
+                                    child:
+                                        wasClicked
+                                            ? const Text(
+                                              "Continue",
+                                              style: TextStyle(fontSize: 16),
+                                            )
+                                            : const Text(
+                                              "Show Meaning",
+                                              style: TextStyle(fontSize: 16),
+                                            ),
                                   ),
                                 ),
                               ],
@@ -429,7 +454,7 @@ class _UnitLearnState extends State<UnitLearn> {
                   );
                 },
               ),
-            )
+            ),
           ],
         ),
       ),

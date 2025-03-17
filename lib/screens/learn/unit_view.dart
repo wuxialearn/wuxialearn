@@ -12,13 +12,13 @@ class UnitView extends StatefulWidget {
   final String name;
   final Function updateUnits;
   final String courseName;
-  const UnitView(
-      {Key? key,
-      required this.unit,
-      required this.name,
-      required this.updateUnits,
-      required this.courseName})
-      : super(key: key);
+  const UnitView({
+    Key? key,
+    required this.unit,
+    required this.name,
+    required this.updateUnits,
+    required this.courseName,
+  }) : super(key: key);
 
   @override
   State<UnitView> createState() => _UnitViewState();
@@ -29,8 +29,9 @@ class _UnitViewState extends State<UnitView> {
   late Future<List<Map<String, dynamic>>> sentencesFuture;
   late Future<List<Map<String, dynamic>>> subunitFuture;
   final bool debug = Preferences.getPreference("debug");
-  final bool allowAutoComplete =
-      Preferences.getPreference("allow_auto_complete_unit");
+  final bool allowAutoComplete = Preferences.getPreference(
+    "allow_auto_complete_unit",
+  );
 
   @override
   initState() {
@@ -51,110 +52,121 @@ class _UnitViewState extends State<UnitView> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text(widget.name),
-      ),
+      navigationBar: CupertinoNavigationBar(middle: Text(widget.name)),
       child: SafeArea(
         child: Column(
           children: [
             FutureBuilder<List<Map<String, dynamic>>>(
-                future: hskFuture,
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-                  if (snapshot.hasData) {
-                    List<Map<String, dynamic>> hskList = snapshot.data!;
-                    final wordList = createWordListWithSubunit(hskList);
-                    int hskLength = hskList.length;
-                    List<int> unitIndex = [0];
-                    List<int> unitLength = [];
-                    int lastIndex = 1;
-                    int length = 0;
-                    for (int i = 0; i < wordList.length; i++) {
-                      if (wordList[i].subunit != lastIndex) {
-                        unitIndex.add(i);
-                        lastIndex++;
-                        unitLength.add(i - length);
-                        length += i - length;
-                      }
-                      if (i == wordList.length - 1) {
-                        unitLength.add(i - length + 1);
-                      }
+              future: hskFuture,
+              builder: (
+                BuildContext context,
+                AsyncSnapshot<List<Map<String, dynamic>>> snapshot,
+              ) {
+                if (snapshot.hasData) {
+                  List<Map<String, dynamic>> hskList = snapshot.data!;
+                  final wordList = createWordListWithSubunit(hskList);
+                  int hskLength = hskList.length;
+                  List<int> unitIndex = [0];
+                  List<int> unitLength = [];
+                  int lastIndex = 1;
+                  int length = 0;
+                  for (int i = 0; i < wordList.length; i++) {
+                    if (wordList[i].subunit != lastIndex) {
+                      unitIndex.add(i);
+                      lastIndex++;
+                      unitLength.add(i - length);
+                      length += i - length;
                     }
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                                padding:
-                                    const EdgeInsets.fromLTRB(13, 20, 20, 13),
-                                child: RichText(
-                                  text: TextSpan(
-                                    style: DefaultTextStyle.of(context).style,
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                          text: hskLength.toString(),
-                                          style: const TextStyle(
-                                              color: Colors.blue)),
-                                      const TextSpan(text: ' words'),
-                                    ],
+                    if (i == wordList.length - 1) {
+                      unitLength.add(i - length + 1);
+                    }
+                  }
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(13, 20, 20, 13),
+                            child: RichText(
+                              text: TextSpan(
+                                style: DefaultTextStyle.of(context).style,
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: hskLength.toString(),
+                                    style: const TextStyle(color: Colors.blue),
                                   ),
-                                )),
-                            Visibility(
-                                visible: allowAutoComplete,
-                                child: TextButton(
-                                  onPressed: () {
-                                    //should use transaction here and elsewhere
-                                    for (final word in wordList) {
-                                      StatsSql.insertStat(
-                                          value: 1, id: word.id);
-                                      ManageReviewSql.addToReviewDeck(
-                                          id: word.id,
-                                          deck: widget.courseName,
-                                          value: true);
-                                    }
-                                    for (int i = 0;
-                                        i < unitLength.length;
-                                        i++) {
-                                      LearnSql.completeSubUnit(
-                                          unit: widget.unit, subUnit: i + 1);
-                                    }
-                                    LearnSql.completeUnit(unit: widget.unit);
-                                  },
-                                  child: const Text("Complete Unit"),
-                                ))
-                          ],
-                        ),
-                        FutureBuilder<List<Map<String, dynamic>>>(
-                          future: subunitFuture,
-                          builder: (BuildContext context,
-                              AsyncSnapshot<List<Map<String, dynamic>>>
-                                  snapshot) {
-                            if (snapshot.hasData) {
-                              List<Map<String, dynamic>> subunits =
-                                  snapshot.data!;
-                              return Column(
-                                  children: List<Widget>.generate(
-                                      unitIndex.length, (i) {
+                                  const TextSpan(text: ' words'),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: allowAutoComplete,
+                            child: TextButton(
+                              onPressed: () {
+                                //should use transaction here and elsewhere
+                                for (final word in wordList) {
+                                  StatsSql.insertStat(value: 1, id: word.id);
+                                  ManageReviewSql.addToReviewDeck(
+                                    id: word.id,
+                                    deck: widget.courseName,
+                                    value: true,
+                                  );
+                                }
+                                for (int i = 0; i < unitLength.length; i++) {
+                                  LearnSql.completeSubUnit(
+                                    unit: widget.unit,
+                                    subUnit: i + 1,
+                                  );
+                                }
+                                LearnSql.completeUnit(unit: widget.unit);
+                              },
+                              child: const Text("Complete Unit"),
+                            ),
+                          ),
+                        ],
+                      ),
+                      FutureBuilder<List<Map<String, dynamic>>>(
+                        future: subunitFuture,
+                        builder: (
+                          BuildContext context,
+                          AsyncSnapshot<List<Map<String, dynamic>>> snapshot,
+                        ) {
+                          if (snapshot.hasData) {
+                            List<Map<String, dynamic>> subunits =
+                                snapshot.data!;
+                            return Column(
+                              children: List<
+                                Widget
+                              >.generate(unitIndex.length, (i) {
                                 return Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 5),
+                                    horizontal: 10.0,
+                                    vertical: 5,
+                                  ),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: subunits[i]["completed"] == 1
-                                          ? Colors.lightBlue
-                                          : Theme.of(context).scaffoldBackgroundColor,
+                                      color:
+                                          subunits[i]["completed"] == 1
+                                              ? Colors.lightBlue
+                                              : Theme.of(
+                                                context,
+                                              ).scaffoldBackgroundColor,
                                       border: Border.all(
-                                          width: 2.0, color: Colors.lightBlue),
+                                        width: 2.0,
+                                        color: Colors.lightBlue,
+                                      ),
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                     child: Padding(
                                       padding: const EdgeInsets.only(
-                                          top: 8.0,
-                                          left: 5.0,
-                                          right: 3.0,
-                                          bottom: 8.0),
+                                        top: 8.0,
+                                        left: 5.0,
+                                        right: 3.0,
+                                        bottom: 8.0,
+                                      ),
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -165,98 +177,110 @@ class _UnitViewState extends State<UnitView> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 8.0),
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 8.0,
+                                                      ),
                                                   child: Text(
                                                     "Lesson ${i + 1}",
                                                     style: const TextStyle(
-                                                        fontSize: 15),
+                                                      fontSize: 15,
+                                                    ),
                                                   ),
                                                 ),
                                                 Text(
                                                   wordList
                                                       .sublist(
-                                                          unitIndex[i],
-                                                          unitIndex[i] +
-                                                              unitLength[i])
+                                                        unitIndex[i],
+                                                        unitIndex[i] +
+                                                            unitLength[i],
+                                                      )
                                                       .map((e) => e.hanzi)
                                                       .toList()
                                                       .join(', '),
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   style: const TextStyle(
-                                                      fontSize: 23),
+                                                    fontSize: 23,
+                                                  ),
                                                 ),
                                               ],
                                             ),
                                           ),
                                           IconButton(
-                                              highlightColor:
-                                                  Colors.transparent,
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) => SubunitView(
-                                                            courseName: widget
-                                                                .courseName,
-                                                            wordList: wordList.sublist(
-                                                                unitIndex[i],
-                                                                unitIndex[i] +
-                                                                    unitLength[
-                                                                        i]),
-                                                            unit: widget.unit,
-                                                            subunit: i + 1,
-                                                            lastSubunit:
-                                                                i + 1 ==
-                                                                    unitIndex
-                                                                        .length,
-                                                            name: widget.name,
-                                                            completed: subunits[
-                                                                        i][
-                                                                    "completed"] ==
-                                                                1,
-                                                            updateUnits:
-                                                                updateUnits))).then(
-                                                    (_) {
-                                                  setState(() {
-                                                    subunitFuture =
-                                                        LearnSql.getSubunitInfo(
-                                                            unit: widget.unit);
-                                                  });
+                                            highlightColor: Colors.transparent,
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder:
+                                                      (context) => SubunitView(
+                                                        courseName:
+                                                            widget.courseName,
+                                                        wordList: wordList
+                                                            .sublist(
+                                                              unitIndex[i],
+                                                              unitIndex[i] +
+                                                                  unitLength[i],
+                                                            ),
+                                                        unit: widget.unit,
+                                                        subunit: i + 1,
+                                                        lastSubunit:
+                                                            i + 1 ==
+                                                            unitIndex.length,
+                                                        name: widget.name,
+                                                        completed:
+                                                            subunits[i]["completed"] ==
+                                                            1,
+                                                        updateUnits:
+                                                            updateUnits,
+                                                      ),
+                                                ),
+                                              ).then((_) {
+                                                setState(() {
+                                                  subunitFuture =
+                                                      LearnSql.getSubunitInfo(
+                                                        unit: widget.unit,
+                                                      );
                                                 });
-                                              },
-                                              icon: Container(
-                                                  decoration:
-                                                      BoxDecoration(
-                                                    color: Theme.of(context).scaffoldBackgroundColor,
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                100)),
-                                                  ),
-                                                  child: const Icon(
-                                                    CupertinoIcons.arrow_right,
-                                                    size: 30,
-                                                  )))
+                                              });
+                                            },
+                                            icon: Container(
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    Theme.of(
+                                                      context,
+                                                    ).scaffoldBackgroundColor,
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                      Radius.circular(100),
+                                                    ),
+                                              ),
+                                              child: const Icon(
+                                                CupertinoIcons.arrow_right,
+                                                size: 30,
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
                                   ),
                                 );
-                              }));
-                            } else {
-                              return const CircularProgressIndicator();
-                            }
-                          },
-                        )
-                      ],
-                    );
-                  } else {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                }),
+                              }),
+                            );
+                          } else {
+                            return const CircularProgressIndicator();
+                          }
+                        },
+                      ),
+                    ],
+                  );
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
             if (debug)
               Expanded(
                 child: CustomScrollView(
@@ -270,9 +294,7 @@ class _UnitViewState extends State<UnitView> {
                         ),
                       ),
                     ),
-                    _Sentences(
-                      sentencesFuture: sentencesFuture,
-                    )
+                    _Sentences(sentencesFuture: sentencesFuture),
                   ],
                 ),
               ),
@@ -290,45 +312,45 @@ class _Sentences extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Map<String, dynamic>>>(
-        future: sentencesFuture,
-        builder: (BuildContext context,
-            AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-          if (snapshot.hasData) {
-            List<Map<String, dynamic>>? sentences = snapshot.data;
-            if (sentences!.isEmpty) {
-              return const SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "There are no sentences yet for this unit",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              List<int> unitIndex = [0];
-              List<int> unitLength = [];
-              int lastIndex = 1;
-              int length = 0;
-              for (int i = 0; i < sentences.length; i++) {
-                if (sentences[i]["subunit"] != lastIndex) {
-                  unitIndex.add(i);
-                  lastIndex++;
-                  unitLength.add(i - length - 1);
-                  length += i - length - 1;
-                }
-                if (i == sentences.length - 1) {
-                  unitLength.add(i - length);
-                }
+      future: sentencesFuture,
+      builder: (
+        BuildContext context,
+        AsyncSnapshot<List<Map<String, dynamic>>> snapshot,
+      ) {
+        if (snapshot.hasData) {
+          List<Map<String, dynamic>>? sentences = snapshot.data;
+          if (sentences!.isEmpty) {
+            return const SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  SizedBox(height: 20),
+                  Text(
+                    "There are no sentences yet for this unit",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            List<int> unitIndex = [0];
+            List<int> unitLength = [];
+            int lastIndex = 1;
+            int length = 0;
+            for (int i = 0; i < sentences.length; i++) {
+              if (sentences[i]["subunit"] != lastIndex) {
+                unitIndex.add(i);
+                lastIndex++;
+                unitLength.add(i - length - 1);
+                length += i - length - 1;
               }
-              return SliverList(
-                delegate:
-                    SliverChildBuilderDelegate(childCount: sentences.length,
-                        (BuildContext context, int index) {
+              if (i == sentences.length - 1) {
+                unitLength.add(i - length);
+              }
+            }
+            return SliverList(
+              delegate: SliverChildBuilderDelegate(
+                childCount: sentences.length,
+                (BuildContext context, int index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8.0,
@@ -339,12 +361,10 @@ class _Sentences extends StatelessWidget {
                       children: [
                         unitIndex.contains(index)
                             ? Text(
-                                "subunit ${unitIndex.indexOf(index) + 1}",
-                                style: const TextStyle(color: Colors.blue),
-                              )
-                            : const SizedBox(
-                                height: 0,
-                              ),
+                              "subunit ${unitIndex.indexOf(index) + 1}",
+                              style: const TextStyle(color: Colors.blue),
+                            )
+                            : const SizedBox(height: 0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -381,13 +401,16 @@ class _Sentences extends StatelessWidget {
                       ],
                     ),
                   );
-                }),
-              );
-            }
-          } else {
-            return const SliverToBoxAdapter(
-                child: Center(child: CircularProgressIndicator()));
+                },
+              ),
+            );
           }
-        });
+        } else {
+          return const SliverToBoxAdapter(
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+      },
+    );
   }
 }

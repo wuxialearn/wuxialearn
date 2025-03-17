@@ -15,8 +15,10 @@ class SQLHelper {
       var exists = await factory.databaseExists("demo_asset_example.db");
       if (!exists) {
         final data = await rootBundle.load(url.join('assets', 'example.db'));
-        final bytes =
-            data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+        final bytes = data.buffer.asUint8List(
+          data.offsetInBytes,
+          data.lengthInBytes,
+        );
         await factory.writeDatabaseBytes("demo_asset_example.db", bytes);
       }
       return factory.openDatabase('demo_asset_example.db');
@@ -46,8 +48,10 @@ class SQLHelper {
     } catch (_) {}
     // Copy from asset
     ByteData data = await rootBundle.load("assets/example.db");
-    List<int> bytes =
-        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    List<int> bytes = data.buffer.asUint8List(
+      data.offsetInBytes,
+      data.lengthInBytes,
+    );
     // Write and flush the bytes written
     await File(path).writeAsBytes(bytes, flush: true);
     return true;
@@ -61,7 +65,10 @@ class SQLHelper {
   }
 
   static Future<bool> columnExists(
-      String table, String column, sql.DatabaseExecutor db) async {
+    String table,
+    String column,
+    sql.DatabaseExecutor db,
+  ) async {
     final exists = await db.rawQuery("""
       SELECT COUNT(*) AS exist FROM pragma_table_info('$table') WHERE name='$column'
     """);

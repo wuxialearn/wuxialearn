@@ -78,8 +78,11 @@ class SchemaMigration {
         ('$perfect', $perfectStart, $perfectEnd)
         
         """);
-        final ratingIdExists =
-            await SQLHelper.columnExists("review", "rating_id", txn);
+        final ratingIdExists = await SQLHelper.columnExists(
+          "review",
+          "rating_id",
+          txn,
+        );
         if (!ratingIdExists) {
           txn.execute("""
           ALTER TABLE review ADD COLUMN rating_id integer;

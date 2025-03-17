@@ -34,8 +34,11 @@ class Preferences {
     }
   }
 
-  static insertPref(
-      {required String name, required String value, required String type}) {
+  static insertPref({
+    required String name,
+    required String value,
+    required String type,
+  }) {
     switch (type) {
       case "bool":
         bool newValue = (value == "1");
@@ -53,13 +56,17 @@ class Preferences {
     final pref = data[preference];
     print(pref);
     PreferencesSql.insertPreference(
-        name: preference, value: pref["value"], type: pref["type"]);
+      name: preference,
+      value: pref["value"],
+      type: pref["type"],
+    );
     insertPref(name: preference, value: pref["value"], type: pref["type"]);
   }
 
   static Future<void> loadDefaultPreferences() async {
-    final String response =
-        await rootBundle.loadString('assets/default_prefs.json');
+    final String response = await rootBundle.loadString(
+      'assets/default_prefs.json',
+    );
     data = await json.decode(response);
   }
 
@@ -70,12 +77,12 @@ class Preferences {
   }
 }
 
-
 class SharedPrefs {
   static late SharedPreferences prefs;
   static Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
   }
+
   static SharedPreferences getPrefs() {
     return prefs;
   }

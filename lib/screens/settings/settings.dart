@@ -18,17 +18,21 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   bool translation = Preferences.getPreference("showTranslations");
-  bool reviewPinyin =
-      Preferences.getPreference("show_pinyin_by_default_in_review");
-  bool checkVersionOnStart =
-      Preferences.getPreference("check_for_new_version_on_start");
+  bool reviewPinyin = Preferences.getPreference(
+    "show_pinyin_by_default_in_review",
+  );
+  bool checkVersionOnStart = Preferences.getPreference(
+    "check_for_new_version_on_start",
+  );
   bool debug = Preferences.getPreference("debug");
   bool allowSkipUnits = Preferences.getPreference("allow_skip_units");
   bool showExampleSentences = Preferences.getPreference("show_sentences");
-  bool allowAutoComplete =
-      Preferences.getPreference("allow_auto_complete_unit");
-  bool showLiteralInUnitLearn =
-      Preferences.getPreference("show_literal_meaning_in_unit_learn");
+  bool allowAutoComplete = Preferences.getPreference(
+    "allow_auto_complete_unit",
+  );
+  bool showLiteralInUnitLearn = Preferences.getPreference(
+    "show_literal_meaning_in_unit_learn",
+  );
   List<String> courses = Preferences.getPreference("courses");
   List<String> homePages = ["home", "review", "stats"];
   String defaultCourse = Preferences.getPreference("default_course");
@@ -38,22 +42,29 @@ class _SettingsState extends State<Settings> {
   bool showDebugOptions = false;
   bool isDownloading = false;
   bool isDeleting = false;
-  bool isDataDownloaded = SharedPrefs.prefs.getBool('character_stroke_data_downloaded') ?? false;
+  bool isDataDownloaded =
+      SharedPrefs.prefs.getBool('character_stroke_data_downloaded') ?? false;
 
   @override
   void initState() {
     super.initState();
   }
 
-  setSettingBool(
-      {required String name, required String type, required bool value}) {
+  setSettingBool({
+    required String name,
+    required String type,
+    required bool value,
+  }) {
     String val = value == true ? "1" : "0";
     PreferencesSql.setPreference(name: name, value: val, type: type);
     Preferences.setPreference(name: name, value: value);
   }
 
-  setSettingString(
-      {required String name, required String type, required String value}) {
+  setSettingString({
+    required String name,
+    required String type,
+    required String value,
+  }) {
     PreferencesSql.setPreference(name: name, value: value, type: type);
     Preferences.setPreference(name: name, value: value);
   }
@@ -61,96 +72,105 @@ class _SettingsState extends State<Settings> {
   _showDefaultCourseActionSheet<bool>(BuildContext context) {
     showCupertinoModalPopup<bool>(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        //title: const Text('Courses'),
-        title: const Text('Select a default course'),
-        actions:
-            List<CupertinoActionSheetAction>.generate(courses.length, (index) {
-          return CupertinoActionSheetAction(
-            isDefaultAction: true,
-            onPressed: () {
-              setSettingString(
-                  name: 'default_course',
-                  type: 'string',
-                  value: courses[index]);
-              Navigator.pop(context, true);
-              setState(() {
-                defaultCourse = Preferences.getPreference("default_course");
-              });
-            },
-            child: Text(courses[index]),
-          );
-        }),
-      ),
+      builder:
+          (BuildContext context) => CupertinoActionSheet(
+            //title: const Text('Courses'),
+            title: const Text('Select a default course'),
+            actions: List<CupertinoActionSheetAction>.generate(courses.length, (
+              index,
+            ) {
+              return CupertinoActionSheetAction(
+                isDefaultAction: true,
+                onPressed: () {
+                  setSettingString(
+                    name: 'default_course',
+                    type: 'string',
+                    value: courses[index],
+                  );
+                  Navigator.pop(context, true);
+                  setState(() {
+                    defaultCourse = Preferences.getPreference("default_course");
+                  });
+                },
+                child: Text(courses[index]),
+              );
+            }),
+          ),
     );
   }
 
   _showDefaultHomePageActionSheet<bool>(BuildContext context) {
     showCupertinoModalPopup<bool>(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        //title: const Text('Courses'),
-        title: const Text('Select a default home page'),
-        actions: List<CupertinoActionSheetAction>.generate(homePages.length,
-            (index) {
-          return CupertinoActionSheetAction(
-            isDefaultAction: true,
-            onPressed: () {
-              setSettingString(
-                  name: 'default_home_page',
-                  type: 'string',
-                  value: homePages[index]);
-              Navigator.pop(context, true);
-              setState(() {
-                defaultHomePage =
-                    Preferences.getPreference("default_home_page");
-              });
-            },
-            child: Text(homePages[index]),
-          );
-        }),
-      ),
+      builder:
+          (BuildContext context) => CupertinoActionSheet(
+            //title: const Text('Courses'),
+            title: const Text('Select a default home page'),
+            actions: List<CupertinoActionSheetAction>.generate(
+              homePages.length,
+              (index) {
+                return CupertinoActionSheetAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    setSettingString(
+                      name: 'default_home_page',
+                      type: 'string',
+                      value: homePages[index],
+                    );
+                    Navigator.pop(context, true);
+                    setState(() {
+                      defaultHomePage = Preferences.getPreference(
+                        "default_home_page",
+                      );
+                    });
+                  },
+                  child: Text(homePages[index]),
+                );
+              },
+            ),
+          ),
     );
   }
 
   _showThemeSelectionDialog(BuildContext context) {
     showCupertinoModalPopup(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text('Select Theme'),
-        actions: [
-          CupertinoActionSheetAction(
-            onPressed: () {
-              SharedPrefs.prefs.setString('theme', 'light');
-              Navigator.pop(context);
-              setState(() {});
-            },
-            child: const Text('Light'),
+      builder:
+          (BuildContext context) => CupertinoActionSheet(
+            title: const Text('Select Theme'),
+            actions: [
+              CupertinoActionSheetAction(
+                onPressed: () {
+                  SharedPrefs.prefs.setString('theme', 'light');
+                  Navigator.pop(context);
+                  setState(() {});
+                },
+                child: const Text('Light'),
+              ),
+              CupertinoActionSheetAction(
+                onPressed: () {
+                  SharedPrefs.prefs.setString('theme', 'dark');
+                  Navigator.pop(context);
+                  setState(() {});
+                },
+                child: const Text('Dark'),
+              ),
+              CupertinoActionSheetAction(
+                onPressed: () {
+                  SharedPrefs.prefs.setString('theme', 'system');
+                  Navigator.pop(context);
+                  setState(() {});
+                },
+                child: const Text('System'),
+              ),
+            ],
+            cancelButton: CupertinoActionSheetAction(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
           ),
-          CupertinoActionSheetAction(
-            onPressed: () {
-              SharedPrefs.prefs.setString('theme', 'dark');
-              Navigator.pop(context);
-              setState(() {});
-            },
-            child: const Text('Dark'),
-          ),
-          CupertinoActionSheetAction(
-            onPressed: () {
-              SharedPrefs.prefs.setString('theme', 'system');
-              Navigator.pop(context);
-              setState(() {});
-            },
-            child: const Text('System'),
-          ),
-        ],
-        cancelButton: CupertinoActionSheetAction(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Cancel'),
-        ),
-      ),
     );
   }
 
@@ -159,17 +179,13 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text("Settings"),
-      ),
+      navigationBar: const CupertinoNavigationBar(middle: Text("Settings")),
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: ListView(
             children: [
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               Column(
                 children: [
                   const Text("Review"),
@@ -183,9 +199,10 @@ class _SettingsState extends State<Settings> {
                         activeTrackColor: CupertinoColors.activeBlue,
                         onChanged: (bool value) {
                           setSettingBool(
-                              name: "showTranslations",
-                              type: "bool",
-                              value: value);
+                            name: "showTranslations",
+                            type: "bool",
+                            value: value,
+                          );
                           setState(() => translation = value);
                         },
                       ),
@@ -201,9 +218,10 @@ class _SettingsState extends State<Settings> {
                         activeTrackColor: CupertinoColors.activeBlue,
                         onChanged: (bool value) {
                           setSettingBool(
-                              name: "show_pinyin_by_default_in_review",
-                              type: "bool",
-                              value: value);
+                            name: "show_pinyin_by_default_in_review",
+                            type: "bool",
+                            value: value,
+                          );
                           setState(() => reviewPinyin = value);
                         },
                       ),
@@ -224,9 +242,10 @@ class _SettingsState extends State<Settings> {
                         activeTrackColor: CupertinoColors.activeBlue,
                         onChanged: (bool value) {
                           setSettingBool(
-                              name: "show_sentences",
-                              type: "bool",
-                              value: value);
+                            name: "show_sentences",
+                            type: "bool",
+                            value: value,
+                          );
                           setState(() => showExampleSentences = value);
                         },
                       ),
@@ -242,9 +261,10 @@ class _SettingsState extends State<Settings> {
                         activeTrackColor: CupertinoColors.activeBlue,
                         onChanged: (bool value) {
                           setSettingBool(
-                              name: "show_literal_meaning_in_unit_learn",
-                              type: "bool",
-                              value: value);
+                            name: "show_literal_meaning_in_unit_learn",
+                            type: "bool",
+                            value: value,
+                          );
                           setState(() => showLiteralInUnitLearn = value);
                         },
                       ),
@@ -287,13 +307,13 @@ class _SettingsState extends State<Settings> {
                         onPressed: () {
                           _showThemeSelectionDialog(context);
                         },
-                        child: Text(
-                          switch (SharedPrefs.prefs.getString('theme')) {
-                            "dark" => "Dark",
-                            "light" => "Light",
-                            _ => "System",
-                          },
-                        ),
+                        child: Text(switch (SharedPrefs.prefs.getString(
+                          'theme',
+                        )) {
+                          "dark" => "Dark",
+                          "light" => "Light",
+                          _ => "System",
+                        }),
                       ),
                     ],
                   ),
@@ -309,47 +329,58 @@ class _SettingsState extends State<Settings> {
                       Row(
                         children: [
                           CupertinoButton(
-                            onPressed: isDataDownloaded ? null : () async {
-                              setState(() {
-                                isDownloading = true;
-                              });
-                              CharacterStokesSql.createTable().then(
-                                (value) {
-                                  SharedPrefs.prefs.setBool('character_stroke_data_downloaded', true);
-                                  setState(() {
-                                    isDataDownloaded = true;
-                                  });
-                                  showCupertinoDialog(
-                                    barrierDismissible: true,
-                                    context: context,
-                                    builder: (context) {
-                                      return const CupertinoAlertDialog(
-                                        content: Text("Download succeeded"),
-                                      );
+                            onPressed:
+                                isDataDownloaded
+                                    ? null
+                                    : () async {
+                                      setState(() {
+                                        isDownloading = true;
+                                      });
+                                      CharacterStokesSql.createTable()
+                                          .then(
+                                            (value) {
+                                              SharedPrefs.prefs.setBool(
+                                                'character_stroke_data_downloaded',
+                                                true,
+                                              );
+                                              setState(() {
+                                                isDataDownloaded = true;
+                                              });
+                                              showCupertinoDialog(
+                                                barrierDismissible: true,
+                                                context: context,
+                                                builder: (context) {
+                                                  return const CupertinoAlertDialog(
+                                                    content: Text(
+                                                      "Download succeeded",
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            },
+                                            onError: (e) {
+                                              showCupertinoDialog(
+                                                barrierDismissible: true,
+                                                context: context,
+                                                builder: (context) {
+                                                  return const CupertinoAlertDialog(
+                                                    content: Text(
+                                                      "Download failed",
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          )
+                                          .whenComplete(() {
+                                            setState(() {
+                                              isDownloading = false;
+                                            });
+                                          });
                                     },
-                                  );
-                                },
-                                onError: (e) {
-                                  showCupertinoDialog(
-                                    barrierDismissible: true,
-                                    context: context,
-                                    builder: (context) {
-                                      return const CupertinoAlertDialog(
-                                        content: Text("Download failed"),
-                                      );
-                                    },
-                                  );
-                                },
-                              ).whenComplete(() {
-                                setState(() {
-                                  isDownloading = false;
-                                });
-                              });
-                            },
                             child: const Text("Download"),
                           ),
-                          if (isDownloading)
-                            const CupertinoActivityIndicator(),
+                          if (isDownloading) const CupertinoActivityIndicator(),
                         ],
                       ),
                     ],
@@ -366,57 +397,63 @@ class _SettingsState extends State<Settings> {
                       children: [
                         const Text("Backup data"),
                         IconButton(
-                            onPressed: () async {
-                              Future<bool> updated =
-                                  Backup.startBackupWithFileSelection();
-                              updated.then(
-                                (val) => showCupertinoDialog(
-                                    barrierDismissible: true,
-                                    context: context,
-                                    builder: (context) {
-                                      late final String text;
-                                      val == true
-                                          ? text = "backup succeeded"
-                                          : text = backupFailedMessage;
-                                      return CupertinoAlertDialog(
-                                        content: Text(text),
-                                      );
-                                    }),
-                                onError: (e) => showCupertinoDialog(
+                          onPressed: () async {
+                            Future<bool> updated =
+                                Backup.startBackupWithFileSelection();
+                            updated.then(
+                              (val) => showCupertinoDialog(
+                                barrierDismissible: true,
+                                context: context,
+                                builder: (context) {
+                                  late final String text;
+                                  val == true
+                                      ? text = "backup succeeded"
+                                      : text = backupFailedMessage;
+                                  return CupertinoAlertDialog(
+                                    content: Text(text),
+                                  );
+                                },
+                              ),
+                              onError:
+                                  (e) => showCupertinoDialog(
                                     barrierDismissible: true,
                                     context: context,
                                     builder: (context) {
                                       return const CupertinoAlertDialog(
                                         content: Text(backupFailedMessage),
                                       );
-                                    }),
-                              );
-                            },
-                            icon: const Icon(Icons.add)),
+                                    },
+                                  ),
+                            );
+                          },
+                          icon: const Icon(Icons.add),
+                        ),
                       ],
                     ),
                     Row(
                       children: [
                         const Text("restore from backup"),
                         IconButton(
-                            onPressed: () async {
-                              bool updated =
-                                  await Backup.restoreBackupFromUserFile();
-                              setState(() {});
-                              showCupertinoDialog(
-                                  barrierDismissible: true,
-                                  context: context,
-                                  builder: (context) {
-                                    late final String text;
-                                    updated
-                                        ? text = "backup succeeded"
-                                        : text = backupFailedMessage;
-                                    return CupertinoAlertDialog(
-                                      content: Text(text),
-                                    );
-                                  });
-                            },
-                            icon: const Icon(Icons.add)),
+                          onPressed: () async {
+                            bool updated =
+                                await Backup.restoreBackupFromUserFile();
+                            setState(() {});
+                            showCupertinoDialog(
+                              barrierDismissible: true,
+                              context: context,
+                              builder: (context) {
+                                late final String text;
+                                updated
+                                    ? text = "backup succeeded"
+                                    : text = backupFailedMessage;
+                                return CupertinoAlertDialog(
+                                  content: Text(text),
+                                );
+                              },
+                            );
+                          },
+                          icon: const Icon(Icons.add),
+                        ),
                       ],
                     ),
                   ],
@@ -434,23 +471,25 @@ class _SettingsState extends State<Settings> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.start,
-                    children: [const Text("Version "), FutureBuilder<String>(
-                    future: _getVersion(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CupertinoActivityIndicator();
-                      } else if (snapshot.hasError) {
-                      return const Text("Error");
-                      } else {
-                      return Text(snapshot.data ?? 'Unknown');
-                      }
-                    },
-                    )],
+                  children: [
+                    const Text("Version "),
+                    FutureBuilder<String>(
+                      future: _getVersion(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CupertinoActivityIndicator();
+                        } else if (snapshot.hasError) {
+                          return const Text("Error");
+                        } else {
+                          return Text(snapshot.data ?? 'Unknown');
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               Visibility(
                 visible: showDebugOptions,
                 child: Column(
@@ -466,7 +505,10 @@ class _SettingsState extends State<Settings> {
                           activeTrackColor: CupertinoColors.activeBlue,
                           onChanged: (bool value) {
                             setSettingBool(
-                                name: "debug", type: "bool", value: value);
+                              name: "debug",
+                              type: "bool",
+                              value: value,
+                            );
                             setState(() => debug = value);
                           },
                         ),
@@ -482,9 +524,10 @@ class _SettingsState extends State<Settings> {
                           activeTrackColor: CupertinoColors.activeBlue,
                           onChanged: (bool value) {
                             setSettingBool(
-                                name: "allow_skip_units",
-                                type: "bool",
-                                value: value);
+                              name: "allow_skip_units",
+                              type: "bool",
+                              value: value,
+                            );
                             setState(() => allowSkipUnits = value);
                           },
                         ),
@@ -500,9 +543,10 @@ class _SettingsState extends State<Settings> {
                           activeTrackColor: CupertinoColors.activeBlue,
                           onChanged: (bool value) {
                             setSettingBool(
-                                name: "check_for_new_version_on_start",
-                                type: "bool",
-                                value: value);
+                              name: "check_for_new_version_on_start",
+                              type: "bool",
+                              value: value,
+                            );
                             setState(() => checkVersionOnStart = value);
                           },
                         ),
@@ -518,9 +562,10 @@ class _SettingsState extends State<Settings> {
                           activeTrackColor: CupertinoColors.activeBlue,
                           onChanged: (bool value) {
                             setSettingBool(
-                                name: "allow_auto_complete_unit",
-                                type: "bool",
-                                value: value);
+                              name: "allow_auto_complete_unit",
+                              type: "bool",
+                              value: value,
+                            );
                             setState(() => allowAutoComplete = value);
                           },
                         ),
@@ -537,40 +582,46 @@ class _SettingsState extends State<Settings> {
                                 setState(() {
                                   isDeleting = true;
                                 });
-                                CharacterStokesSql.dropTable().then(
-                                  (value) {
-                                    SharedPrefs.prefs.setBool('character_stroke_data_downloaded', false);
-                                    showCupertinoDialog(
-                                      barrierDismissible: true,
-                                      context: context,
-                                      builder: (context) {
-                                        return const CupertinoAlertDialog(
-                                          content: Text("Deletion succeeded"),
+                                CharacterStokesSql.dropTable()
+                                    .then(
+                                      (value) {
+                                        SharedPrefs.prefs.setBool(
+                                          'character_stroke_data_downloaded',
+                                          false,
+                                        );
+                                        showCupertinoDialog(
+                                          barrierDismissible: true,
+                                          context: context,
+                                          builder: (context) {
+                                            return const CupertinoAlertDialog(
+                                              content: Text(
+                                                "Deletion succeeded",
+                                              ),
+                                            );
+                                          },
                                         );
                                       },
-                                    );
-                                  },
-                                  onError: (e) {
-                                    showCupertinoDialog(
-                                      barrierDismissible: true,
-                                      context: context,
-                                      builder: (context) {
-                                        return const CupertinoAlertDialog(
-                                          content: Text("Deletion failed"),
+                                      onError: (e) {
+                                        showCupertinoDialog(
+                                          barrierDismissible: true,
+                                          context: context,
+                                          builder: (context) {
+                                            return const CupertinoAlertDialog(
+                                              content: Text("Deletion failed"),
+                                            );
+                                          },
                                         );
                                       },
-                                    );
-                                  },
-                                ).whenComplete(() {
-                                  setState(() {
-                                    isDeleting = false;
-                                  });
-                                });
+                                    )
+                                    .whenComplete(() {
+                                      setState(() {
+                                        isDeleting = false;
+                                      });
+                                    });
                               },
                               child: const Text("Delete"),
                             ),
-                            if (isDeleting)
-                              const CupertinoActivityIndicator(),
+                            if (isDeleting) const CupertinoActivityIndicator(),
                           ],
                         ),
                       ],
@@ -586,24 +637,29 @@ class _SettingsState extends State<Settings> {
                             List settings = [];
                             map.forEach((k, v) => settings.add([k, v]));
                             showCupertinoDialog(
-                                barrierDismissible: true,
-                                context: context,
-                                builder: (context) {
-                                  return Dialog(
-                                    child: ListView.builder(
-                                        itemCount: settings.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return Center(
-                                            child: Text(
-                                                "${settings[index][0]}: ${settings[index][1]}"),
-                                          );
-                                        }),
-                                  );
-                                });
+                              barrierDismissible: true,
+                              context: context,
+                              builder: (context) {
+                                return Dialog(
+                                  child: ListView.builder(
+                                    itemCount: settings.length,
+                                    itemBuilder: (
+                                      BuildContext context,
+                                      int index,
+                                    ) {
+                                      return Center(
+                                        child: Text(
+                                          "${settings[index][0]}: ${settings[index][1]}",
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            );
                           },
                           child: const Text("Show all settings"),
-                        )
+                        ),
                       ],
                     ),
                     Visibility(
@@ -612,52 +668,53 @@ class _SettingsState extends State<Settings> {
                         children: [
                           const Text("Get latest data"),
                           IconButton(
-                              onPressed: () async {
-                                Future<bool> updated =
-                                    PgUpdate.updateSqliteFromPg();
-                                updated.then(
-                                  (val) => showCupertinoDialog(
-                                      barrierDismissible: true,
-                                      context: context,
-                                      builder: (context) {
-                                        return const CupertinoAlertDialog(
-                                          content: Text("updated: true"),
-                                        );
-                                      }),
-                                  onError: (e) => showCupertinoDialog(
+                            onPressed: () async {
+                              Future<bool> updated =
+                                  PgUpdate.updateSqliteFromPg();
+                              updated.then(
+                                (val) => showCupertinoDialog(
+                                  barrierDismissible: true,
+                                  context: context,
+                                  builder: (context) {
+                                    return const CupertinoAlertDialog(
+                                      content: Text("updated: true"),
+                                    );
+                                  },
+                                ),
+                                onError:
+                                    (e) => showCupertinoDialog(
                                       barrierDismissible: true,
                                       context: context,
                                       builder: (context) {
                                         return const CupertinoAlertDialog(
                                           content: Text("updated: false"),
                                         );
-                                      }),
-                                );
-                              },
-                              icon: const Icon(Icons.add)),
+                                      },
+                                    ),
+                              );
+                            },
+                            icon: const Icon(Icons.add),
+                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
             ],
           ),
         ),
       ),
     );
   }
-  
+
   Future<String> _getVersion() async {
     final content = await rootBundle.loadString('pubspec.yaml');
     final pubspec = Pubspec.parse(content);
     final version = pubspec.version?.toString() ?? 'Unknown';
     return version.split('+').first;
   }
-  
 }
 
 // only for testing, can be deleted
@@ -668,9 +725,12 @@ Map<String, dynamic> currSentence() {
     "characters": "我爱我的国家，它有很多美丽的河流和公园",
     "pinyin": "wǒ ài wǒ de guójiā, tā yǒu hěnduō měilì de héliú hé gōngyuán",
     "meaning":
-        "I love my country, it has many beautiful rivers and parks and more words"
+        "I love my country, it has many beautiful rivers and parks and more words",
   };
 }
 
 void sentenceGameCallBack(
-    bool value, Map<String, dynamic> currSentence, bool buildEnglish) {}
+  bool value,
+  Map<String, dynamic> currSentence,
+  bool buildEnglish,
+) {}

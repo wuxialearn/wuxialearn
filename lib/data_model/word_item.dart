@@ -40,7 +40,8 @@ List<WordItem> createWordList(List<Map<String, dynamic>> wordList) {
 }
 
 List<WordItemWithSubunit> createWordListWithSubunit(
-    List<Map<String, dynamic>> wordList) {
+  List<Map<String, dynamic>> wordList,
+) {
   List<WordItemWithSubunit> wordItemList = [];
   for (final word in wordList) {
     wordItemList.add(WordItemWithSubunit(word));

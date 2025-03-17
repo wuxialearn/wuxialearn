@@ -28,8 +28,9 @@ class TestOutSql {
     testOutBatch.commit();
   }
 
-  static Future<List<Map<String, dynamic>>> getTestOutWords(
-      {required int hsk}) async {
+  static Future<List<Map<String, dynamic>>> getTestOutWords({
+    required int hsk,
+  }) async {
     final db = await SQLHelper.db();
     var a = db.rawQuery("""
       SELECT

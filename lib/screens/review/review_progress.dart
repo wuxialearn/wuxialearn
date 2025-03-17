@@ -24,9 +24,7 @@ class _ReviewProgressState extends State<ReviewProgress> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -35,40 +33,40 @@ class _ReviewProgressState extends State<ReviewProgress> {
               onPressed: () {
                 _showReviewDeckActionSheet(context);
               },
-              child: Text(
-                deckName,
-                style: const TextStyle(fontSize: 20),
-              ),
+              child: Text(deckName, style: const TextStyle(fontSize: 20)),
             ),
           ],
         ),
-        const SizedBox(
-          height: 20,
-        ),
+        const SizedBox(height: 20),
         Expanded(
           child: FutureBuilder(
             future: progressFuture,
-            builder: (BuildContext context,
-                AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+            builder: (
+              BuildContext context,
+              AsyncSnapshot<List<Map<String, dynamic>>> snapshot,
+            ) {
               if (snapshot.hasData) {
                 final data = snapshot.data!;
                 return Center(
                   child: GridView.count(
-                      childAspectRatio: 4,
-                      crossAxisCount: 2,
-                      children: List.generate(
-                          data.length * 2,
-                          (int index) => Center(
-                                child: index % 2 == 0
-                                    ? Text(
-                                        data[index ~/ 2]["rating_name"],
-                                        style: const TextStyle(fontSize: 20),
-                                      )
-                                    : Text(
-                                        data[index ~/ 2]["count"].toString(),
-                                        style: const TextStyle(fontSize: 20),
-                                      ),
-                              ))),
+                    childAspectRatio: 4,
+                    crossAxisCount: 2,
+                    children: List.generate(
+                      data.length * 2,
+                      (int index) => Center(
+                        child:
+                            index % 2 == 0
+                                ? Text(
+                                  data[index ~/ 2]["rating_name"],
+                                  style: const TextStyle(fontSize: 20),
+                                )
+                                : Text(
+                                  data[index ~/ 2]["count"].toString(),
+                                  style: const TextStyle(fontSize: 20),
+                                ),
+                      ),
+                    ),
+                  ),
                 );
               } else {
                 return const Center(child: DelayedProgressIndicator());
@@ -83,23 +81,26 @@ class _ReviewProgressState extends State<ReviewProgress> {
   _showReviewDeckActionSheet<bool>(BuildContext context) {
     showCupertinoModalPopup<bool>(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text('Select a deck'),
-        actions: List<CupertinoActionSheetAction>.generate(deckNames.length,
-            (index) {
-          return CupertinoActionSheetAction(
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.pop(context, true);
-              setState(() {
-                deckName = deckNames[index];
-                progressFuture = ReviewSql.getProgress(deck: deckName);
-              });
-            },
-            child: Text(deckNames[index]),
-          );
-        }),
-      ),
+      builder:
+          (BuildContext context) => CupertinoActionSheet(
+            title: const Text('Select a deck'),
+            actions: List<CupertinoActionSheetAction>.generate(
+              deckNames.length,
+              (index) {
+                return CupertinoActionSheetAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                    setState(() {
+                      deckName = deckNames[index];
+                      progressFuture = ReviewSql.getProgress(deck: deckName);
+                    });
+                  },
+                  child: Text(deckNames[index]),
+                );
+              },
+            ),
+          ),
     );
   }
 }

@@ -6,8 +6,11 @@ import 'course_view.dart';
 class CustomCourse extends StatefulWidget {
   final String courseName;
   final void Function(String courseName) changeCourse;
-  const CustomCourse(
-      {super.key, required this.courseName, required this.changeCourse});
+  const CustomCourse({
+    super.key,
+    required this.courseName,
+    required this.changeCourse,
+  });
 
   @override
   State<CustomCourse> createState() => _CustomCourseState();
@@ -42,19 +45,16 @@ class _CustomCourseState extends State<CustomCourse> {
           crossAxisSpacing: 30.0,
           childAspectRatio: 1,
         ),
-        delegate: SliverChildBuilderDelegate(
-          (BuildContext context, int index) {
-            return GridItem(
-              index: index,
-              unitList: hskList,
-              updateUnits: update,
-              courseName: widget.courseName,
-              allowSkipUnits: allowSkipUnits,
-            );
-          },
-          childCount: hskList.length,
-        ),
-      )
+        delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+          return GridItem(
+            index: index,
+            unitList: hskList,
+            updateUnits: update,
+            courseName: widget.courseName,
+            allowSkipUnits: allowSkipUnits,
+          );
+        }, childCount: hskList.length),
+      ),
     ];
   }
 

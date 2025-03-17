@@ -35,39 +35,42 @@ class _ReviewHomeState extends State<ReviewHome> {
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(middle: Text("Review")),
       child: SafeArea(
-          child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CupertinoSlidingSegmentedControl(
-              onValueChanged: (int? value) {
-                setState(() {
-                  pageController.animateToPage(value! - 1,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CupertinoSlidingSegmentedControl(
+                onValueChanged: (int? value) {
+                  setState(() {
+                    pageController.animateToPage(
+                      value! - 1,
                       duration: const Duration(milliseconds: 400),
-                      curve: Curves.ease);
-                });
-              },
-              children: const <int, Widget>{
-                1: Text("Review"),
-                2: Text("Progress"),
-                3: Text("Ratings"),
-                4: Text("Decks"),
-              },
+                      curve: Curves.ease,
+                    );
+                  });
+                },
+                children: const <int, Widget>{
+                  1: Text("Review"),
+                  2: Text("Progress"),
+                  3: Text("Ratings"),
+                  4: Text("Decks"),
+                },
+              ),
             ),
-          ),
-          Expanded(
-            child: PageView(
-              controller: pageController,
-              children: const [
-                ReviewPage(),
-                ReviewProgress(),
-                ManageRatings(),
-                ManageReview(),
-              ],
+            Expanded(
+              child: PageView(
+                controller: pageController,
+                children: const [
+                  ReviewPage(),
+                  ReviewProgress(),
+                  ManageRatings(),
+                  ManageReview(),
+                ],
+              ),
             ),
-          ),
-        ],
-      )),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -89,8 +92,9 @@ class _ReviewPageState extends State<ReviewPage> {
   bool lastPage = false;
   int numCards = -1;
   bool previewDeck = Preferences.getPreference("showTranslations");
-  bool showPinyin =
-      Preferences.getPreference("show_pinyin_by_default_in_review");
+  bool showPinyin = Preferences.getPreference(
+    "show_pinyin_by_default_in_review",
+  );
   bool isCollapsed = true;
   bool deckExists = true;
   List<String> reviewWordsOptions = [
@@ -100,10 +104,7 @@ class _ReviewPageState extends State<ReviewPage> {
     "old words",
     "uncategorized",
   ];
-  List<String> reviewTypeOptions = [
-    flashCardType,
-    quizType,
-  ];
+  List<String> reviewTypeOptions = [flashCardType, quizType];
   List<String> deckSizeOptions = ["Small", "Medium", "Large", "All"];
   List<String> deckNames = ["hsk", "wuxia"];
   String deckName = 'hsk';
@@ -127,7 +128,8 @@ class _ReviewPageState extends State<ReviewPage> {
 
   void _loadReviewType() {
     setState(() {
-      reviewTypeValue = prefs.getString('reviewType') ??
+      reviewTypeValue =
+          prefs.getString('reviewType') ??
           flashCardType; // Default to Flashcards
       reviewWordsValue = prefs.getString('reviewWords') ?? 'SRS'; // Default to
       deckSizeValue =
@@ -166,27 +168,33 @@ class _ReviewPageState extends State<ReviewPage> {
         break;
       case "random words":
         reviewList = await ReviewSql.getReview(
-            deckSize: numCards,
-            sortBy: "RANDOM()",
-            orderBy: "ASC",
-            deckName: deckName);
+          deckSize: numCards,
+          sortBy: "RANDOM()",
+          orderBy: "ASC",
+          deckName: deckName,
+        );
         break;
       case "difficult words":
         reviewList = await ReviewSql.getReview(
-            deckSize: numCards,
-            sortBy: "score",
-            orderBy: "ASC",
-            deckName: deckName);
+          deckSize: numCards,
+          sortBy: "score",
+          orderBy: "ASC",
+          deckName: deckName,
+        );
         break;
       case "old words":
         reviewList = await ReviewSql.getReview(
-            deckSize: numCards,
-            sortBy: "last_seen",
-            orderBy: "ASC",
-            deckName: deckName);
+          deckSize: numCards,
+          sortBy: "last_seen",
+          orderBy: "ASC",
+          deckName: deckName,
+        );
         break;
       case "uncategorized": // Handle new option
-        reviewList = await ReviewSql.getUncategorizedWords(deck: deckName, deckSize: numCards);
+        reviewList = await ReviewSql.getUncategorizedWords(
+          deck: deckName,
+          deckSize: numCards,
+        );
         break;
     }
     return reviewList;
@@ -202,19 +210,16 @@ class _ReviewPageState extends State<ReviewPage> {
           children: [
             Container(
               decoration: BoxDecoration(
-                borderRadius: deckExists
-                    ? const BorderRadius.vertical(top: Radius.circular(10))
-                    : BorderRadius.circular(10),
+                borderRadius:
+                    deckExists
+                        ? const BorderRadius.vertical(top: Radius.circular(10))
+                        : BorderRadius.circular(10),
                 color: Theme.of(context).scaffoldBackgroundColor,
               ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Column(
                 children: [
-                  const SizedBox(
-                    height: 5,
-                  ),
+                  const SizedBox(height: 5),
                   ShrinkWidget(
                     isCollapsed: isCollapsed,
                     child: CupertinoButton(
@@ -232,15 +237,9 @@ class _ReviewPageState extends State<ReviewPage> {
                     isCollapsed: isCollapsed,
                     child: Column(
                       children: [
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        const Center(
-                          child: Text("Review Options"),
-                        ),
-                        const SizedBox(
-                          height: 25,
-                        ),
+                        const SizedBox(height: 15),
+                        const Center(child: Text("Review Options")),
+                        const SizedBox(height: 25),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -291,14 +290,15 @@ class _ReviewPageState extends State<ReviewPage> {
                           ],
                         ),
                         CupertinoButton(
-                            onPressed: () {
-                              setState(() {
-                                hskList = getReview();
-                                isCollapsed = true;
-                                deckExists = true;
-                              });
-                            },
-                            child: const Text("create deck")),
+                          onPressed: () {
+                            setState(() {
+                              hskList = getReview();
+                              isCollapsed = true;
+                              deckExists = true;
+                            });
+                          },
+                          child: const Text("create deck"),
+                        ),
                       ],
                     ),
                   ),
@@ -307,56 +307,61 @@ class _ReviewPageState extends State<ReviewPage> {
             ),
             deckExists
                 ? FutureBuilder(
-                    future: hskList,
-                    builder: (BuildContext context,
-                        AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-                      if (snapshot.hasData) {
-                        if (snapshot.data!.isNotEmpty) {
-                          return Container(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0, vertical: 3),
-                              child: Row(
-                                children: [
-                                  RichText(
-                                    text: TextSpan(
-                                      style: DefaultTextStyle.of(context).style,
-                                      children: <TextSpan>[
-                                        //const TextSpan(text: 'Review '),
-                                        TextSpan(
-                                            text:
-                                                snapshot.data!.length.toString(),
-                                            style: const TextStyle(
-                                                color: Colors.blue)),
-                                        const TextSpan(text: ' Words'),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                  future: hskList,
+                  builder: (
+                    BuildContext context,
+                    AsyncSnapshot<List<Map<String, dynamic>>> snapshot,
+                  ) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data!.isNotEmpty) {
+                        return Container(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0,
+                              vertical: 3,
                             ),
-                          );
-                        } else {
-                          return const SizedBox(height: 0);
-                        }
+                            child: Row(
+                              children: [
+                                RichText(
+                                  text: TextSpan(
+                                    style: DefaultTextStyle.of(context).style,
+                                    children: <TextSpan>[
+                                      //const TextSpan(text: 'Review '),
+                                      TextSpan(
+                                        text: snapshot.data!.length.toString(),
+                                        style: const TextStyle(
+                                          color: Colors.blue,
+                                        ),
+                                      ),
+                                      const TextSpan(text: ' Words'),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
                       } else {
                         return const SizedBox(height: 0);
                       }
-                    })
+                    } else {
+                      return const SizedBox(height: 0);
+                    }
+                  },
+                )
                 : const SizedBox(height: 0),
             deckExists
                 ? HskListview(
-                    hskList: hskList,
-                    showTranslation: previewDeck,
-                    showPinyin: showPinyin,
-                    connectTop: true,
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    scrollAxis: Axis.vertical,
-                    emptyListMessage: const Text("Nothing to review"))
-                : const SizedBox(
-                    height: 0,
-                  ),
+                  hskList: hskList,
+                  showTranslation: previewDeck,
+                  showPinyin: showPinyin,
+                  connectTop: true,
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  scrollAxis: Axis.vertical,
+                  emptyListMessage: const Text("Nothing to review"),
+                )
+                : const SizedBox(height: 0),
             ShrinkWidget(
               //visible: isCollapsed,
               isCollapsed: isCollapsed,
@@ -365,38 +370,43 @@ class _ReviewPageState extends State<ReviewPage> {
                 child: Center(
                   child: FutureBuilder(
                     future: reviewRatingFuture,
-                    builder: (BuildContext context,
-                        AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                    builder: (
+                      BuildContext context,
+                      AsyncSnapshot<List<Map<String, dynamic>>> snapshot,
+                    ) {
                       if (snapshot.hasData) {
-                        List<ReviewRating> ratings =
-                            createReviewRating(snapshot.data!);
+                        List<ReviewRating> ratings = createReviewRating(
+                          snapshot.data!,
+                        );
                         return TextButton(
-                            style: Styles.blankButton4,
-                            onPressed: () {
-                              if (reviewTypeValue == quizType) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ReviewQuiz(hskList: hskList),
-                                  ),
-                                );
-                              } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ReviewFlashcards(
-                                      hskList: hskList,
-                                      update: update,
-                                      type: reviewWordsValue,
-                                      deckSize: numCards,
-                                      ratings: ratings,
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
-                            child: const Text("Review"));
+                          style: Styles.blankButton4,
+                          onPressed: () {
+                            if (reviewTypeValue == quizType) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => ReviewQuiz(hskList: hskList),
+                                ),
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => ReviewFlashcards(
+                                        hskList: hskList,
+                                        update: update,
+                                        type: reviewWordsValue,
+                                        deckSize: numCards,
+                                        ratings: ratings,
+                                      ),
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text("Review"),
+                        );
                       } else {
                         return const DelayedProgressIndicator();
                       }
@@ -414,92 +424,104 @@ class _ReviewPageState extends State<ReviewPage> {
   _showReviewWordsActionSheet<bool>(BuildContext context) {
     showCupertinoModalPopup<bool>(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text('Select word selection type'),
-        actions: List<CupertinoActionSheetAction>.generate(
-            reviewWordsOptions.length, (index) {
-          return CupertinoActionSheetAction(
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.pop(context, true);
-              setState(() {
-                reviewWordsValue = reviewWordsOptions[index];
-              });
-              prefs.setString('reviewWords', reviewWordsValue);
-            },
-            child: Text(reviewWordsOptions[index]),
-          );
-        }),
-      ),
+      builder:
+          (BuildContext context) => CupertinoActionSheet(
+            title: const Text('Select word selection type'),
+            actions: List<CupertinoActionSheetAction>.generate(
+              reviewWordsOptions.length,
+              (index) {
+                return CupertinoActionSheetAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                    setState(() {
+                      reviewWordsValue = reviewWordsOptions[index];
+                    });
+                    prefs.setString('reviewWords', reviewWordsValue);
+                  },
+                  child: Text(reviewWordsOptions[index]),
+                );
+              },
+            ),
+          ),
     );
   }
 
   _showReviewTypeActionSheet<bool>(BuildContext context) {
     showCupertinoModalPopup<bool>(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text('Select a review type course'),
-        actions: List<CupertinoActionSheetAction>.generate(
-            reviewTypeOptions.length, (index) {
-          return CupertinoActionSheetAction(
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.pop(context, true);
-              setState(() {
-                reviewTypeValue = reviewTypeOptions[index];
-              });
-              prefs.setString('reviewType', reviewTypeValue);
-            },
-            child: Text(reviewTypeOptions[index]),
-          );
-        }),
-      ),
+      builder:
+          (BuildContext context) => CupertinoActionSheet(
+            title: const Text('Select a review type course'),
+            actions: List<CupertinoActionSheetAction>.generate(
+              reviewTypeOptions.length,
+              (index) {
+                return CupertinoActionSheetAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                    setState(() {
+                      reviewTypeValue = reviewTypeOptions[index];
+                    });
+                    prefs.setString('reviewType', reviewTypeValue);
+                  },
+                  child: Text(reviewTypeOptions[index]),
+                );
+              },
+            ),
+          ),
     );
   }
 
   _showReviewSizeActionSheet<bool>(BuildContext context) {
     showCupertinoModalPopup<bool>(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text('Select a deck size'),
-        actions: List<CupertinoActionSheetAction>.generate(
-            deckSizeOptions.length, (index) {
-          return CupertinoActionSheetAction(
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.pop(context, true);
-              setState(() {
-                deckSizeValue = deckSizeOptions[index];
-              });
-              prefs.setString('deckSize', deckSizeValue);
-            },
-            child: Text(deckSizeOptions[index]),
-          );
-        }),
-      ),
+      builder:
+          (BuildContext context) => CupertinoActionSheet(
+            title: const Text('Select a deck size'),
+            actions: List<CupertinoActionSheetAction>.generate(
+              deckSizeOptions.length,
+              (index) {
+                return CupertinoActionSheetAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                    setState(() {
+                      deckSizeValue = deckSizeOptions[index];
+                    });
+                    prefs.setString('deckSize', deckSizeValue);
+                  },
+                  child: Text(deckSizeOptions[index]),
+                );
+              },
+            ),
+          ),
     );
   }
 
   _showReviewDeckActionSheet<bool>(BuildContext context) {
     showCupertinoModalPopup<bool>(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text('Select a deck'),
-        actions: List<CupertinoActionSheetAction>.generate(deckNames.length,
-            (index) {
-          return CupertinoActionSheetAction(
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.pop(context, true);
-              setState(() {
-                deckName = deckNames[index];
-              });
-              prefs.setString('deckName', deckName);
-            },
-            child: Text(deckNames[index]),
-          );
-        }),
-      ),
+      builder:
+          (BuildContext context) => CupertinoActionSheet(
+            title: const Text('Select a deck'),
+            actions: List<CupertinoActionSheetAction>.generate(
+              deckNames.length,
+              (index) {
+                return CupertinoActionSheetAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                    setState(() {
+                      deckName = deckNames[index];
+                    });
+                    prefs.setString('deckName', deckName);
+                  },
+                  child: Text(deckNames[index]),
+                );
+              },
+            ),
+          ),
     );
   }
 }

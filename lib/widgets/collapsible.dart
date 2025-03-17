@@ -4,12 +4,12 @@ class Collapsible extends StatefulWidget {
   final Widget child;
   final bool isCollapsed;
   final int duration;
-  const Collapsible(
-      {Key? key,
-      required this.child,
-      required this.isCollapsed,
-      required this.duration})
-      : super(key: key);
+  const Collapsible({
+    Key? key,
+    required this.child,
+    required this.isCollapsed,
+    required this.duration,
+  }) : super(key: key);
   @override
   State<Collapsible> createState() => _CollapsibleState();
 }
@@ -30,8 +30,10 @@ class _CollapsibleState extends State<Collapsible>
       vsync: this,
       duration: Duration(milliseconds: widget.duration),
     );
-    final CurvedAnimation curve =
-        CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn);
+    final CurvedAnimation curve = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.fastOutSlowIn,
+    );
     _sizeAnimation = _sizeTween.animate(curve);
 
     /// Sanity check.
@@ -61,9 +63,10 @@ class _CollapsibleState extends State<Collapsible>
   @override
   Widget build(BuildContext context) {
     return SizeTransition(
-        axisAlignment: 0.0,
-        axis: Axis.vertical,
-        sizeFactor: _sizeAnimation,
-        child: widget.child);
+      axisAlignment: 0.0,
+      axis: Axis.vertical,
+      sizeFactor: _sizeAnimation,
+      child: widget.child,
+    );
   }
 }

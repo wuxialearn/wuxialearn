@@ -17,16 +17,17 @@ class _CourseHomeState extends State<CourseHome> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        navigationBar: const CupertinoNavigationBar(
-          //backgroundColor: Colors.transparent,
-          middle: Text("Home"),
-        ),
-        child: SafeArea(
-          child: switch (course) {
-            'hsk' => HSKCourseView(changeCourse: changeCourse),
-            _ => CustomCourse(courseName: course, changeCourse: changeCourse),
-          },
-        ));
+      navigationBar: const CupertinoNavigationBar(
+        //backgroundColor: Colors.transparent,
+        middle: Text("Home"),
+      ),
+      child: SafeArea(
+        child: switch (course) {
+          'hsk' => HSKCourseView(changeCourse: changeCourse),
+          _ => CustomCourse(courseName: course, changeCourse: changeCourse),
+        },
+      ),
+    );
   }
 
   void changeCourse(String courseName) {

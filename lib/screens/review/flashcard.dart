@@ -5,12 +5,12 @@ class FlashCard extends StatefulWidget {
   final Widget front;
   final Widget back;
   final bool showFrontSide;
-  const FlashCard(
-      {Key? key,
-      required this.front,
-      required this.back,
-      required this.showFrontSide})
-      : super(key: key);
+  const FlashCard({
+    Key? key,
+    required this.front,
+    required this.back,
+    required this.showFrontSide,
+  }) : super(key: key);
 
   @override
   _FlashCardState createState() => _FlashCardState();
@@ -46,7 +46,9 @@ class _FlashCardState extends State<FlashCard> {
   }
 
   Widget __transitionBuilder(
-      Widget animatedWidget, Animation<double> animation) {
+    Widget animatedWidget,
+    Animation<double> animation,
+  ) {
     final rotateAnim = Tween(begin: pi, end: 0.0).animate(animation);
     return AnimatedBuilder(
       animation: rotateAnim,
@@ -59,9 +61,10 @@ class _FlashCardState extends State<FlashCard> {
         final value =
             isUnder ? min(rotateAnim.value, pi / 2) : rotateAnim.value;
         return Transform(
-          transform: _flipXAxis
-              ? (Matrix4.rotationY(value)..setEntry(3, 0, tilt))
-              : (Matrix4.rotationX(value)..setEntry(3, 1, tilt)),
+          transform:
+              _flipXAxis
+                  ? (Matrix4.rotationY(value)..setEntry(3, 0, tilt))
+                  : (Matrix4.rotationX(value)..setEntry(3, 1, tilt)),
           alignment: Alignment.center,
           child: currentWidget,
         );
@@ -85,10 +88,7 @@ class _FlashCardState extends State<FlashCard> {
     );
   }
 
-  Widget __buildLayout({
-    required Key key,
-    required Widget child,
-  }) {
+  Widget __buildLayout({required Key key, required Widget child}) {
     return Container(
       key: key,
       decoration: BoxDecoration(
@@ -96,9 +96,7 @@ class _FlashCardState extends State<FlashCard> {
         borderRadius: BorderRadius.circular(20.0),
         color: Theme.of(context).scaffoldBackgroundColor,
       ),
-      child: Center(
-        child: child,
-      ),
+      child: Center(child: child),
     );
   }
 }

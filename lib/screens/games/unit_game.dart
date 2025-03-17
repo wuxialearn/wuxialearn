@@ -20,17 +20,17 @@ class UnitGame extends StatefulWidget {
   final String name;
   final Function updateUnits;
   final String courseName;
-  const UnitGame(
-      {Key? key,
-      required this.wordList,
-      required this.sentenceList,
-      required this.unit,
-      required this.subunit,
-      required this.lastSubunit,
-      required this.name,
-      required this.updateUnits,
-      required this.courseName})
-      : super(key: key);
+  const UnitGame({
+    Key? key,
+    required this.wordList,
+    required this.sentenceList,
+    required this.unit,
+    required this.subunit,
+    required this.lastSubunit,
+    required this.name,
+    required this.updateUnits,
+    required this.courseName,
+  }) : super(key: key);
 
   @override
   State<UnitGame> createState() => _UnitGameState();
@@ -53,10 +53,15 @@ class _UnitGameState extends State<UnitGame> {
     final groupNum = min(widget.wordList.length, 5);
     for (int i = 0; i < (widget.wordList.length ~/ groupNum); i++) {
       createGamesListForGroup(
-          widget.wordList.sublist(i * groupNum,
-              min((i * groupNum) + groupNum, widget.wordList.length)),
-          widget.sentenceList.sublist(i * groupNum,
-              min((i * groupNum) + groupNum, widget.sentenceList.length)));
+        widget.wordList.sublist(
+          i * groupNum,
+          min((i * groupNum) + groupNum, widget.wordList.length),
+        ),
+        widget.sentenceList.sublist(
+          i * groupNum,
+          min((i * groupNum) + groupNum, widget.sentenceList.length),
+        ),
+      );
     }
     _initPlayers();
   }
@@ -79,31 +84,42 @@ class _UnitGameState extends State<UnitGame> {
       final int result = value ? 1 : 0;
       StatsSql.insertStat(value: result, id: currWord.id);
       ManageReviewSql.addToReviewDeck(
-          id: currWord.id, deck: widget.courseName, value: value);
+        id: currWord.id,
+        deck: widget.courseName,
+        value: value,
+      );
     }
     if (value == false) {
       setState(() {
-        gamesList.add(ChineseToEnglishGame(
+        gamesList.add(
+          ChineseToEnglishGame(
             chineseToEnglish: chineseToEnglish,
             currWord: currWord,
             wordList: widget.wordList,
             callback: callback,
-            index: gameIndex));
+            index: gameIndex,
+          ),
+        );
       });
     }
     updatePage();
   }
 
   void sentenceGameCallBack(
-      bool value, Map<String, dynamic> currSentence, bool buildEnglish) {
+    bool value,
+    Map<String, dynamic> currSentence,
+    bool buildEnglish,
+  ) {
     if (!value) {
       setState(() {
-        gamesList.add(SentenceGame(
-          callback: sentenceGameCallBack,
-          currSentence: currSentence,
-          buildEnglish: buildEnglish,
-          index: gameIndex,
-        ));
+        gamesList.add(
+          SentenceGame(
+            callback: sentenceGameCallBack,
+            currSentence: currSentence,
+            buildEnglish: buildEnglish,
+            index: gameIndex,
+          ),
+        );
       });
     }
     updatePage();
@@ -120,50 +136,62 @@ class _UnitGameState extends State<UnitGame> {
       widget.updateUnits();
       Navigator.pop(context);
     } else {
-      _pageController.animateToPage(gameIndex + 1,
-          duration: const Duration(milliseconds: 300), curve: Curves.linear);
+      _pageController.animateToPage(
+        gameIndex + 1,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.linear,
+      );
       gameIndex++;
     }
   }
 
   void createGamesListForGroup(
-      List<WordItem> wordList, List<Map<String, dynamic>> sentenceList) {
+    List<WordItem> wordList,
+    List<Map<String, dynamic>> sentenceList,
+  ) {
     for (int i = 0; i < wordList.length; i++) {
       if (i % 2 == 0) {
-        gamesList.add(ChineseToEnglishGame(
-          chineseToEnglish: false,
-          currWord: wordList[i],
-          wordList: wordList,
-          callback: callback,
-          index: gameIndex,
-        ));
+        gamesList.add(
+          ChineseToEnglishGame(
+            chineseToEnglish: false,
+            currWord: wordList[i],
+            wordList: wordList,
+            callback: callback,
+            index: gameIndex,
+          ),
+        );
       } else {
-        gamesList.add(ChineseToEnglishGame(
-          chineseToEnglish: true,
-          currWord: wordList[i],
-          wordList: wordList,
-          callback: callback,
-          index: gameIndex,
-        ));
+        gamesList.add(
+          ChineseToEnglishGame(
+            chineseToEnglish: true,
+            currWord: wordList[i],
+            wordList: wordList,
+            callback: callback,
+            index: gameIndex,
+          ),
+        );
       }
     }
-    gamesList.add(MatchingGame(
-      wordList: wordList,
-      callback: callback,
-    ));
+    gamesList.add(MatchingGame(wordList: wordList, callback: callback));
     for (int i = 0; i < sentenceList.length; i++) {
       if (i % 2 == 0) {
-        gamesList.add(SentenceGame(
+        gamesList.add(
+          SentenceGame(
             callback: sentenceGameCallBack,
             currSentence: sentenceList[i],
             index: gameIndex,
-            buildEnglish: true));
+            buildEnglish: true,
+          ),
+        );
       } else {
-        gamesList.add(SentenceGame(
+        gamesList.add(
+          SentenceGame(
             callback: sentenceGameCallBack,
             currSentence: sentenceList[i],
             index: gameIndex,
-            buildEnglish: false));
+            buildEnglish: false,
+          ),
+        );
       }
     }
   }
@@ -192,37 +220,38 @@ class ConfirmBackButtonIcon extends StatelessWidget {
       icon: const Icon(CupertinoIcons.chevron_back),
       onPressed: () {
         showCupertinoDialog(
-            barrierDismissible: true,
-            context: context,
-            builder: (context) {
-              return CupertinoAlertDialog(
-                content: const Text(
-                  "Are you sure you want to exit?",
-                  style: TextStyle(fontSize: 16),
+          barrierDismissible: true,
+          context: context,
+          builder: (context) {
+            return CupertinoAlertDialog(
+              content: const Text(
+                "Are you sure you want to exit?",
+                style: TextStyle(fontSize: 16),
+              ),
+              actions: [
+                CupertinoDialogAction(
+                  /// This parameter indicates this action is the default,
+                  /// and turns the action's text to bold text.
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Cancel'),
                 ),
-                actions: [
-                  CupertinoDialogAction(
-                    /// This parameter indicates this action is the default,
-                    /// and turns the action's text to bold text.
-                    isDefaultAction: true,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Cancel'),
-                  ),
-                  CupertinoDialogAction(
-                    /// This parameter indicates this action is the default,
-                    /// and turns the action's text to bold text.
-                    isDefaultAction: true,
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Exit'),
-                  ),
-                ],
-              );
-            });
+                CupertinoDialogAction(
+                  /// This parameter indicates this action is the default,
+                  /// and turns the action's text to bold text.
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Exit'),
+                ),
+              ],
+            );
+          },
+        );
       },
     );
   }

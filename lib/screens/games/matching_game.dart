@@ -14,10 +14,13 @@ import '../../utils/styles.dart';
 class MatchingGame extends StatefulWidget {
   final List<WordItem> wordList;
   final Function(bool value, WordItem currWord, bool? chineseToEnglish)
-      callback;
+  callback;
 
-  const MatchingGame(
-      {super.key, required this.wordList, required this.callback});
+  const MatchingGame({
+    super.key,
+    required this.wordList,
+    required this.callback,
+  });
 
   @override
   State<MatchingGame> createState() => _MatchingGameState();
@@ -132,29 +135,33 @@ class _MatchingGameState extends State<MatchingGame> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> stackLayers =
-        List<Widget>.generate(widget.wordList.length * 2, (index) {
-      if (index < widget.wordList.length) {
-        return createAnimatedAlign(
+    List<Widget> stackLayers = List<Widget>.generate(
+      widget.wordList.length * 2,
+      (index) {
+        if (index < widget.wordList.length) {
+          return createAnimatedAlign(
             index: index,
             yCords: leftYCords,
             side: "left",
             wordType: "hanzi",
             xCord: (-1.0 + offset),
             fontSize: 20,
-            isWrong: isWrongLeft);
-      } else {
-        var newIndex = index % numCords;
-        return createAnimatedAlign(
+            isWrong: isWrongLeft,
+          );
+        } else {
+          var newIndex = index % numCords;
+          return createAnimatedAlign(
             index: newIndex,
             yCords: rightYCords,
             side: "right",
             wordType: "translations0",
             xCord: (1.0 - offset),
             fontSize: 14,
-            isWrong: isWrongRight);
-      }
-    });
+            isWrong: isWrongRight,
+          );
+        }
+      },
+    );
     return CupertinoPageScaffold(
       child: SafeArea(
         child: Column(
@@ -163,40 +170,34 @@ class _MatchingGameState extends State<MatchingGame> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                    onPressed: () {
-                      setState(() {
-                        showPinyin = !showPinyin;
-                        ShowPinyin.showPinyin = showPinyin;
-                      });
-                    },
-                    child: showPinyin
-                        ? const Text("Hide Pinyin")
-                        : const Text("Show Pinyin")),
+                  onPressed: () {
+                    setState(() {
+                      showPinyin = !showPinyin;
+                      ShowPinyin.showPinyin = showPinyin;
+                    });
+                  },
+                  child:
+                      showPinyin
+                          ? const Text("Hide Pinyin")
+                          : const Text("Show Pinyin"),
+                ),
               ],
             ),
-            const SizedBox(
-              height: 30,
-            ),
+            const SizedBox(height: 30),
             const Padding(
               padding: EdgeInsets.all(8.0),
               child: Center(
-                  child: Text(
-                "Match the words",
-                style: TextStyle(fontSize: 20),
-              )),
+                child: Text("Match the words", style: TextStyle(fontSize: 20)),
+              ),
             ),
-            const SizedBox(
-              height: 40,
-            ),
+            const SizedBox(height: 40),
             Expanded(
               child: Align(
                 alignment: Alignment.topCenter,
                 child: SizedBox(
                   //width: 250.0,
                   height: 475.0,
-                  child: Stack(
-                    children: stackLayers,
-                  ),
+                  child: Stack(children: stackLayers),
                 ),
               ),
             ),
@@ -212,18 +213,22 @@ class _MatchingGameState extends State<MatchingGame> {
                     Flexible(
                       fit: FlexFit.tight,
                       child: TextButton(
-                          onPressed: () async {
-                            await player.setAsset('assets/correct.wav');
-                            player.play();
-                            widget.callback(
-                                true, WordItem(LargeText.hskMap), null);
-                          },
-                          child: const Text("Continue")),
+                        onPressed: () async {
+                          await player.setAsset('assets/correct.wav');
+                          player.play();
+                          widget.callback(
+                            true,
+                            WordItem(LargeText.hskMap),
+                            null,
+                          );
+                        },
+                        child: const Text("Continue"),
+                      ),
                     ),
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -244,16 +249,17 @@ class _MatchingGameState extends State<MatchingGame> {
       duration: const Duration(seconds: 1),
       curve: Curves.fastOutSlowIn,
       child: TextButton(
-        style: completed.contains(index)
-            ? Styles.createButton2(const Color(0xFF00FF00))
-            : isWrong[index]
+        style:
+            completed.contains(index)
+                ? Styles.createButton2(const Color(0xFF00FF00))
+                : isWrong[index]
                 ? Styles.createButton2(const Color(0xFFFF0000))
                 : isClicked["side"] == side && isClicked["index"] == index
-                    ? Styles.createButton2(
-                        const Color(0xFFB0B0B0),
-                        border: const Color(0xff0000ff),
-                      )
-                    : Styles.createButton2(const Color(0xFFB0B0B0)),
+                ? Styles.createButton2(
+                  const Color(0xFFB0B0B0),
+                  border: const Color(0xff0000ff),
+                )
+                : Styles.createButton2(const Color(0xFFB0B0B0)),
         onPressed: () {
           pushToTop(index: index, side: side);
         },
