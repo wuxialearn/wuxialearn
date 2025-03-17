@@ -121,7 +121,10 @@ class _WordViewState extends State<WordView> {
                             "correct percentage: ${stats[0]["total_correct"]}%",
                           ),
                           Text(
-                            """next review: ${DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(stats[0]["show_next"] * 1000))}
+                            """next review: ${stats[0]["show_next"] != null? 
+                            DateFormat.yMd().format(DateTime.fromMillisecondsSinceEpoch(stats[0]["show_next"] * 1000))
+                            : "not scheduled"
+                            }
                           """,
                           ),
                         ],
@@ -267,19 +270,3 @@ class _Sentences extends StatelessWidget {
     );
   }
 }
-
-//not sure if this is good. We don't maintain extra translations
-/*
-                stats[0]["translations0"] != null
-                    ? const Text("More translations: ")
-                    : const SizedBox(height: 0),
-                stats[0]["translations0"] != null
-                    ? Text(stats[0]["translations0"])
-                    : const SizedBox(height: 0),
-                stats[0]["translations1"] != null
-                    ? Text(stats[0]["translations1"])
-                    : const SizedBox(height: 0),
-                stats[0]["translations2"] != null
-                    ? Text(stats[0]["translations2"])
-                    : const SizedBox(height: 0),
-*/

@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:hsk_learner/screens/home/home_page.dart';
 import 'package:hsk_learner/sql/load_app_sql.dart';
 import 'package:hsk_learner/sql/schema_migration.dart';
-import 'package:hsk_learner/sql/sql_helper.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
 import 'package:version/version.dart';
 import '../../sql/preferences_sql.dart';
