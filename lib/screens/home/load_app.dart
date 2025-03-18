@@ -30,8 +30,14 @@ class _LoadAppState extends State<LoadApp> {
     //this could cause issues if Preferences should be changed after the
     //schema migration.
     await Preferences.initPreferences();
-    await SchemaMigration.run();
-    showUpdateChangesModal();
+    final Version appVersion = Version.parse(Preferences.getPreference("app_version"));
+    final Version latestVersion = Version.parse(await _getAppVersion());
+    if(appVersion < latestVersion){
+      Preferences.setPreference(name: "app_version", value: latestVersion);
+      PreferencesSql.setPreference(name: "app_version", value: latestVersion.toString(), type: "string");
+      await SchemaMigration.run();
+      showUpdateChangesModal();
+    }
     init();
   }
 
@@ -44,9 +50,6 @@ class _LoadAppState extends State<LoadApp> {
 
   void showUpdateChangesModal() async{
     final Version appVersion = Version.parse(Preferences.getPreference("app_version"));
-    final Version latestVersion = Version.parse(await _getAppVersion());
-    print("appVersion: $appVersion");
-    print("latestVersion: $latestVersion");
     if(appVersion <= Version.parse("1.3.3")){
       final bool isFirstRun = Preferences.getPreference("isFirstRun");
       if(!isFirstRun) {
@@ -73,10 +76,6 @@ class _LoadAppState extends State<LoadApp> {
         )
       );
       }
-    }
-    if(appVersion < latestVersion){
-      Preferences.setPreference(name: "app_version", value: latestVersion);
-      PreferencesSql.setPreference(name: "app_version", value: latestVersion.toString(), type: "string");
     }
   }
 
