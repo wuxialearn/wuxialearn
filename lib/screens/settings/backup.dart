@@ -163,25 +163,34 @@ final class Backup {
   }
 
   static Future<bool> restoreBackup(File file) async {
-    await TarReader.forEach(file.openRead(), (entry) async {
-      final contents = await entry.contents.transform(utf8.decoder).first;
-      switch (entry.header.name) {
-        case backupFileFormatVersionName:
-          break;
-        case subUnitName:
-          subUnitInfo.content = contents;
-        case unitName:
-          unitInfo.content = contents;
-        case statsName:
-          stats.content = contents;
-        case reviewName:
-          review.content = contents;
-        case reviewRatingName:
-          reviewRating.content = contents;
-        case preferencesName:
-          preferences.content = contents;
-      }
-    });
+    try {
+      await TarReader.forEach(file.openRead(), (entry) async {
+        try {
+          final contents = await entry.contents.transform(utf8.decoder).join();
+          switch (entry.header.name) {
+            case backupFileFormatVersionName:
+              break;
+            case subUnitName:
+              subUnitInfo.content = contents;
+            case unitName:
+              unitInfo.content = contents;
+            case statsName:
+              stats.content = contents;
+            case reviewName:
+              review.content = contents;
+            case reviewRatingName:
+              reviewRating.content = contents;
+            case preferencesName:
+              preferences.content = contents;
+          }
+        } catch (e) {
+          print('Error processing entry ${entry.header.name}: $e');
+        }
+      });
+    } catch (e) {
+      print('Error reading tar file: $e');
+      return false;
+    }
 
     final complete = backupItems.every((element) => element.content != null);
     if (complete) {
