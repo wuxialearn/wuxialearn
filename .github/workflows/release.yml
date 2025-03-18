@@ -91,6 +91,7 @@ jobs:
 
       #10 Upload to Latest Tag
       - name: Upload to Latest Tag
+        if: matrix.target == 'Android'
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         run: |
@@ -98,5 +99,13 @@ jobs:
           build/app/outputs/flutter-apk/app-arm64-v8a-release.apk \
           build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk \
           build/app/outputs/flutter-apk/app-x86_64-release.apk \
-          build/windows/x64/runner/Release \
+          --clobber
+      
+      - name: Upload to Latest Tag
+        if: matrix.target == 'Windows'
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          gh release upload ${{ env.LATEST_TAG }} \
+          build/windows/x64/runner/Release/ \
           --clobber
