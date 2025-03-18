@@ -89,8 +89,16 @@ jobs:
         with:
           name: ${{ matrix.artifact_name }}
           path: ${{ matrix.artifact_path }}
+      
+      #10 Zip Windows Artifacts
+      - name: Zip Windows Artifacts
+        if: matrix.target == 'Windows'
+        run: |
+          cd build/windows/x64/runner/Release
+          powershell Compress-Archive -Path * -DestinationPath ../wuxialearn-release.zip
 
-      #10 Upload to Latest Tag
+
+      #11 Upload to Latest Tag
       - name: Upload to Latest Tag
         if: matrix.target == 'Android'
         env:
@@ -108,5 +116,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         run: |
           gh release upload ${{ env.LATEST_TAG }} \
-          build/windows/x64/runner/Release/ \
+          build/windows/x64/runner/Release/wuxialearn-release.zip \
           --clobber
