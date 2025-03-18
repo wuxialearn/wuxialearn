@@ -95,7 +95,7 @@ jobs:
         if: matrix.target == 'Windows'
         run: |
           cd build/windows/x64/runner/Release
-          powershell Compress-Archive -Path * -DestinationPath ../wuxialearn-release.zip
+          powershell Compress-Archive -Path * -DestinationPath ../wuxialearn-release-win64.zip
 
 
       #11 Upload to Latest Tag
@@ -117,5 +117,5 @@ jobs:
         shell: bash
         run: |
           gh release upload ${{ env.LATEST_TAG }} \
-            build/windows/x64/runner/wuxialearn-release.zip \
+            build/windows/x64/runner/wuxialearn-release-win64.zip \
           --clobber
