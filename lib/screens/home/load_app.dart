@@ -32,7 +32,8 @@ class _LoadAppState extends State<LoadApp> {
     await Preferences.initPreferences();
     final Version appVersion = Version.parse(Preferences.getPreference("app_version"));
     final Version latestVersion = Version.parse(await _getAppVersion());
-    if(appVersion < latestVersion){
+    final bool isFirstRun = Preferences.getPreference("isFirstRun");
+    if(appVersion < latestVersion && !isFirstRun){
       Preferences.setPreference(name: "app_version", value: latestVersion);
       PreferencesSql.setPreference(name: "app_version", value: latestVersion.toString(), type: "string");
       await SchemaMigration.run();
