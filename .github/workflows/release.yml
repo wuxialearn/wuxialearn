@@ -18,7 +18,7 @@ jobs:
             artifact_path: build/app/outputs/flutter-apk/*.apk
           - target: Windows
             os: windows-latest
-            artifact_name: wuxialearn-release #.zip
+            artifact_name: wuxialearn-release-win64 #.zip
             artifact_path: build/windows/x64/runner/Release
     runs-on: ${{ matrix.os }}
 
