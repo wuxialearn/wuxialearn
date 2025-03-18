@@ -14,11 +14,11 @@ jobs:
         include:
           - target: Android
             os: ubuntu-latest
-            artifact_name: app-arm64-v8a-release.apk
-            artifact_path: build/app/outputs/flutter-apk/
+            artifact_name: release-apk
+            artifact_path: build/app/outputs/flutter-apk/*.apk
           - target: Windows
             os: windows-latest
-            artifact_name: wuxialearn-release #.zip
+            artifact_name: release-windows #.zip
             artifact_path: build/windows/x64/runner/Release
     runs-on: ${{ matrix.os }}
 
@@ -62,12 +62,12 @@ jobs:
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "storeFile=keystore.jks" >> android/key.properties
 
-      #6 Building APK
+      #6 Build APK
       - name: Build APK
         if: matrix.target == 'Android'
         run: flutter build apk --release --target-platform android-arm64
 
-      #7 Building Windows
+      #7 Build Windows
       - name: Build Windows
         if: matrix.target == 'Windows'
         run: flutter build windows --release
