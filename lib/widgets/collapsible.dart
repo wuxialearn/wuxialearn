@@ -5,11 +5,10 @@ class Collapsible extends StatefulWidget {
   final bool isCollapsed;
   final int duration;
   const Collapsible(
-      {Key? key,
+      {super.key,
       required this.child,
       required this.isCollapsed,
-      required this.duration})
-      : super(key: key);
+      required this.duration});
   @override
   State<Collapsible> createState() => _CollapsibleState();
 }

@@ -73,7 +73,7 @@ class _ReviewHomeState extends State<ReviewHome> {
 }
 
 class ReviewPage extends StatefulWidget {
-  const ReviewPage({Key? key}) : super(key: key);
+  const ReviewPage({super.key});
   @override
   State<ReviewPage> createState() => _ReviewPageState();
 }
@@ -186,7 +186,8 @@ class _ReviewPageState extends State<ReviewPage> {
             deckName: deckName);
         break;
       case "uncategorized": // Handle new option
-        reviewList = await ReviewSql.getUncategorizedWords(deck: deckName, deckSize: numCards);
+        reviewList = await ReviewSql.getUncategorizedWords(
+            deck: deckName, deckSize: numCards);
         break;
     }
     return reviewList;
@@ -325,8 +326,8 @@ class _ReviewPageState extends State<ReviewPage> {
                                       children: <TextSpan>[
                                         //const TextSpan(text: 'Review '),
                                         TextSpan(
-                                            text:
-                                                snapshot.data!.length.toString(),
+                                            text: snapshot.data!.length
+                                                .toString(),
                                             style: const TextStyle(
                                                 color: Colors.blue)),
                                         const TextSpan(text: ' Words'),

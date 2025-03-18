@@ -9,15 +9,14 @@ import '../stats/character_view.dart';
 
 class UnitLearn extends StatefulWidget {
   const UnitLearn(
-      {Key? key,
+      {super.key,
       required this.wordList,
       required this.unit,
       required this.subunit,
       required this.lastSubunit,
       required this.name,
       required this.updateUnits,
-      required this.courseName})
-      : super(key: key);
+      required this.courseName});
   final List<WordItem> wordList;
   final int unit;
   final int subunit;

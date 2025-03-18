@@ -5,10 +5,10 @@ class DropDown extends StatefulWidget {
   final List<String> dropdownOptions;
   final Function(dynamic value) callback;
   const DropDown({
-    Key? key,
+    super.key,
     required this.dropdownOptions,
     required this.callback,
-  }) : super(key: key);
+  });
 
   @override
   State<DropDown> createState() => _DropDownState();

@@ -15,7 +15,7 @@ class HskListview extends StatelessWidget {
   final Widget emptyListMessage;
   final bool showPinyin;
   const HskListview(
-      {Key? key,
+      {super.key,
       required this.hskList,
       required this.showTranslation,
       required this.connectTop,
@@ -23,8 +23,7 @@ class HskListview extends StatelessWidget {
       required this.scrollAxis,
       this.showPlayButton = true,
       this.emptyListMessage = const Text(""),
-      required this.showPinyin})
-      : super(key: key);
+      required this.showPinyin});
 
   get flutterTts => null;
 
@@ -68,14 +67,13 @@ class HskListview extends StatelessWidget {
                       ),
                       child: wordList.isEmpty
                           ? Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                emptyListMessage
-                              ],),
-                          ) 
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [emptyListMessage],
+                              ),
+                            )
                           : Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -231,14 +229,14 @@ class HskListviewItem extends StatelessWidget {
   final bool showPlayButton;
   final bool showPinyin;
   const HskListviewItem({
-    Key? key,
+    super.key,
     required this.wordItem,
     required this.showTranslation,
     required this.separator,
     required this.callback,
     required this.showPlayButton,
     required this.showPinyin,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

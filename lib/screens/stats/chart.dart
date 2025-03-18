@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 class HskChart extends StatelessWidget {
   final List<Map<String, dynamic>>? timelineList;
   final int numDays;
-  const HskChart({Key? key, this.timelineList, required this.numDays})
-      : super(key: key);
+  const HskChart({super.key, this.timelineList, required this.numDays});
 
   @override
   Widget build(BuildContext context) {
@@ -175,10 +174,7 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
       break;
   }
 
-  return SideTitleWidget(
-    meta: meta,
-    child: text
-  );
+  return SideTitleWidget(meta: meta, child: text);
 }
 
 double daysBetween(DateTime from, DateTime to) {

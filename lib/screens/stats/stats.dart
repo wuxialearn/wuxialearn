@@ -8,7 +8,7 @@ import 'package:hsk_learner/sql/stats_sql.dart';
 import '../../utils/styles.dart';
 
 class StatsPage extends StatefulWidget {
-  const StatsPage({Key? key}) : super(key: key);
+  const StatsPage({super.key});
 
   @override
   State<StatsPage> createState() => _StatsPageState();
@@ -174,14 +174,13 @@ class _HskListview extends StatelessWidget {
   final Axis scrollAxis;
   final bool showPlayButton;
   const _HskListview(
-      {Key? key,
+      {super.key,
       required this.statsListFuture,
       required this.showTranslation,
       required this.connectTop,
       required this.color,
       required this.scrollAxis,
-      required this.showPlayButton})
-      : super(key: key);
+      required this.showPlayButton});
 
   get flutterTts => null;
 
@@ -262,13 +261,13 @@ class _HskListviewItem extends StatelessWidget {
   final Function(String) callback;
   final bool showPlayButton;
   const _HskListviewItem({
-    Key? key,
+    super.key,
     required this.wordItem,
     required this.showTranslation,
     required this.separator,
     required this.callback,
     required this.showPlayButton,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

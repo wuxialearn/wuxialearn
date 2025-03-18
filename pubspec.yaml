@@ -38,7 +38,7 @@ dependencies:
   shared_preferences:
   fl_chart: ^0.70.2
   flutter_tts: ^4.2.2
-  postgres: ^3.5.4
+  postgres: ^3.4.8
   just_audio:
   just_audio_windows:
   intl:

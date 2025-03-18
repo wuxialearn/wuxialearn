@@ -51,10 +51,10 @@ class _TestOutController extends StatefulWidget {
   final List<WordItem> wordList;
   final int hsk;
   const _TestOutController({
-    Key? key,
+    super.key,
     required this.wordList,
     required this.hsk,
-  }) : super(key: key);
+  });
 
   @override
   State<_TestOutController> createState() => _TestOutControllerState();

@@ -11,7 +11,7 @@ import 'chart.dart';
 import '../../widgets/hsk_listview/hsk_listview.dart';
 
 class StatsHome extends StatefulWidget {
-  const StatsHome({Key? key}) : super(key: key);
+  const StatsHome({super.key});
 
   @override
   State<StatsHome> createState() => _StatsHomeState();
@@ -388,11 +388,10 @@ class _HorizontalHskList extends StatelessWidget {
   final String title;
   final bool showPlayButton;
   const _HorizontalHskList(
-      {Key? key,
+      {super.key,
       required this.hskList,
       required this.title,
-      required this.showPlayButton})
-      : super(key: key);
+      required this.showPlayButton});
 
   @override
   Widget build(BuildContext context) {
@@ -494,13 +493,13 @@ class _HskListviewItem extends StatelessWidget {
   final Function(String) callback;
   final bool showPlayButton;
   const _HskListviewItem({
-    Key? key,
+    super.key,
     required this.hskList,
     required this.showTranslation,
     required this.separator,
     required this.callback,
     required this.showPlayButton,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

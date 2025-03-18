@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 
 class LoadApp extends StatefulWidget {
   final bool fdroid;
-  const LoadApp({Key? key, this.fdroid = false}) : super(key: key);
+  const LoadApp({super.key, this.fdroid = false});
 
   @override
   State<LoadApp> createState() => _LoadAppState();
@@ -141,7 +141,7 @@ class _LoadAppState extends State<LoadApp> {
 }
 
 class Loading extends StatelessWidget {
-  const Loading({Key? key}) : super(key: key);
+  const Loading({super.key});
   @override
   Widget build(BuildContext context) {
     return const CupertinoPageScaffold(

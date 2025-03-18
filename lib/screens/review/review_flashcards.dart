@@ -21,13 +21,12 @@ class ReviewFlashcards extends StatefulWidget {
   final int deckSize;
   final List<ReviewRating> ratings;
   const ReviewFlashcards(
-      {Key? key,
+      {super.key,
       required this.hskList,
       required this.update,
       required this.type,
       required this.deckSize,
-      required this.ratings})
-      : super(key: key);
+      required this.ratings});
 
   @override
   State<ReviewFlashcards> createState() => _ReviewFlashcardsState();
@@ -226,13 +225,14 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                   Visibility(
                                                       visible: showPinyin,
                                                       child: Text(
-                                                        wordList[pageIndex]
-                                                            .pinyin,
-                                                        style: const TextStyle(
+                                                          wordList[pageIndex]
+                                                              .pinyin,
+                                                          style:
+                                                              const TextStyle(
                                                             fontSize: 20,
-                                                            color: Color(0xFF999999),
-                                                            )
-                                                      )),
+                                                            color: Color(
+                                                                0xFF999999),
+                                                          ))),
                                                   Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
@@ -306,8 +306,8 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                             .literal
                                                             .join(" + "),
                                                         style: const TextStyle(
-                                                            fontSize: 20,
-                                                          ),
+                                                          fontSize: 20,
+                                                        ),
                                                       )),
                                                 ],
                                               ),
@@ -337,9 +337,10 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                       wordList[pageIndex]
                                                           .pinyin,
                                                       style: const TextStyle(
-                                                          fontSize: 20,
-                                                          color: Color(0xFF999999),
-                                                          ),
+                                                        fontSize: 20,
+                                                        color:
+                                                            Color(0xFF999999),
+                                                      ),
                                                     ),
                                                     Row(
                                                       mainAxisAlignment:
@@ -413,9 +414,10 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                       wordList[pageIndex]
                                                           .translation,
                                                       style: const TextStyle(
-                                                          fontSize: 25,
-                                                          color: Color(0xFF999999),
-                                                          ),
+                                                        fontSize: 25,
+                                                        color:
+                                                            Color(0xFF999999),
+                                                      ),
                                                     ),
                                                     Visibility(
                                                         visible: showHint,
@@ -425,9 +427,10 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
                                                               .join(" + "),
                                                           style:
                                                               const TextStyle(
-                                                                  fontSize: 20,
-                                                                  color: Color(0xFF999999),
-                                                                      ),
+                                                            fontSize: 20,
+                                                            color: Color(
+                                                                0xFF999999),
+                                                          ),
                                                         )),
                                                   ]),
                                             ),
@@ -479,9 +482,9 @@ class _ReviewFlashcardsState extends State<ReviewFlashcards> {
 class _ShowNextCardButton extends StatelessWidget {
   final Function() callback;
   const _ShowNextCardButton({
-    Key? key,
+    super.key,
     required this.callback,
-  }) : super(key: key);
+  });
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -507,10 +510,10 @@ class _AnswerButton extends StatelessWidget {
   final Function(int value) callback;
   final List<ReviewRating> ratings;
   const _AnswerButton({
-    Key? key,
+    super.key,
     required this.callback,
     required this.ratings,
-  }) : super(key: key);
+  });
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -586,15 +589,16 @@ class _Sentences extends StatelessWidget {
                                       children: [
                                         Visibility(
                                           visible: showPinyin,
-                                          child: const Text("名字爱Míngzì",
-                                              overflow: TextOverflow.ellipsis,
-                                              ),
+                                          child: const Text(
+                                            "名字爱Míngzì",
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
                                         ),
                                         const Text(
                                           "名字爱Míngzì",
                                           style: TextStyle(
-                                              fontSize: 20,
-                                              ),
+                                            fontSize: 20,
+                                          ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         Visibility(
@@ -602,8 +606,8 @@ class _Sentences extends StatelessWidget {
                                           child: const Text(
                                             "名字爱Míngzì",
                                             style: TextStyle(
-                                                fontSize: 16,
-                                                ),
+                                              fontSize: 16,
+                                            ),
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         )
@@ -621,15 +625,14 @@ class _Sentences extends StatelessWidget {
                                               child: Text(
                                                 sentences[index]["pinyin"],
                                                 overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                    ),
+                                                style: const TextStyle(),
                                               ),
                                             ),
                                             Text(
                                               sentences[index]["characters"],
                                               style: const TextStyle(
-                                                  fontSize: 20,
-                                                  ),
+                                                fontSize: 20,
+                                              ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                             Visibility(
@@ -637,8 +640,8 @@ class _Sentences extends StatelessWidget {
                                               child: Text(
                                                 sentences[index]["meaning"],
                                                 style: const TextStyle(
-                                                    fontSize: 16,
-                                                    ),
+                                                  fontSize: 16,
+                                                ),
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             )

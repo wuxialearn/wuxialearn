@@ -18,12 +18,11 @@ class SentenceGame extends StatefulWidget {
   final bool buildEnglish;
 
   const SentenceGame(
-      {Key? key,
+      {super.key,
       required this.callback,
       required this.currSentence,
       required this.index,
-      required this.buildEnglish})
-      : super(key: key);
+      required this.buildEnglish});
 
   @override
   State<SentenceGame> createState() => _SentenceGameState();
@@ -451,7 +450,7 @@ class _SentenceGameState extends State<SentenceGame> {
                                                   widget.currSentence,
                                                   widget.buildEnglish);
                                             }
-                    
+
                                             setState(() {
                                               isNotAnswered = false;
                                               setCheckAnswerWidget(
@@ -480,7 +479,7 @@ class _SentenceGameState extends State<SentenceGame> {
                                                   widget.currSentence,
                                                   widget.buildEnglish);
                                             }
-                    
+
                                             setState(() {
                                               isNotAnswered = false;
                                               setCheckAnswerWidget(

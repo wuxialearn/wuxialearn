@@ -8,7 +8,7 @@ import '../../utils/styles.dart';
 import '../stats/word_view.dart';
 
 class ManageReview extends StatefulWidget {
-  const ManageReview({Key? key}) : super(key: key);
+  const ManageReview({super.key});
 
   @override
   State<ManageReview> createState() => _ManageReviewState();
@@ -268,15 +268,14 @@ class _HskListview extends StatelessWidget {
   final bool showRemove;
 
   const _HskListview(
-      {Key? key,
+      {super.key,
       required this.statsListFuture,
       required this.showTranslation,
       required this.connectTop,
       required this.color,
       required this.scrollAxis,
       required this.onClick,
-      required this.showRemove})
-      : super(key: key);
+      required this.showRemove});
 
   playCallback(int i) {
     onClick(i);
@@ -344,13 +343,13 @@ class _HskListviewItem extends StatelessWidget {
   final Function(int) callback;
   final bool showRemove;
   const _HskListviewItem({
-    Key? key,
+    super.key,
     required this.wordItem,
     required this.showTranslation,
     required this.separator,
     required this.callback,
     required this.showRemove,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

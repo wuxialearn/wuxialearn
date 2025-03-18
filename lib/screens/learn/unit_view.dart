@@ -13,12 +13,11 @@ class UnitView extends StatefulWidget {
   final Function updateUnits;
   final String courseName;
   const UnitView(
-      {Key? key,
+      {super.key,
       required this.unit,
       required this.name,
       required this.updateUnits,
-      required this.courseName})
-      : super(key: key);
+      required this.courseName});
 
   @override
   State<UnitView> createState() => _UnitViewState();
@@ -144,7 +143,8 @@ class _UnitViewState extends State<UnitView> {
                                     decoration: BoxDecoration(
                                       color: subunits[i]["completed"] == 1
                                           ? Colors.lightBlue
-                                          : Theme.of(context).scaffoldBackgroundColor,
+                                          : Theme.of(context)
+                                              .scaffoldBackgroundColor,
                                       border: Border.all(
                                           width: 2.0, color: Colors.lightBlue),
                                       borderRadius: BorderRadius.circular(5),
@@ -228,9 +228,9 @@ class _UnitViewState extends State<UnitView> {
                                                 });
                                               },
                                               icon: Container(
-                                                  decoration:
-                                                      BoxDecoration(
-                                                    color: Theme.of(context).scaffoldBackgroundColor,
+                                                  decoration: BoxDecoration(
+                                                    color: Theme.of(context)
+                                                        .scaffoldBackgroundColor,
                                                     borderRadius:
                                                         const BorderRadius.all(
                                                             Radius.circular(

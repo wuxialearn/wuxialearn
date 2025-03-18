@@ -10,7 +10,7 @@ import 'package:pubspec_parse/pubspec_parse.dart';
 import 'package:flutter/services.dart';
 
 class Settings extends StatefulWidget {
-  const Settings({Key? key}) : super(key: key);
+  const Settings({super.key});
 
   @override
   State<Settings> createState() => _SettingsState();
@@ -38,7 +38,8 @@ class _SettingsState extends State<Settings> {
   bool showDebugOptions = false;
   bool isDownloading = false;
   bool isDeleting = false;
-  bool isDataDownloaded = SharedPrefs.prefs.getBool('character_stroke_data_downloaded') ?? false;
+  bool isDataDownloaded =
+      SharedPrefs.prefs.getBool('character_stroke_data_downloaded') ?? false;
 
   @override
   void initState() {
@@ -309,47 +310,51 @@ class _SettingsState extends State<Settings> {
                       Row(
                         children: [
                           CupertinoButton(
-                            onPressed: isDataDownloaded ? null : () async {
-                              setState(() {
-                                isDownloading = true;
-                              });
-                              CharacterStokesSql.createTable().then(
-                                (value) {
-                                  SharedPrefs.prefs.setBool('character_stroke_data_downloaded', true);
-                                  setState(() {
-                                    isDataDownloaded = true;
-                                  });
-                                  showCupertinoDialog(
-                                    barrierDismissible: true,
-                                    context: context,
-                                    builder: (context) {
-                                      return const CupertinoAlertDialog(
-                                        content: Text("Download succeeded"),
-                                      );
-                                    },
-                                  );
-                                },
-                                onError: (e) {
-                                  showCupertinoDialog(
-                                    barrierDismissible: true,
-                                    context: context,
-                                    builder: (context) {
-                                      return const CupertinoAlertDialog(
-                                        content: Text("Download failed"),
-                                      );
-                                    },
-                                  );
-                                },
-                              ).whenComplete(() {
-                                setState(() {
-                                  isDownloading = false;
-                                });
-                              });
-                            },
+                            onPressed: isDataDownloaded
+                                ? null
+                                : () async {
+                                    setState(() {
+                                      isDownloading = true;
+                                    });
+                                    CharacterStokesSql.createTable().then(
+                                      (value) {
+                                        SharedPrefs.prefs.setBool(
+                                            'character_stroke_data_downloaded',
+                                            true);
+                                        setState(() {
+                                          isDataDownloaded = true;
+                                        });
+                                        showCupertinoDialog(
+                                          barrierDismissible: true,
+                                          context: context,
+                                          builder: (context) {
+                                            return const CupertinoAlertDialog(
+                                              content:
+                                                  Text("Download succeeded"),
+                                            );
+                                          },
+                                        );
+                                      },
+                                      onError: (e) {
+                                        showCupertinoDialog(
+                                          barrierDismissible: true,
+                                          context: context,
+                                          builder: (context) {
+                                            return const CupertinoAlertDialog(
+                                              content: Text("Download failed"),
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ).whenComplete(() {
+                                      setState(() {
+                                        isDownloading = false;
+                                      });
+                                    });
+                                  },
                             child: const Text("Download"),
                           ),
-                          if (isDownloading)
-                            const CupertinoActivityIndicator(),
+                          if (isDownloading) const CupertinoActivityIndicator(),
                         ],
                       ),
                     ],
@@ -434,18 +439,22 @@ class _SettingsState extends State<Settings> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.start,
-                    children: [const Text("Version "), FutureBuilder<String>(
-                    future: _getVersion(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CupertinoActivityIndicator();
-                      } else if (snapshot.hasError) {
-                      return const Text("Error");
-                      } else {
-                      return Text(snapshot.data ?? 'Unknown');
-                      }
-                    },
-                    )],
+                  children: [
+                    const Text("Version "),
+                    FutureBuilder<String>(
+                      future: _getVersion(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CupertinoActivityIndicator();
+                        } else if (snapshot.hasError) {
+                          return const Text("Error");
+                        } else {
+                          return Text(snapshot.data ?? 'Unknown');
+                        }
+                      },
+                    )
+                  ],
                 ),
               ),
               const SizedBox(
@@ -539,7 +548,9 @@ class _SettingsState extends State<Settings> {
                                 });
                                 CharacterStokesSql.dropTable().then(
                                   (value) {
-                                    SharedPrefs.prefs.setBool('character_stroke_data_downloaded', false);
+                                    SharedPrefs.prefs.setBool(
+                                        'character_stroke_data_downloaded',
+                                        false);
                                     showCupertinoDialog(
                                       barrierDismissible: true,
                                       context: context,
@@ -569,8 +580,7 @@ class _SettingsState extends State<Settings> {
                               },
                               child: const Text("Delete"),
                             ),
-                            if (isDeleting)
-                              const CupertinoActivityIndicator(),
+                            if (isDeleting) const CupertinoActivityIndicator(),
                           ],
                         ),
                       ],
@@ -650,14 +660,13 @@ class _SettingsState extends State<Settings> {
       ),
     );
   }
-  
+
   Future<String> _getVersion() async {
     final content = await rootBundle.loadString('pubspec.yaml');
     final pubspec = Pubspec.parse(content);
     final version = pubspec.version?.toString() ?? 'Unknown';
     return version.split('+').first;
   }
-  
 }
 
 // only for testing, can be deleted

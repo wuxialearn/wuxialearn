@@ -21,7 +21,7 @@ class UnitGame extends StatefulWidget {
   final Function updateUnits;
   final String courseName;
   const UnitGame(
-      {Key? key,
+      {super.key,
       required this.wordList,
       required this.sentenceList,
       required this.unit,
@@ -29,8 +29,7 @@ class UnitGame extends StatefulWidget {
       required this.lastSubunit,
       required this.name,
       required this.updateUnits,
-      required this.courseName})
-      : super(key: key);
+      required this.courseName});
 
   @override
   State<UnitGame> createState() => _UnitGameState();
