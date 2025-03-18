@@ -117,5 +117,5 @@ jobs:
         shell: bash
         run: |
           gh release upload ${{ env.LATEST_TAG }} \
-          build/windows/x64/runner/Release/wuxialearn-release.zip \
+            build/windows/x64/runner/wuxialearn-release.zip \
           --clobber
