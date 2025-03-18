@@ -114,6 +114,7 @@ jobs:
         if: matrix.target == 'Windows'
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        shell: bash
         run: |
           gh release upload ${{ env.LATEST_TAG }} \
           build/windows/x64/runner/Release/wuxialearn-release.zip \
