@@ -233,7 +233,7 @@ class _RatingsFormState extends State<_RatingsForm> {
                 const Text("name"),
                 Expanded(
                   child: CupertinoTextFormFieldRow(
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.text,
                     onSaved: (String? value) {
                       name = value!;
                     },
